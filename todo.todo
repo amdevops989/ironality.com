@@ -1,0 +1,7 @@
+## now we have app with metrics set up
+
+## pipeline ci : build scan test tag push
+
+## tls mtls secret helm kustommize argocd argo notification argo rollout dr pilot light loki dahsboards and gitlab cicd runners pipeline policy as a code (opa kyverno ) security automation (falco snyk trivy)
+
+## infra as code alermanager slack sns rds lambda event bridge 
