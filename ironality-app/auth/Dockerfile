@@ -1,14 +1,14 @@
 # ===== Base image =====
-FROM node:20-alpine
+FROM node:24-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files and lockfile for deterministic installs
+# Copy package files
 COPY package.json package-lock.json ./
 
-# Install exact dependencies
-RUN npm ci --legacy-peer-deps
+# Apply resolutions and install exact dependencies
+RUN npx npm-force-resolutions && npm ci --legacy-peer-deps
 
 # Copy source code
 COPY . .
