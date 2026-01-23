@@ -14,7 +14,7 @@ RUN npm ci --legacy-peer-deps
 COPY . .
 
 # Expose app port
-EXPOSE 3000
+EXPOSE 3002
 
 # Start the app
 CMD ["node", "index.js"]
