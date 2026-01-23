@@ -4,17 +4,17 @@ FROM node:20-alpine
 # Set working directory
 WORKDIR /app
 
-# Copy package.json AND package-lock.json
+# Copy package files and lockfile for deterministic installs
 COPY package.json package-lock.json ./
 
-# Install dependencies exactly as in lockfile
+# Install exact dependencies
 RUN npm ci --legacy-peer-deps
 
-# Copy all source code
+# Copy source code
 COPY . .
 
 # Expose app port
 EXPOSE 3000
 
-# Run the service
+# Start the app
 CMD ["node", "index.js"]
