@@ -7,7 +7,7 @@ on:
       - dev
       - "release/**"
     paths:
-      - "backend/**"
+      - "ironality-app/**"
       # - "frontend/**"
   pull_request:
     paths:
@@ -29,10 +29,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Detect changed backend services
+      - name: Detect changed ironality-app services
         id: detect
         run: |
-          ALL_SERVICES=$(ls -1 backend)
+          ALL_SERVICES=$(ls -1 ironality-app)
           echo "All services: $ALL_SERVICES"
 
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -43,7 +43,7 @@ jobs:
             HEAD_SHA=HEAD
           fi
 
-          CHANGED=$(git diff --name-only $BASE_SHA $HEAD_SHA -- backend/ | awk -F/ '{print $2}' | sort -u | grep -v '^$' || true)
+          CHANGED=$(git diff --name-only $BASE_SHA $HEAD_SHA -- ironality-app/ | awk -F/ '{print $2}' | sort -u | grep -v '^$' || true)
           if [ -z "$CHANGED" ]; then
             CHANGED="$ALL_SERVICES"
           fi
@@ -64,7 +64,7 @@ jobs:
     uses: amdevops989/mv100/.github/workflows/reusable-service-ci.yml@main
     with:
       service: ${{ matrix.service }}
-      path: backend/${{ matrix.service }}
+      path: ironality-app/${{ matrix.service }}
       docker_repo: devopsflow999/${{ matrix.service }}  # foreign repo
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
