@@ -5,7 +5,7 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Copy package files and lockfile for deterministic installs
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # Install exact dependencies
 RUN npm ci --legacy-peer-deps
