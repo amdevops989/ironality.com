@@ -11,7 +11,7 @@ on:
       # - "frontend/**"
   pull_request:
     paths:
-      - "backend/**"
+      - "ironality-app/**"
 permissions:
   contents: write   # Needed to push Git tags via PAT
   packages: write 
