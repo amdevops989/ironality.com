@@ -61,7 +61,7 @@ jobs:
     strategy:
       matrix:
         service: ${{ fromJson(needs.detect_changes.outputs.services) }}
-    uses: amdevops989/mv100/.github/workflows/reusable-service-ci.yml@main
+    uses: amdevops989/ironality.com/.github/workflows/reusable-service-ci.yml@main
     with:
       service: ${{ matrix.service }}
       path: ironality-app/${{ matrix.service }}
