@@ -83,6 +83,7 @@ jobs:
           context: ${{ inputs.path }}
           file: ${{ inputs.path }}/Dockerfile
           load: true
+          no-cache: true       # <-- force rebuild without cache
           tags: |
             ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }}
 
