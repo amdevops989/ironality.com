@@ -139,3 +139,51 @@ docker run -d \
   -e GF_SECURITY_ADMIN_PASSWORD=admin \
   --network host \
   grafana/grafana:latest
+
+  ## trivy 
+
+  curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.68.2
+
+  trivy image --severity CRITICAL,HIGH --ignore-unfixed --no-progress cart-service:latest
+
+
+for trivy there is an issue with glob and tar and i find out that is normal
+
+sol : 
+1️⃣ Minimal attack surface
+
+Distroless images contain only what’s needed to run your app (Node runtime in your case).
+
+No shell (bash), no package managers (apt, yum), no extra tools.
+
+Less software → fewer vulnerabilities → less for an attacker to exploit.
+
+2️⃣ Smaller OS footprint
+
+Your image only includes the runtime + necessary system libraries.
+
+Regular node:slim images include extra utilities like curl, tar, apt → these can have CVEs.
+
+Smaller base = easier to audit + faster scanning.
+
+3️⃣ Reduced CVEs
+
+Distroless only packages actively maintained libraries for the runtime.
+
+Trivy scans show 0 HIGH/CRITICAL vulnerabilities for your Node.js app on Distroless.
+
+Regular images often show OS CVEs even if your Node packages are clean.
+
+4️⃣ Immutable & read-only
+
+Distroless encourages read-only filesystem for production containers, which mitigates risks if an attacker gains access.
+
+⚡ Tradeoff
+
+Pros: Secure, smaller, cleaner, fewer CVEs.
+
+Cons:
+
+No shell → debugging inside container is harder
+
+Must copy everything your app needs during build
