@@ -1,3 +1,9 @@
 primary:
   initdb:
     scriptsConfigMap: postgres-init-sql
+  persistence:
+    enabled: true
+    size: 8Gi
+    storageClass: standard
+    accessModes:
+      - ReadWriteOnce
