@@ -6,6 +6,8 @@
 !.env.example
 *-secrets.yaml
 *-secrets.yml
+# Temporary sealed secrets
+*.sealed.yaml.tmp
 ####################################
 # 📦 Node.js
 ####################################
