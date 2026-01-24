@@ -1,6 +1,6 @@
 resource "helm_release" "postgres" {
   name      = "my-postgresql"
-  namespace = kubernetes_namespace_v1.kafka.metadata[0].name
+  namespace = kubernetes_namespace_v1.postgres.metadata[0].name
 
   chart   = "oci://registry-1.docker.io/bitnamicharts/postgresql"
   version = "18.2.3"
@@ -10,7 +10,7 @@ resource "helm_release" "postgres" {
   ]
 
   depends_on = [
-    kubernetes_namespace_v1.kafka,
+    kubernetes_namespace_v1.postgres,
     kubernetes_config_map_v1.postgres_init_sql
   ]
 }

@@ -1,9 +1,15 @@
+###########################
+# Namespace
+###########################
 resource "kubernetes_namespace_v1" "kafka" {
   metadata {
     name = "kafka"
   }
 }
 
+###########################
+# Headless Service
+###########################
 resource "kubernetes_service_v1" "kafka" {
   metadata {
     name      = "kafka"
@@ -14,7 +20,7 @@ resource "kubernetes_service_v1" "kafka" {
   }
 
   spec {
-    cluster_ip = "None"
+    cluster_ip = "None" # headless for StatefulSet
 
     selector = {
       app = "kafka"
@@ -40,6 +46,9 @@ resource "kubernetes_service_v1" "kafka" {
   }
 }
 
+###########################
+# StatefulSet
+###########################
 resource "kubernetes_stateful_set_v1" "kafka" {
   metadata {
     name      = "kafka"
@@ -67,6 +76,9 @@ resource "kubernetes_stateful_set_v1" "kafka" {
       }
 
       spec {
+        hostname  = "kafka-0"
+        subdomain = "kafka"
+
         container {
           name  = "kafka"
           image = "apache/kafka:3.9.1"
@@ -98,7 +110,7 @@ resource "kubernetes_stateful_set_v1" "kafka" {
 
           env {
             name  = "KAFKA_CONTROLLER_QUORUM_VOTERS"
-            value = "1@kafka-0.kafka.svc.cluster.local:9093"
+            value = "1@kafka-0.kafka.kafka.svc.cluster.local:9093"
           }
 
           env {
@@ -108,7 +120,7 @@ resource "kubernetes_stateful_set_v1" "kafka" {
 
           env {
             name  = "KAFKA_ADVERTISED_LISTENERS"
-            value = "PLAINTEXT://kafka-0.kafka.svc.cluster.local:9092,PLAINTEXT_HOST://localhost:29092"
+            value = "PLAINTEXT://kafka-0.kafka.kafka.svc.cluster.local:9092,PLAINTEXT_HOST://localhost:29092"
           }
 
           env {

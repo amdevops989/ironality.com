@@ -1,5 +1,5 @@
-resource "kubernetes_namespace_v1" "kafka" {
+resource "kubernetes_namespace_v1" "postgres" {
   metadata {
-    name = "kafka"
+    name = "postgres"
   }
 }
