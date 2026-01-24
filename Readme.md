@@ -386,6 +386,29 @@ curl -X POST http://localhost:8083/connectors \
      -H "Content-Type: application/json" \
      -d @pg-connector.json
 
+  ## test cdc: 
+   ssh to postgres pod then 
+   psql -U appuser -d mv100db
+
+   INSERT INTO products (name, description, price, image_url)
+VALUES (
+    'A Fake Nintendo Switch OLED',
+    'Handheld gaming console with OLED screen.',
+    349,
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1627270/header.jpg'
+);
+
+then check kafka ui to see msg in kafka product topic
+
+  INSERT INTO products (name, description, price, image_url)
+VALUES (
+    'A Fake Nintendo Switch OLED',
+    'Handheld gaming console with OLED screen.',
+    349,
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1627270/header.jpg'
+);
+INSERT 0 1
+
 check : 
 curl http://localhost:8083/connectors/pg-auth-catalog-orders/status
 
