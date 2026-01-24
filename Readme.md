@@ -184,6 +184,149 @@ Pros: Secure, smaller, cleaner, fewer CVEs.
 
 Cons:
 
+
+
 No shell → debugging inside container is harder
 
 Must copy everything your app needs during build
+
+
+## minikube : 
+
+Got it! Here’s a **step-by-step cheat sheet for Minikube nodes, profiles, and creating a new node/profile**.
+
+---
+
+## 1️⃣ Check your current Minikube nodes
+
+```bash
+minikube status
+```
+
+You’ll see something like:
+
+```
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+```
+
+---
+
+## 2️⃣ List all Minikube profiles
+
+```bash
+minikube profile list
+```
+
+Example output:
+
+```
+|---------|---------|---------|---------|---------|
+| Profile | VM Driver | Runtime | IP      | Version |
+|---------|---------|---------|---------|---------|
+| minikube | docker   | docker  | 192.168.49.2 | v1.30.1 |
+| test     | docker   | docker  | 192.168.49.3 | v1.30.1 |
+|---------|---------|---------|---------|---------|
+```
+
+✅ Each profile is basically a **separate Minikube cluster**.
+
+---
+
+## 3️⃣ Start a new Minikube node (profile)
+
+```bash
+minikube start -p <profile-name> --driver=docker --cpus=2 --memory=4096
+```
+
+Example:
+
+```bash
+minikube start -p test --driver=docker --cpus=2 --memory=4096
+```
+
+* `-p test` → name of the new profile/cluster
+* `--cpus=2` → number of CPU cores
+* `--memory=4096` → RAM in MB
+* `--driver=docker` → use Docker driver (recommended for local)
+
+---
+
+## 4️⃣ Switch between Minikube profiles
+
+```bash
+minikube profile list    # see all profiles
+minikube profile <name>  # set active profile
+```
+
+Example:
+
+```bash
+minikube profile test
+```
+
+> After this, any `kubectl` command uses this profile’s cluster.
+
+---
+
+## 5️⃣ Check nodes in the current cluster
+
+```bash
+kubectl get nodes
+```
+
+Example:
+
+```
+NAME       STATUS   ROLES    AGE   VERSION
+minikube   Ready    control-plane  10m   v1.28.0
+```
+
+> Each profile has its own set of nodes.
+
+---
+
+## 6️⃣ Stop and delete a Minikube profile
+
+* Stop:
+
+```bash
+minikube stop -p test
+```
+
+* Delete:
+
+```bash
+minikube delete -p test
+```
+
+---
+
+### ✅ Summary
+
+* **Profile** = separate Minikube cluster
+* Use `-p <name>` to create, start, or delete
+* `minikube profile <name>` switches active profile
+* `kubectl get nodes` checks nodes inside the active cluster
+
+---
+
+## Sealed Secrets
+1- install kubeseal
+
+KUBESEAL_VERSION="0.34.0" # Replace with the latest version
+curl -OL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz"
+tar -xvzf kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz kubeseal
+sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+kubeseal --version
+
+2 - install kubeseal mannif
+
+kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/latest/download/controller.yaml
+
+
+3- create secret ! 
+
+kubeseal --controller-namespace kube-system --format yaml < auth-secrets.yaml > auth-sealedsecret.yaml
