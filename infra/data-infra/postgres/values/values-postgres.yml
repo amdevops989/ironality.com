@@ -1,0 +1,3 @@
+primary:
+  initdb:
+    scriptsConfigMap: postgres-init-sql
