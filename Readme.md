@@ -191,6 +191,11 @@ No shell → debugging inside container is harder
 Must copy everything your app needs during build
 
 
+i used distroless for all backend and for frontend 
+i keep the same dockerfile but add 
+RUN apk update && apk add --no-cache libpng=1.6.54-r0
+in nodejs and nginx and it passes the trivy scan
+
 ## minikube : 
 
 Got it! Here’s a **step-by-step cheat sheet for Minikube nodes, profiles, and creating a new node/profile**.
