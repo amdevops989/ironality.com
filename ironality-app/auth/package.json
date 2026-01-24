@@ -1,46 +1,37 @@
 {
-  "name": "auth-service",
+  "name": "auth",
   "version": "1.0.0",
-  "description": "Authentication microservice with PostgreSQL, Kafka CDC, and Redis caching",
+  "description": "Auth service with Express, PostgreSQL, Redis, Kafka, and OpenTelemetry",
+  "license": "ISC",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "dependencies": {
-    "@mapbox/node-pre-gyp": "^2.0.3",
     "@opentelemetry/api": "^1.9.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.68.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.69.0",
     "@opentelemetry/exporter-prometheus": "^0.211.0",
-    "@opentelemetry/resources": "^2.5.0",
     "@opentelemetry/sdk-node": "^0.211.0",
-    "@opentelemetry/semantic-conventions": "^1.39.0",
     "bcrypt": "^6.0.0",
-    "body-parser": "^1.20.3",
-    "cors": "^2.8.5",
-    "cross-spawn": "^7.0.5",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "glob": "^11.1.0",
-    "ioredis": "^5.4.1",
-    "jsonwebtoken": "^9.0.2",
+    "express": "^5.2.1",
+    "ioredis": "^5.9.2",
+    "jsonwebtoken": "^9.0.3",
     "kafkajs": "^2.2.4",
-    "morgan": "^1.10.0",
-    "pg": "^8.12.0",
-    "pino": "^10.0.0",
-    "tar": "^7.5.4"
+    "morgan": "^1.10.1",
+    "pg": "^8.17.2",
+    "pino": "^10.3.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4",
-    "npm-force-resolutions": "^0.0.10"
+    "eslint": "^9.39.2",
+    "nodemon": "^3.1.11"
   },
   "resolutions": {
-    "tar": "7.5.4",
-    "cross-spawn": "7.0.5",
-    "glob": "11.1.0"
-  },
-  "engines": {
-    "node": ">=24"
+    "glob": "11.1.0",
+    "tar": "7.5.4"
   }
 }

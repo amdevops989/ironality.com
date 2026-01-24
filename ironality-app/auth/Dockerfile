@@ -1,20 +1,29 @@
-# ===== Base image =====
-FROM node:24-alpine
+# 1️⃣ Build stage: install dependencies with Node 24-slim
+FROM node:24-slim AS builder
 
-# Set working directory
-WORKDIR /app
+# Create app directory
+WORKDIR /usr/src/app
 
 # Copy package files
-COPY package.json package-lock.json ./
+COPY package.json yarn.lock ./
 
-# Apply resolutions and install exact dependencies
-RUN npm install --legacy-peer-deps
+# Install production dependencies only
+RUN yarn install --production --frozen-lockfile
 
-# Copy source code
+# Copy app code
 COPY . .
 
-# Expose app port
+# 2️⃣ Runtime stage: Distroless Node 24
+FROM gcr.io/distroless/nodejs24-debian13
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Copy production dependencies + app code from builder
+COPY --from=builder /usr/src/app ./
+
+# Expose port
 EXPOSE 3002
 
-# Start the app
-CMD ["node", "index.js"]
+# Use Distroless expects CMD to be JS file
+CMD ["index.js"]
