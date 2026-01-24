@@ -53,3 +53,5 @@ EXPOSE 80
 ENV VITE_STRIPE_KEY=__STRIPE_KEY_PLACEHOLDER__
 
 CMD ["nginx", "-g", "daemon off;"]
+
+#
