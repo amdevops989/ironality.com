@@ -1,7 +1,7 @@
 # ------------------------------
 # Namespace
 # ------------------------------
-resource "kubernetes_namespace_v1" "kafka" {
+resource "kubernetes_namespace_v1" "redis" {
   metadata {
     name = "redis"
   }
@@ -12,7 +12,7 @@ resource "kubernetes_namespace_v1" "kafka" {
 # ------------------------------
 resource "helm_release" "redis" {
   name       = "redis"
-  namespace  = kubernetes_namespace_v1.kafka.metadata[0].name
+  namespace  = kubernetes_namespace_v1.redis.metadata[0].name
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "redis"
   version    = "24.1.2"
@@ -37,22 +37,21 @@ resource "helm_release" "redis" {
 
       master = {
         persistence = {
-          enabled = true   # keep PVC enabled for master
-          size    = "8Gi"
-          storageClass = "standard"
+          enabled       = true   # keep PVC enabled for master
+          size          = "8Gi"
+          storageClass  = "standard"
         }
       }
 
       service = {
-        type     = "NodePort"
-        port     = 6379
-        nodePort = 30379
+        type = "ClusterIP"   # <-- internal only
+        port = 6379
       }
 
     })
   ]
 
   depends_on = [
-    kubernetes_namespace_v1.kafka
+    kubernetes_namespace_v1.redis
   ]
 }

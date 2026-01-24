@@ -5,7 +5,7 @@
 
 ## ➜ curl -X POST http://localhost:8083/connectors \
      -H "Content-Type: application/json" \
-     -d @connector-compose.json
+     -d @pg-connector.json
 
 
 ## ➜  curl http://localhost:8083/connectors/pg-auth-catalog-orders/status
@@ -377,6 +377,19 @@ now we move to pvc with minikube :
    ## terraform to destroy only one service: 
      terraform state list  
      terraform destroy -target=helm_release.kafka
-now kafka 
+
+for kafka after multiple tries i decide to use simple terraform with kubernetes resources and it works fine 
+also for debezium i did the same thing and it works appearly only with debezium/connect:2.6 i will push this image to my repo incase of lost in main repo
+
+then i do curl post after portForwarding svc  : 
+curl -X POST http://localhost:8083/connectors \
+     -H "Content-Type: application/json" \
+     -d @pg-connector.json
+
+check : 
+curl http://localhost:8083/connectors/pg-auth-catalog-orders/status
+
+i used multiple ns for every svc 
+redis installed
 
 
