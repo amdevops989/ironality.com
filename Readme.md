@@ -400,6 +400,10 @@ VALUES (
 
 then check kafka ui to see msg in kafka product topic
 
+## other postgres command : 
+SELECT * FROM products;
+\dt to list all tables 
+
   INSERT INTO products (name, description, price, image_url)
 VALUES (
     'A Fake Nintendo Switch OLED',
