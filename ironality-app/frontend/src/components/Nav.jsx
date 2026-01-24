@@ -38,7 +38,7 @@ export default function Navbar() {
 
       {/* Brand / Logo */}
       <div className="navbar-brand" onClick={() => navigate("/")}>
-        MicroStore
+        IRONALITY™
       </div>
 
       {/* Links */}
