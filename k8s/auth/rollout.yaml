@@ -1,0 +1,64 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: auth
+  namespace: demo
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: auth
+        istio: monitor
+    spec:
+      containers:
+      - name: auth
+        image: devopsflow999/auth:main-v0.1.8
+        envFrom:
+          - configMapRef:
+              name: auth-config
+          - secretRef:
+              name: auth-secret   # SealedSecret creates a normal Secret in the cluster
+        ports:
+        - name: http
+          containerPort: 3001
+          protocol: TCP
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
+  strategy:
+    canary:
+      canaryService: auth-canary
+      stableService: auth-stable
+      trafficRouting:
+        istio:
+          virtualService:
+            name: auth-vsvc
+            routes:
+            - auth-route
+      steps:
+      - setWeight: 10
+      - pause: {}
+      - setWeight: 20
+      - pause: {duration: 20s}
+      - setWeight: 30
+      - pause: {duration: 20s}
+      - setWeight: 40
+      - pause: {duration: 20s}
+      - setWeight: 50
+      - pause: {duration: 20s}
+      - setWeight: 60
+      - pause: {duration: 20s}
+      - setWeight: 70
+      - pause: {duration: 20s}
+      - setWeight: 80
+      - pause: {duration: 20s}
+      - setWeight: 90
+      - pause: {duration: 20s}

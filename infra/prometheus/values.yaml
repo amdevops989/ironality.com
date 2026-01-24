@@ -1,0 +1,69 @@
+# ------------------------------------
+# PROMETHEUS
+# ------------------------------------
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelector: {}
+    podMonitorSelector: {}
+
+    ## Enable persistent storage
+    retention: 12h
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi  # minikube ok
+          storageClassName: standard  # Important for minicube
+          
+# ------------------------------------
+# GRAFANA
+# ------------------------------------
+grafana:
+  enabled: true
+  initChownData:
+    enabled: false
+  securityContext:
+    fsGroup: 472
+  adminUser: admin
+  adminPassword: admin
+  service:
+    type: NodePort
+    nodePort: 30080
+
+  ## Enable persistence so dashboards survive pod delete
+  persistence:
+    enabled: true
+    type: pvc
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+    storageClassName: standard
+
+# ------------------------------------
+# ALERTMANAGER
+# ------------------------------------
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    configSecret: alertmanager-slack
+
+    ## Persist alert history & silences
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+          storageClassName: standard
+
+# ------------------------------------
+# Node Exporter & Kube State Metrics
+# ------------------------------------
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true

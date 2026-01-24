@@ -322,11 +322,61 @@ tar -xvzf kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz kubeseal
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 kubeseal --version
 
-2 - install kubeseal mannif
+2 - install kubeseal manually
 
 kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/latest/download/controller.yaml
 
+2.1 - helm install
+
+helm repo add bitnami-labs https://bitnami-labs.github.io/sealed-secrets/
+helm install my-sealed-secrets bitnami-labs/sealed-secrets --version 2.18.0
 
 3- create secret ! 
 
-kubeseal --controller-namespace kube-system --format yaml < auth-secrets.yaml > auth-sealedsecret.yaml
+kubeseal \
+  --controller-name=sealed-secrets \   ## service name of sealed controller
+  --controller-namespace=kube-system \
+  --format yaml < auth-secrets.yaml > auth-sealedsecret.yaml
+
+
+4️##  Best practices
+
+Use RBAC to limit who can access secrets in the cluster.
+
+Enable encryption at rest for Kubernetes Secrets (e.g., EncryptionConfiguration in K8s).
+
+Avoid logging secrets in your apps.
+
+Use SealedSecrets + RBAC + K8s encryption → strong GitOps workflow.
+
+
+## tfvars terraform 
+
+1-Local
+terraform plan -var-file="secret.tfvars"
+terraform apply -var-file="secret.tfvars"
+
+
+2-github
+
+dont push tfvars and use it only when plan of course you use github secrets and when paln and apply you call it 
+
+3- Optional: Terraform Cloud / Vault
+
+For professional setups, you can store secrets in Terraform Cloud variables, AWS Secrets Manager, or HashiCorp Vault.
+
+Terraform can pull them directly without storing secrets in local files.
+
+## postgres ###
+
+i faced some issues installing postgress using helm and terraform 
+
+use oci chart works fine 
+
+now we move to pvc with minikube : 
+   ## terraform to destroy only one service: 
+     terraform state list  
+     terraform destroy -target=helm_release.kafka
+now kafka 
+
+
