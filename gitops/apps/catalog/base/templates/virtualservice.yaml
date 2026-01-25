@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Chart.Name }}-vsvc
+spec:
+  hosts:
+    - "{{ .Values.istio.host }}"
+  gateways:
+    - {{ .Values.istio.gateway }}
+
+  http:
+    - name: {{ .Chart.Name }}-canary-debug
+      match:
+        - headers:
+            x-canary:
+              exact: "true"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: {{ .Chart.Name }}-canary
+            port:
+              number: {{ .Values.service.port }}
+
+    - name: {{ .Chart.Name }}-route
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: {{ .Chart.Name }}-stable
+            port:
+              number: {{ .Values.service.port }}
+          weight: 100
+        - destination:
+            host: {{ .Chart.Name }}-canary
+            port:
+              number: {{ .Values.service.port }}
+          weight: 0

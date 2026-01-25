@@ -1,0 +1,37 @@
+replicaCount: 2
+
+image:
+  repository: devopsflow999/catalog
+  tag: main-v0.1.2
+  pullPolicy: IfNotPresent
+
+service:
+  port: 3001
+
+resources:
+  requests:
+    memory: 32Mi
+    cpu: 5m
+  limits:
+    memory: 128Mi
+    cpu: 200m
+
+env:
+  LOG_LEVEL: info
+  PORT: "3001"
+
+istio:
+  host: api.localdev.me
+  gateway: api-gateway
+
+canary:
+  steps:
+    - weight: 10
+    - weight: 20
+    - weight: 30
+    - weight: 40
+    - weight: 50
+    - weight: 60
+    - weight: 70
+    - weight: 80
+    - weight: 90
