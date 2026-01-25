@@ -56,11 +56,11 @@ CMD ["nginx", "-g", "daemon off;"]
 
 #
 
-# docker build -t devopsflow999/frontend:901 \
-#   --build-arg VITE_API_AUTH=http://api.localdev.me/auth \
+# docker build \
 #   --build-arg VITE_API_CATALOG=http://api.localdev.me/catalog \
+#   --build-arg VITE_API_AUTH=http://api.localdev.me/auth \
 #   --build-arg VITE_API_CART=http://api.localdev.me/cart \
 #   --build-arg VITE_API_ORDERS=http://api.localdev.me/orders \
 #   --build-arg VITE_API_PAYMENTS=http://api.localdev.me/payments \
-#   --build-arg VITE_STRIPE_KEY=
-# .
+#   --build-arg VITE_STRIPE_KEY=YOUR_STRIPE_KEY_HERE \
+#   -t devopsflow999/frontend:901 .
