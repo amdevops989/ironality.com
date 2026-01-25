@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: catalog
+  namespace: demo
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: catalog
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: catalog
+        istio: monitor
+    spec:
+      containers:
+      - name: catalog
+        image: devopsflow999/catalog:main-v0.1.2
+
+        envFrom:
+          - configMapRef:
+              name: catalog-config
+          - secretRef:
+              name: demo-secrets
+
+        ports:
+        - name: http
+          containerPort: 3001
+          protocol: TCP
+
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
