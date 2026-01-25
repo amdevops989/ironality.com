@@ -6,9 +6,11 @@ metadata:
 spec:
   replicas: 2
   revisionHistoryLimit: 2
+
   selector:
     matchLabels:
       app: catalog
+
   template:
     metadata:
       annotations:
@@ -16,10 +18,12 @@ spec:
       labels:
         app: catalog
         istio: monitor
+
     spec:
       containers:
       - name: catalog
-        image: devopsflow999/catalog:main-v0.1.2
+        image: devopsflow999/catalog:main-v0.1.1
+        imagePullPolicy: IfNotPresent
 
         envFrom:
           - configMapRef:
@@ -28,11 +32,54 @@ spec:
               name: demo-secrets
 
         ports:
-        - name: http
-          containerPort: 3001
-          protocol: TCP
+          - name: http
+            containerPort: 3001
+            protocol: TCP
 
         resources:
           requests:
             memory: 32Mi
             cpu: 5m
+          limits:
+            memory: 128Mi
+            cpu: 200m
+
+  strategy:
+    canary:
+      stableService: catalog-stable
+      canaryService: catalog-canary
+
+      trafficRouting:
+        istio:
+          virtualService:
+            name: catalog-vsvc
+            routes:
+              - catalog-route
+
+      steps:
+        - setWeight: 10
+        - pause: {}
+
+        - setWeight: 20
+        - pause: { duration: 20s }
+
+        - setWeight: 30
+        - pause: { duration: 20s }
+
+        - setWeight: 40
+        - pause: { duration: 20s }
+
+        - setWeight: 50
+        - pause: { duration: 20s }
+
+        - setWeight: 60
+        - pause: { duration: 20s }
+
+        - setWeight: 70
+        - pause: { duration: 20s }
+
+        - setWeight: 80
+        - pause: { duration: 20s }
+
+        - setWeight: 90
+        - pause: { duration: 20s }

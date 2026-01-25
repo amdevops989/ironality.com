@@ -6,12 +6,12 @@ metadata:
 data:
   PGUSER: appuser
   PGDATABASE: mv100db
-  PGHOST: postgres-postgresql.kafka.svc.cluster.local
+  PGHOST: my-postgresql.postgres.svc.cluster.local
   PGPORT: "5432"
-  REDIS_URL: redis-master.kafka.svc.cluster.local:6379
+  REDIS_URL: redis-master.redis.svc.cluster.local:6379
   KAFKA_BROKERS: kafka.kafka.svc.cluster.local:9092
   KAFKA_CLIENT_ID: auth-service
   KAFKA_TOPIC_USERS: mv100db.public.users
   LOG_LEVEL: info
-  PORT: "3001"
+  PORT: "3002"
   FRONTEND_URL: "http://frontend.localdev.me"

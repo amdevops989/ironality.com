@@ -425,3 +425,40 @@ i used multiple ns for every svc
 redis installed
 
 
+
+
+## now back to ci especially for frontend ,
+
+i made the stripe key as build args and tell the multi repo ci when service = frontend use those arg for orders catalog .. apis url , but for stripe key i made it
+as a secret in github and then it will secure , not inside the container not anywhere :: fantastic
+
+
+and then using k8s argo rollout and sealed secret 
+
+kubectl create secret generic frontend-secrets \
+  --from-literal=VITE_STRIPE_KEY=pk_test_51RaNzg4TJHeKoXcgSPviBiP7dixSbHCfU4lvSSCCX9LDUc4ebYILr5XOEaL3iJf9h3lMjO6w9Z6gnDW5lPD4wJXN00tI4PoG5y \
+  --namespace=demo \
+  --dry-run=client -o yaml > secret.yaml
+
+  or 
+
+  # stripe-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: frontend-secrets
+  namespace: demo
+type: Opaque
+stringData:
+  VITE_STRIPE_KEY: pk_test_5xxxx
+
+
+kubeseal --format yaml < stripe-secret.yaml > stripe-sealedsecret.yaml
+
+kubeseal \
+  --controller-name=sealed-secrets \
+  --controller-namespace=kube-system \
+  --format yaml < stripe-secret.yaml > stripe-sealedsecret.yaml
+
+
+## mtls

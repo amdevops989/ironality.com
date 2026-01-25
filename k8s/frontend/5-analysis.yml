@@ -1,0 +1,77 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: frontend-canary-quality
+  namespace: demo
+spec:
+  args:
+    - name: service
+    - name: namespace
+
+  metrics:
+
+  # -----------------------
+  # 1. Success Rate (2xx)
+  # -----------------------
+  - name: success-rate
+    initialDelay: 20s
+    interval: 20s
+    successCondition: result[0] > 0.99
+    failureCondition: result[0] < 0.95
+    provider:
+      prometheus:
+        address: http://kube-prom-stack-kube-prome-prometheus.monitoring:9090
+        query: |
+          sum(rate(istio_requests_total{
+            reporter="destination",
+            destination_service="{{args.service}}.{{args.namespace}}.svc.cluster.local",
+            response_code=~"2.."
+          }[1m]))
+          /
+          sum(rate(istio_requests_total{
+            reporter="destination",
+            destination_service="{{args.service}}.{{args.namespace}}.svc.cluster.local"
+          }[1m]))
+
+  # -----------------------
+  # 2. Failure Rate (5xx)
+  # -----------------------
+  - name: failure-rate-5xx
+    initialDelay: 20s
+    interval: 20s
+    successCondition: result[0] < 0.02
+    failureCondition: result[0] > 0.05
+    provider:
+      prometheus:
+        address: http://kube-prom-stack-kube-prome-prometheus.monitoring:9090
+        query: |
+          sum(rate(istio_requests_total{
+            reporter="destination",
+            destination_service="{{args.service}}.{{args.namespace}}.svc.cluster.local",
+            response_code=~"5.."
+          }[1m]))
+          /
+          sum(rate(istio_requests_total{
+            reporter="destination",
+            destination_service="{{args.service}}.{{args.namespace}}.svc.cluster.local"
+          }[1m]))
+
+  # -----------------------
+  # 3. P95 Latency
+  # -----------------------
+  - name: latency-p95
+    initialDelay: 20s
+    interval: 20s
+    successCondition: result[0] < 500
+    failureCondition: result[0] > 800
+    provider:
+      prometheus:
+        address: http://kube-prom-stack-kube-prome-prometheus.monitoring:9090
+        query: |
+          histogram_quantile(
+            0.95,
+            sum(rate(istio_request_duration_milliseconds_bucket{
+              reporter="destination",
+              destination_service="{{args.service}}.{{args.namespace}}.svc.cluster.local"
+            }[1m])) by (le)
+          )

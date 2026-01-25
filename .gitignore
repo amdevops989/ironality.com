@@ -6,6 +6,7 @@
 !.env.example
 *-secrets.yaml
 *-secrets.yml
+*-secret.yaml
 # Temporary sealed secrets
 *.sealed.yaml.tmp
 ####################################
