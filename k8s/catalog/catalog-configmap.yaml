@@ -6,6 +6,7 @@ metadata:
 data:
   PGUSER: appuser
   PGHOST: my-postgresql.postgres.svc.cluster.local
+  PGDATABASE: mv100db
   PGPORT: "5432"
   REDIS_URL: redis-master.redis.svc.cluster.local:6379
   KAFKA_BROKERS: kafka.kafka.svc.cluster.local:9092
