@@ -81,12 +81,12 @@ jobs:
         id: build_args
         run: |
           if [[ "${{ inputs.service }}" == "frontend" ]]; then
-            ARGS="VITE_API_CATALOG=http://api.localdev.me/catalog \
-            VITE_API_AUTH=http://api.localdev.me/auth \
-            VITE_API_CART=http://api.localdev.me/cart \
-            VITE_API_ORDERS=http://api.localdev.me/orders \
-            VITE_API_PAYMENTS=http://api.localdev.me/payments \
-            VITE_STRIPE_KEY=${{ secrets.VITE_STRIPE_KEY }}"
+            ARGS="--build-arg VITE_API_CATALOG=http://api.localdev.me/catalog \
+          --build-arg VITE_API_AUTH=http://api.localdev.me/auth \
+          --build-arg VITE_API_CART=http://api.localdev.me/cart \
+          --build-arg VITE_API_ORDERS=http://api.localdev.me/orders \
+          --build-arg VITE_API_PAYMENTS=http://api.localdev.me/payments \
+          --build-arg VITE_STRIPE_KEY='${{ secrets.VITE_STRIPE_KEY }}'"
           else
             ARGS=""  # No build args for other services
           fi
