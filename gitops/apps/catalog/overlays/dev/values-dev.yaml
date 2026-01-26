@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 2
 image:
   tag: main-v0.1.2
 env:
