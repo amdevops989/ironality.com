@@ -9,9 +9,9 @@ spec:
   source:
     repoURL: https://github.com/amdevops989/ironality.com.git
     targetRevision: main
-    path: gitops/clusters/dev
+    path: gitops/clusters/dev/infra
     directory:
-      recurse: true
+      recurse: false   # 🔴 VERY IMPORTANT
 
   destination:
     server: https://kubernetes.default.svc
