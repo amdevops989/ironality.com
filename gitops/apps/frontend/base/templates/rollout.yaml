@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: frontend
+  namespace: demo
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: frontend
+        istio: monitor
+    spec:
+      containers:
+      - name: frontend
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.port }}
+          protocol: TCP
+        env:
+        - name: VITE_STRIPE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: frontend-secrets
+              key: VITE_STRIPE_KEY
+  strategy:
+    canary:
+      stableService: frontend-stable
+      canaryService: frontend-canary
+      trafficRouting:
+        istio:
+          virtualService:
+            name: frontend-vsvc
+            routes:
+            - primary
+      steps:
+      - setWeight: 10
+      - pause: {}
+      - setWeight: 20
+      - pause: { duration: 20s }
+      - setWeight: 30
+      - pause: { duration: 20s }
+      - setWeight: 40
+      - pause: { duration: 20s }
+      - setWeight: 50
+      - pause: { duration: 20s }
+      - setWeight: 60
+      - pause: { duration: 20s }
+      - setWeight: 70
+      - pause: { duration: 20s }
+      - setWeight: 80
+      - pause: { duration: 20s }
+      - setWeight: 90
+      - pause: { duration: 20s }

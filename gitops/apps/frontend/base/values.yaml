@@ -1,0 +1,15 @@
+replicaCount: 2
+image:
+  repository: devopsflow999/frontend
+  tag: "909"
+  pullPolicy: IfNotPresent
+
+service:
+  port: 80
+
+istio:
+  host: frontend.localdev.me
+  gateway: frontend-gateway
+
+env:
+  VITE_STRIPE_KEY: ""  # Will be set from frontend-secrets
