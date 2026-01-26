@@ -1,7 +1,7 @@
 replicaCount: 2
 image:
   repository: devopsflow999/frontend
-  tag: "dev-v0.1.22"
+  tag: "dev-v0.1.23"
   pullPolicy: IfNotPresent
 service:
   port: 80
