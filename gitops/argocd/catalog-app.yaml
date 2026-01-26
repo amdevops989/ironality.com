@@ -5,21 +5,14 @@ metadata:
   namespace: argocd
 spec:
   project: default
-
   source:
-    repoURL: repoURL: https://github.com/amdevops989/ironality.com.git
+    repoURL: https://github.com/amdevops989/ironality.com.git
     targetRevision: main
     path: gitops/apps/catalog/overlays/dev
-    kustomize:
-      enableHelm: true
-
   destination:
     server: https://kubernetes.default.svc
     namespace: demo
-
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true

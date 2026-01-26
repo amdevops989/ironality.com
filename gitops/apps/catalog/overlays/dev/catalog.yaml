@@ -1,0 +1,177 @@
+---
+# Source: catalog/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog-config
+data:
+  PGUSER: appuser
+  PGHOST: my-postgresql.postgres.svc.cluster.local
+  PGDATABASE: mv100db
+  PGPORT: "5432"
+  REDIS_URL: redis-master.redis.svc.cluster.local:6379
+  KAFKA_BROKERS: kafka.kafka.svc.cluster.local:9092
+  KAFKA_CLIENT_ID: products-service
+  KAFKA_TOPIC_USERS: mv100db.public.products
+  LOG_LEVEL: info
+  PORT: "3001"
+  FRONTEND_URL: "http://frontend.localdev.me"
+---
+# Source: catalog/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-canary
+spec:
+  ports:
+    - port: 3001
+      targetPort: http
+      name: http
+  selector:
+    app: catalog
+---
+# Source: catalog/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-stable
+spec:
+  ports:
+    - port: 3001
+      targetPort: http
+      name: http
+  selector:
+    app: catalog
+---
+# Source: catalog/templates/gateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: api-gateway
+spec:
+  selector:
+    istio: gateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "api.localdev.me"
+---
+# Source: catalog/templates/rollout.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: catalog
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+
+  selector:
+    matchLabels:
+      app: catalog
+
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: catalog
+        istio: monitor
+
+    spec:
+      containers:
+        - name: catalog
+          image: "devopsflow999/catalog:main-v0.1.2"
+          imagePullPolicy: IfNotPresent
+
+          envFrom:
+            - configMapRef:
+                name: catalog-config
+            - secretRef:
+                name: demo-secrets
+
+          ports:
+            - name: http
+              containerPort: 3001
+
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 5m
+            limits:
+              memory: 128Mi
+              cpu: 200m
+
+  strategy:
+    canary:
+      stableService: catalog-stable
+      canaryService: catalog-canary
+
+      trafficRouting:
+        istio:
+          virtualService:
+            name: catalog-vsvc
+            routes:
+              - catalog-route
+
+      steps:
+        - setWeight: 10
+        - pause: { duration: 20s }
+        - setWeight: 20
+        - pause: { duration: 20s }
+        - setWeight: 30
+        - pause: { duration: 20s }
+        - setWeight: 40
+        - pause: { duration: 20s }
+        - setWeight: 50
+        - pause: { duration: 20s }
+        - setWeight: 60
+        - pause: { duration: 20s }
+        - setWeight: 70
+        - pause: { duration: 20s }
+        - setWeight: 80
+        - pause: { duration: 20s }
+        - setWeight: 90
+        - pause: { duration: 20s }
+---
+# Source: catalog/templates/virtualservice.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: catalog-vsvc
+spec:
+  hosts:
+    - "api.localdev.me"
+  gateways:
+    - api-gateway
+
+  http:
+    - name: catalog-canary-debug
+      match:
+        - headers:
+            x-canary:
+              exact: "true"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: catalog-canary
+            port:
+              number: 3001
+
+    - name: catalog-route
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: catalog-stable
+            port:
+              number: 3001
+          weight: 100
+        - destination:
+            host: catalog-canary
+            port:
+              number: 3001
+          weight: 0
