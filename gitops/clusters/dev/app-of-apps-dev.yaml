@@ -13,7 +13,7 @@ spec:
     targetRevision: dev
     path: gitops/clusters/dev/infra
     directory:
-      recurse: false   # 🔴 VERY IMPORTANT
+      recurse: false   # 🔴 VERY IMPORTAN
 
   destination:
     server: https://kubernetes.default.svc
