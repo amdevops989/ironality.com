@@ -10,3 +10,4 @@ istio:
   gateway: frontend-gateway
 env:
   VITE_STRIPE_KEY: "" # Will be set from frontend-secrets
+##
