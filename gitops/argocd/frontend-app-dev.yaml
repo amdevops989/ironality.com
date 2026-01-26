@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: catalog-dev
+  name: frontend-dev
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/amdevops989/ironality.com.git
-    targetRevision: main
-    path: gitops/apps/catalog/overlays/dev
+    targetRevision: dev
+    path: gitops/apps/frontend/overlays/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: demo
