@@ -9,9 +9,9 @@ on:
     paths:
       - "ironality-app/**"
       # - "frontend/**"
-  ## pull_request:
-    paths:
-      - "ironality-app/**"
+  # pull_request:
+    # paths:
+    #   - "ironality-app/**"
 permissions:
   contents: write   # Needed to push Git tags via PAT
   packages: write 
