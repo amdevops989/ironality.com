@@ -19,6 +19,11 @@ resources:
 env:
   LOG_LEVEL: info
   PORT: "3001"
+  
+canaryService: "catalog-canary"
+stableService: "catalog-stable"
+
+frontendUrl: "http://frontend.localdev.me"
 
 istio:
   host: api.localdev.me

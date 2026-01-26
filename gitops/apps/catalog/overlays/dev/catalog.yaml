@@ -141,6 +141,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: catalog-vsvc
+  namespace: demo
 spec:
   hosts:
     - "api.localdev.me"
@@ -148,9 +149,18 @@ spec:
     - api-gateway
 
   http:
+
+    # Canary route must be first
     - name: catalog-canary-debug
       match:
-        - headers:
+        - uri:
+            prefix: "/catalog/"
+          headers:
+            x-canary:
+              exact: "true"
+        - uri:
+            exact: "/catalog"
+          headers:
             x-canary:
               exact: "true"
       rewrite:
@@ -161,9 +171,22 @@ spec:
             port:
               number: 3001
 
+    # Stable route
     - name: catalog-route
+      match:
+        - uri:
+            prefix: "/catalog/"
+        - uri:
+            exact: "/catalog"
       rewrite:
         uri: "/"
+      # corsPolicy:
+      #   allowOrigins:
+      #     - exact: "http://frontend.localdev.me"
+      #   allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+      #   allowHeaders: ["*"]
+      #   allowCredentials: true
+      #   maxAge: "1h"
       route:
         - destination:
             host: catalog-stable
