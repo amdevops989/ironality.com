@@ -1,0 +1,5 @@
+# image:
+#   tag: dev-001   # override only the tag for dev
+# replicaCount: 1   # optional: fewer replicas for dev
+# env:
+#   VITE_STRIPE_KEY: "dev_stripe_key_123"

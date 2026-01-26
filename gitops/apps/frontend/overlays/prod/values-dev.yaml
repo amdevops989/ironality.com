@@ -1,0 +1,5 @@
+# image:
+#   tag: main-999   # override only the tag for prod
+# replicaCount: 3   # more replicas for prod
+# env:
+#   VITE_STRIPE_KEY: "prod_stripe_key_999"
