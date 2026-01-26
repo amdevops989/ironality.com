@@ -72,5 +72,7 @@ CMD ["nginx", "-g", "daemon off;"]
 #   --build-arg VITE_API_CART=http://api.localdev.me/cart \
 #   --build-arg VITE_API_ORDERS=http://api.localdev.me/orders \
 #   --build-arg VITE_API_PAYMENTS=http://api.localdev.me/payments \
-#   --build-arg VITE_STRIPE_KEY=pk_test_51RaNzg4TJHeKoXcgSPviBiP7dixSbHCfU4lvSSCCX9LDUc4ebYILr5XOEaL3iJf9h3lMjO6w9Z6gnDW5lPD4wJXN00tI4PoG5y \
+#   --build-arg VITE_STRIPE_KEY=pk_test_************* \
 #   .
+
+#
