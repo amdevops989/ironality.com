@@ -5,4 +5,4 @@ namespace: prod
 
 resources:
   - catalog.yaml
-  - demo-sealedsecrets.yaml
+  - prod-catalog-sealedsecrets.yaml
