@@ -1,5 +1,12 @@
-# image:
-#   tag: main-999   # override only the tag for prod
-# replicaCount: 3   # more replicas for prod
-# env:
-#   VITE_STRIPE_KEY: "prod_stripe_key_999"
+replicaCount: 2
+image:
+  repository: devopsflow999/frontend
+  tag: "prod-v0.1.17"
+  pullPolicy: IfNotPresent
+service:
+  port: 80
+istio:
+  host: frontend.localdev.me
+  gateway: frontend-gateway
+env:
+  VITE_STRIPE_KEY: "" # Will be set from frontend-secrets
