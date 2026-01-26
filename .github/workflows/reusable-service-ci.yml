@@ -136,10 +136,41 @@ jobs:
           git tag -a "${SERVICE}-${{ steps.vars.outputs.semver }}" -m "CI: release $SERVICE ${{ steps.vars.outputs.semver }}"
           git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }} "${SERVICE}-${{ steps.vars.outputs.semver }}"
 
-      # 🔟 Summary
+      # 🔟 Update GitOps overlay
+      - name: Update GitOps overlay
+        if: ${{ success() }}
+        run: |
+          set -e
+          SERVICE="${{ inputs.service }}"
+          ENV="${{ steps.vars.outputs.branch }}"  # branch = dev/prod/etc
+          GITOPS_VALUES="gitops/apps/${SERVICE}/overlays/${ENV}/values-${ENV}.yaml"
+          GITOPS_MANIFEST="gitops/apps/${SERVICE}/overlays/${ENV}/${SERVICE}.yaml"
+
+          # Update image tag
+          yq e -i ".image.tag = \"${{ steps.vars.outputs.combo }}\"" $GITOPS_VALUES
+
+          # Update env if frontend
+          if [[ "$SERVICE" == "frontend" ]]; then
+            yq e -i ".env.VITE_STRIPE_KEY = \"${{ secrets.VITE_STRIPE_KEY }}\"" $GITOPS_VALUES
+          fi
+
+          # Generate rendered manifest
+          helm template $SERVICE gitops/apps/${SERVICE}/base \
+            -f $GITOPS_VALUES \
+            -n $ENV > $GITOPS_MANIFEST
+
+          # Commit changes
+          git config user.name "CI Auto Update"
+          git config user.email "ci-bot@github.com"
+          git add $GITOPS_VALUES $GITOPS_MANIFEST
+          git commit -m "CI: update ${SERVICE} image to ${{ steps.vars.outputs.combo }} and render manifests for ${ENV}" || echo "No changes to commit"
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
+
+      # 1️⃣1️⃣ Summary
       - name: Summary
         run: |
           echo "✅ Service: ${{ inputs.service }}"
           echo "🔐 Trivy scan: PASSED"
           echo "🐳 Image: ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }}"
           echo "🏷️ Git tag: ${{ inputs.service }}-${{ steps.vars.outputs.semver }}"
+          echo "📄 GitOps overlay updated"

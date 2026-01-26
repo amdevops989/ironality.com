@@ -1,5 +1,15 @@
-# image:
-#   tag: dev-001   # override only the tag for dev
-# replicaCount: 1   # optional: fewer replicas for dev
-# env:
-#   VITE_STRIPE_KEY: "dev_stripe_key_123"
+replicaCount: 2
+image:
+  repository: devopsflow999/frontend
+  tag: "dev-910"
+  pullPolicy: IfNotPresent
+
+service:
+  port: 80
+
+istio:
+  host: frontend.localdev.me
+  gateway: frontend-gateway
+
+env:
+  VITE_STRIPE_KEY: ""  # Will be set from frontend-secrets

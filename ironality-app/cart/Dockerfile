@@ -27,3 +27,6 @@ EXPOSE 3003
 
 # Use Distroless expects CMD to be JS file
 CMD ["index.js"]
+
+
+##
