@@ -1,0 +1,116 @@
+# apiVersion: networking.istio.io/v1beta1
+# kind: VirtualService
+# metadata:
+#   name: cart-vsvc
+#   namespace: demo
+# spec:
+#   hosts:
+#     - "api.localdev.me"
+#   gateways:
+#     - api-gateway
+#   http:
+
+#     # Canary route must be first
+#     - name: cart-canary-debug
+#       match:
+#         - uri:
+#             prefix: "/cart/"
+#           headers:
+#             x-canary:
+#               exact: "true"
+#         - uri:
+#             exact: "/cart"
+#           headers:
+#             x-canary:
+#               exact: "true"
+#       rewrite:
+#         uri: "/"
+#       route:
+#         - destination:
+#             host: cart-canary
+#             port:
+#               number: 3002
+
+#     # Stable route
+#     - name: cart-route
+#       match:
+#         - uri:
+#             prefix: "/cart/"
+#       #   - uri:
+#       #       exact: "/cart"
+#       # rewrite:
+#       #   uri: "/"
+#       corsPolicy:
+#         allowOrigins:
+#           - exact: "http://frontend.localdev.me"
+#         allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+#         allowHeaders: ["*"]
+#         allowCredentials: true
+#         maxAge: "1h"
+#       route:
+#         - destination:
+#             host: cart-stable
+#             port:
+#               number: 3002
+#           weight: 100
+#         - destination:
+#             host: cart-canary
+#             port:
+#               number: 3002
+#           weight: 0
+
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: cart-vsvc
+  namespace: demo
+spec:
+  hosts:
+    - "api.localdev.me"
+  gateways:
+    - api-gateway
+  http:
+
+    # ----------------- Canary Route -----------------
+    - name: cart-canary
+      match:
+        - uri:
+            prefix: "/cart/cart"
+          headers:
+            x-canary:
+              exact: "true"
+      rewrite:
+        uri: "/cart"
+      route:
+        - destination:
+            host: cart-canary
+            port:
+              number: 3003
+          weight: 100
+
+    # ----------------- Stable Route -----------------
+    - name: cart-stable
+      match:
+        - uri:
+            prefix: "/cart/cart"
+      rewrite:
+        uri: "/cart"
+      corsPolicy:
+        allowOrigins:
+          - exact: "http://frontend.localdev.me"
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
+      route:
+        - destination:
+            host: cart-stable
+            port:
+              number: 3003
+          weight: 100
+        - destination:
+            host: cart-canary
+            port:
+              number: 3003
+          weight: 0

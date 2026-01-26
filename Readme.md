@@ -461,4 +461,60 @@ kubeseal \
   --format yaml < stripe-secret.yaml > stripe-sealedsecret.yaml
 
 
-## mtls
+## Frontend need to enhance more the github action ci for build arg of frontend bcoz it doesnt pass correctly the build args !!! todos : 
+
+see todos
+
+
+### Argo cd kustommize helm
+ Argo CD
+ └── Kustomize (env-specific)
+      └── Helm chart (reusable app)
+Helm → templating your app (Deployment, Service, Rollout, etc.)
+
+Kustomize → environment overlays (dev / staging / prod)
+
+Argo CD → GitOps controller (syncs everything)
+
+## installing Argocd 
+1️⃣ Add Argo Helm repository
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+2️⃣ Create Argo CD namespace
+kubectl create namespace argocd
+
+3️⃣ Install Argo CD using Helm
+helm install argocd argo/argo-cd \
+  --namespace argocd
+
+4️⃣ Verify installation
+kubectl get pods -n argocd
+
+5️⃣ (Optional) Expose Argo CD UI
+Port-forward (quickest)
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+
+Access:
+👉 https://localhost:8080
+
+Change service to LoadBalancer (cloud)
+kubectl patch svc argocd-server -n argocd \
+  -p '{"spec": {"type": "LoadBalancer"}}'
+
+6️⃣ Get initial admin password
+
+kubectl get secret argocd-initial-admin-secret \
+  -n argocd \
+  -o jsonpath="{.data.password}" | base64 -d && echo
+  
+  now i need to install argocd then deploy helm with kustommization with sezcrets and configmap and also take care of env
+  
+  then take care of prometheus rollout metrics alert rules auto promotion and rollback + creating dashboards and alerts of course with pvc 
+  
+  pod autoscaleler pod security too
+  
+  
+  then move to cloud : aws organization profiles users ....
+  

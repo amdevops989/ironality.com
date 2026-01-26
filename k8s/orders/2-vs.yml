@@ -1,0 +1,60 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: orders-vsvc
+  namespace: demo
+spec:
+  hosts:
+    - "api.localdev.me"
+  gateways:
+    - api-gateway
+  http:
+
+    # Canary route must be first
+    - name: orders-canary-debug
+      match:
+        - uri:
+            prefix: "/orders/"
+          headers:
+            x-canary:
+              exact: "true"
+        - uri:
+            exact: "/orders"
+          headers:
+            x-canary:
+              exact: "true"
+      # rewrite:
+      #   uri: "/"
+      route:
+        - destination:
+            host: orders-canary
+            port:
+              number: 3004
+
+    # Stable route
+    - name: orders-route
+      match:
+        - uri:
+            prefix: "/orders/"
+        - uri:
+            exact: "/orders"
+      # rewrite:
+      #   uri: "/"
+      corsPolicy:
+        allowOrigins:
+          - exact: "http://frontend.localdev.me"
+        allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
+      route:
+        - destination:
+            host: orders-stable
+            port:
+              number: 3004
+          weight: 100
+        - destination:
+            host: orders-canary
+            port:
+              number: 3004
+          weight: 0

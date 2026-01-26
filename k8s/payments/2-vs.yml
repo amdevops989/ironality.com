@@ -1,0 +1,60 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: payments-vsvc
+  namespace: demo
+spec:
+  hosts:
+    - "api.localdev.me"
+  gateways:
+    - api-gateway
+  http:
+
+    # Canary route must be first
+    - name: payments-canary-debug
+      match:
+        - uri:
+            prefix: "/payments/"
+          headers:
+            x-canary:
+              exact: "true"
+        - uri:
+            exact: "/payments"
+          headers:
+            x-canary:
+              exact: "true"
+      # rewrite:
+      #   uri: "/"
+      route:
+        - destination:
+            host: payments-canary
+            port:
+              number: 3005
+
+    # Stable route
+    - name: payments-route
+      match:
+        - uri:
+            prefix: "/payments/"
+        - uri:
+            exact: "/payments"
+      # rewrite:
+      #   uri: "/"
+      corsPolicy:
+        allowOrigins:
+          - exact: "http://frontend.localdev.me"
+        allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
+      route:
+        - destination:
+            host: payments-stable
+            port:
+              number: 3005
+          weight: 100
+        - destination:
+            host: payments-canary
+            port:
+              number: 3005
+          weight: 0

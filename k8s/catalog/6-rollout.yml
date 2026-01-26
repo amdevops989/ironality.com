@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: catalog
-        image: devopsflow999/catalog:main-v0.1.1
+        image: devopsflow999/catalog:main-v0.1.2
         imagePullPolicy: IfNotPresent
 
         envFrom:

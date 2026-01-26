@@ -1,53 +1,50 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: istio-rollout
+  name: cart
   namespace: demo
 spec:
   replicas: 2
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: istio-rollout
+      app: cart
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        app: istio-rollout
+        app: cart
         istio: monitor
     spec:
       containers:
-      - name: istio-rollout
-        # image: devopsflow999/frontend:test400
-        image: devopsflow999/frontend:909
+      - name: cart
+        image: devopsflow999/cart:main-v0.1.1
+        envFrom:
+          - configMapRef:
+              name: cart-config
+          - secretRef:
+              name: demo-secrets
         ports:
         - name: http
-          containerPort: 80
+          containerPort: 3003
           protocol: TCP
         resources:
           requests:
             memory: 32Mi
             cpu: 5m
-        env:
-        - name: VITE_STRIPE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: frontend-secrets
-              key: VITE_STRIPE_KEY
-
   strategy:
     canary:
-      canaryService: istio-rollout-canary
-      stableService: istio-rollout-stable
+      canaryService: cart-canary
+      stableService: cart-stable
       # analysis will be performed in background, while rollout is progressing through its steps
       # analysis:
       #   startingStep: 1   # index of step list, of when to start this analysis
       #   templates:
-      #   - templateName: frontend-canary-quality
+      #   - templateName: cart-canary-quality
         # args:             # arguments allow AnalysisTemplates to be re-used
         # - name: service 
-        #   value: istio-rollout-canary
+        #   value: cart-canary
         # - name: namespace
         #   valueFrom:
         #     fieldRef:
@@ -55,9 +52,9 @@ spec:
       trafficRouting:
         istio:
           virtualService:
-            name: istio-rollout-vsvc
+            name: cart-vsvc
             routes:
-            - primary
+            - cart-stable
       steps:
       - setWeight: 10
       - pause: {}         # pause indefinitely
