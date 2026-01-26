@@ -65,7 +65,7 @@ kind: Rollout
 metadata:
   name: catalog
 spec:
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 2
 
   selector:
@@ -83,7 +83,7 @@ spec:
     spec:
       containers:
         - name: catalog
-          image: "devopsflow999/catalog:dev-v0.1.3"
+          image: "devopsflow999/catalog:dev-v0.1.4"
           imagePullPolicy: IfNotPresent
 
           envFrom:
