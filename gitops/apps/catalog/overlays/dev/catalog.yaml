@@ -13,7 +13,7 @@ data:
   KAFKA_BROKERS: kafka.kafka.svc.cluster.local:9092
   KAFKA_CLIENT_ID: products-service
   KAFKA_TOPIC_USERS: mv100db.public.products
-  LOG_LEVEL: info
+  LOG_LEVEL: debug
   PORT: "3001"
   FRONTEND_URL: "http://frontend.localdev.me"
 ---
@@ -65,7 +65,7 @@ kind: Rollout
 metadata:
   name: catalog
 spec:
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 2
 
   selector:
@@ -83,7 +83,7 @@ spec:
     spec:
       containers:
         - name: catalog
-          image: "devopsflow999/catalog:main-v0.1.2"
+          image: "devopsflow999/catalog:dev-v0.1.3"
           imagePullPolicy: IfNotPresent
 
           envFrom:
@@ -141,7 +141,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: catalog-vsvc
-  namespace: demo
+  namespace: dev
 spec:
   hosts:
     - "api.localdev.me"
@@ -180,13 +180,13 @@ spec:
             exact: "/catalog"
       rewrite:
         uri: "/"
-      # corsPolicy:
-      #   allowOrigins:
-      #     - exact: "http://frontend.localdev.me"
-      #   allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-      #   allowHeaders: ["*"]
-      #   allowCredentials: true
-      #   maxAge: "1h"
+      corsPolicy:
+        allowOrigins:
+          - exact: "http://frontend.localdev.me"
+        allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "24h"
       route:
         - destination:
             host: catalog-stable
