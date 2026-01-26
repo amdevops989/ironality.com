@@ -1,8 +1,8 @@
 # --- Build stage ---
 FROM node:20-alpine AS builder
 
-# Upgrade Alpine packages to fix CVEs (libpng etc.)
-RUN apk update && apk add --no-cache libpng=1.6.54-r0
+# Upgrade Alpine packages to fix CVEs
+RUN apk update && apk add --no-cache libpng=1.6.54-r0 bash
 
 WORKDIR /app
 
@@ -23,38 +23,40 @@ ARG VITE_API_ORDERS
 ARG VITE_API_PAYMENTS
 ARG VITE_STRIPE_KEY
 
+# ⚠️ Check Stripe key at build time
+RUN if [ -z "$VITE_STRIPE_KEY" ]; then \
+      echo "❌ ERROR: VITE_STRIPE_KEY is not set! Aborting build." && exit 1; \
+    else \
+      echo "✅ VITE_STRIPE_KEY is set"; \
+    fi
+
 ENV VITE_API_AUTH=$VITE_API_AUTH
 ENV VITE_API_CATALOG=$VITE_API_CATALOG
 ENV VITE_API_CART=$VITE_API_CART
 ENV VITE_API_ORDERS=$VITE_API_ORDERS
 ENV VITE_API_PAYMENTS=$VITE_API_PAYMENTS
 ENV VITE_STRIPE_KEY=$VITE_STRIPE_KEY
-#
+
 # Build the React/Vite app
 RUN yarn build
 
 # --- Runtime stage ---
 FROM nginx:alpine
 
-# update 
+# Upgrade packages
 RUN apk update && apk add --no-cache libpng=1.6.54-r0
-
 
 # Copy build output
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy custom Nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-#
+
 # Expose port
 EXPOSE 80
 
-# Stripe secret should be injected at runtime
-#ENV VITE_STRIPE_KEY=__STRIPE_KEY_PLACEHOLDER__
-
 CMD ["nginx", "-g", "daemon off;"]
 
-#
 
 # docker build \
 #   --build-arg VITE_API_CATALOG=http://api.localdev.me/catalog \
