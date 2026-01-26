@@ -284,14 +284,15 @@ jobs:
           load: true
           no-cache: true
           build-args: |
-            VITE_API_CATALOG=${{ env.VITE_API_CATALOG }}
-            VITE_API_AUTH=${{ env.VITE_API_AUTH }}
-            VITE_API_CART=${{ env.VITE_API_CART }}
-            VITE_API_ORDERS=${{ env.VITE_API_ORDERS }}
-            VITE_API_PAYMENTS=${{ env.VITE_API_PAYMENTS }}
-            VITE_STRIPE_KEY=${{ env.VITE_STRIPE_KEY }}
+            VITE_API_CATALOG=http://api.localdev.me/catalog
+            VITE_API_AUTH=http://api.localdev.me/auth
+            VITE_API_CART=http://api.localdev.me/cart
+            VITE_API_ORDERS=http://api.localdev.me/orders
+            VITE_API_PAYMENTS=http://api.localdev.me/payments
+            VITE_STRIPE_KEY=${{ secrets.VITE_STRIPE_KEY }}
           tags: |
             ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }}
+
 
       # 7️⃣ Trivy scan (FAIL on HIGH/CRITICAL)
       - name: Trivy image scan
