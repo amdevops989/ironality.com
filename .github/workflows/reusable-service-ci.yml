@@ -1,0 +1,176 @@
+name: "Reusable CI for Service"
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        required: true
+        type: string
+      path:
+        required: true
+        type: string
+      docker_repo:
+        required: true
+        type: string
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
+      GH_PAT:
+        required: true
+      VITE_STRIPE_KEY:
+        required: false  # Only needed for frontend
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_PAT || github.token }}
+
+      # 2️⃣ Setup Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3️⃣ Docker login
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 4️⃣ Determine image tags
+      - name: Determine tags
+        id: vars
+        run: |
+          SERVICE="${{ inputs.service }}"
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+            BRANCH="${GITHUB_REF#refs/heads/}"
+          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            BRANCH="release"
+          else
+            BRANCH="unknown"
+          fi
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+          LAST_TAG=$(git tag --list "${SERVICE}-v*" --sort=-v:refname | head -n1)
+          if [[ -z "$LAST_TAG" ]]; then
+            NEW_SEMVER="v0.1.0"
+          else
+            IFS='.' read -r MAJOR MINOR PATCH <<< "${LAST_TAG#${SERVICE}-v}"
+            PATCH=$((PATCH+1))
+            NEW_SEMVER="v${MAJOR}.${MINOR}.${PATCH}"
+          fi
+          echo "semver=$NEW_SEMVER" >> $GITHUB_OUTPUT
+
+          COMBO_TAG="${BRANCH}-${NEW_SEMVER}"
+          echo "combo=$COMBO_TAG" >> $GITHUB_OUTPUT
+
+      # 5️⃣ Set build args for frontend (env vars)
+      - name: Set build args
+        if: ${{ inputs.service == 'frontend' }}
+        run: |
+          echo "VITE_API_CATALOG=http://api.localdev.me/catalog" >> $GITHUB_ENV
+          echo "VITE_API_AUTH=http://api.localdev.me/auth" >> $GITHUB_ENV
+          echo "VITE_API_CART=http://api.localdev.me/cart" >> $GITHUB_ENV
+          echo "VITE_API_ORDERS=http://api.localdev.me/orders" >> $GITHUB_ENV
+          echo "VITE_API_PAYMENTS=http://api.localdev.me/payments" >> $GITHUB_ENV
+          echo "VITE_STRIPE_KEY=${{ secrets.VITE_STRIPE_KEY }}" >> $GITHUB_ENV
+
+      # 6️⃣ Build Docker image
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.path }}
+          file: ${{ inputs.path }}/Dockerfile
+          load: true
+          no-cache: true
+          build-args: |
+            VITE_API_CATALOG=${{ env.VITE_API_CATALOG }}
+            VITE_API_AUTH=${{ env.VITE_API_AUTH }}
+            VITE_API_CART=${{ env.VITE_API_CART }}
+            VITE_API_ORDERS=${{ env.VITE_API_ORDERS }}
+            VITE_API_PAYMENTS=${{ env.VITE_API_PAYMENTS }}
+            VITE_STRIPE_KEY=${{ env.VITE_STRIPE_KEY }}
+          tags: |
+            ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }}
+
+      # 7️⃣ Trivy scan (FAIL on HIGH/CRITICAL)
+      - name: Trivy image scan
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }}
+          severity: HIGH,CRITICAL
+          exit-code: 1
+          ignore-unfixed: true
+          vuln-type: os,library
+
+      # 8️⃣ Push Docker image
+      - name: Push Docker image
+        run: |
+          docker tag ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }} ${{ inputs.docker_repo }}:latest
+          docker tag ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }} ${{ inputs.docker_repo }}:${{ steps.vars.outputs.branch }}
+          docker push ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }}
+          docker push ${{ inputs.docker_repo }}:latest
+          docker push ${{ inputs.docker_repo }}:${{ steps.vars.outputs.branch }}
+
+      # 9️⃣ Push Git tag
+      - name: Push Git tag
+        if: ${{ success() }}
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          SERVICE="${{ inputs.service }}"
+          git config user.name "CI Auto Tag"
+          git config user.email "ci-bot@github.com"
+          git tag -a "${SERVICE}-${{ steps.vars.outputs.semver }}" -m "CI: release $SERVICE ${{ steps.vars.outputs.semver }}"
+          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }} "${SERVICE}-${{ steps.vars.outputs.semver }}"
+
+      # 🔟 Update GitOps overlay
+      - name: Update GitOps overlay
+        if: ${{ success() }}
+        run: |
+          set -e
+          SERVICE="${{ inputs.service }}"
+          ENV="${{ steps.vars.outputs.branch }}"  # branch = dev/prod/etc
+          GITOPS_VALUES="gitops/apps/${SERVICE}/overlays/${ENV}/values-${ENV}.yaml"
+          GITOPS_MANIFEST="gitops/apps/${SERVICE}/overlays/${ENV}/${SERVICE}.yaml"
+
+          # Update image tag
+          yq e -i ".image.tag = \"${{ steps.vars.outputs.combo }}\"" $GITOPS_VALUES
+
+          # Update env if frontend
+          if [[ "$SERVICE" == "frontend" ]]; then
+            yq e -i ".env.VITE_STRIPE_KEY = \"${{ secrets.VITE_STRIPE_KEY }}\"" $GITOPS_VALUES
+          fi
+
+          # Generate rendered manifest
+          helm template $SERVICE gitops/apps/${SERVICE}/base \
+            -f $GITOPS_VALUES \
+            -n $ENV > $GITOPS_MANIFEST
+
+          # Commit changes
+          git config user.name "CI Auto Update"
+          git config user.email "ci-bot@github.com"
+          git add $GITOPS_VALUES $GITOPS_MANIFEST
+          git commit -m "CI: update ${SERVICE} image to ${{ steps.vars.outputs.combo }} and render manifests for ${ENV}" || echo "No changes to commit"
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
+
+      # 1️⃣1️⃣ Summary
+      - name: Summary
+        run: |
+          echo "✅ Service: ${{ inputs.service }}"
+          echo "🔐 Trivy scan: PASSED"
+          echo "🐳 Image: ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }}"
+          echo "🏷️ Git tag: ${{ inputs.service }}-${{ steps.vars.outputs.semver }}"
+          echo "📄 GitOps overlay updated"
