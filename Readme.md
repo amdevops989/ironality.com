@@ -518,3 +518,28 @@ kubectl get secret argocd-initial-admin-secret \
   
   then move to cloud : aws organization profiles users ....
   
+
+
+## to delete application 
+
+sudo curl -sSL -o /usr/local/bin/argocd \
+  https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+
+sudo chmod +x /usr/local/bin/argocd
+
+argocd version
+
+kubectl get secret argocd-initial-admin-secret \
+  -n argocd \
+  -o jsonpath="{.data.password}" | base64 -d
+  
+  argocd login localhost:8080 \
+  --username admin \
+  --password <PASSWORD> \
+  --insecure
+  
+
+
+argocd app delete catalog-dev --cascade --yes
+
+
