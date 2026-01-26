@@ -541,5 +541,9 @@ kubectl get secret argocd-initial-admin-secret \
 
 
 argocd app delete catalog-dev --cascade --yes
-
-
+but better than all this
+metadata:
+  name: apps
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io  ## add to argocd app
