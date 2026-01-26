@@ -362,3 +362,4 @@ jobs:
           echo "🐳 Image: ${{ inputs.docker_repo }}:${{ steps.vars.outputs.combo }}"
           echo "🏷️ Git tag: ${{ inputs.service }}-${{ steps.vars.outputs.semver }}"
           echo "📄 GitOps overlay updated"
+##
