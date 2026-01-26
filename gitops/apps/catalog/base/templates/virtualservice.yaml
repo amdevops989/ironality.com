@@ -41,13 +41,13 @@ spec:
             exact: "/catalog"
       rewrite:
         uri: "/"
-      # corsPolicy:
-      #   allowOrigins:
-      #     - exact: "{{ .Values.frontendUrl }}"
-      #   allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-      #   allowHeaders: ["*"]
-      #   allowCredentials: true
-      #   maxAge: "1h"
+      corsPolicy:
+        allowOrigins:
+          - exact: "{{ .Values.frontendUrl }}"
+        allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "24h"
       route:
         - destination:
             host: {{ .Values.stableService }}
