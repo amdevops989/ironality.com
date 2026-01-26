@@ -264,7 +264,6 @@ jobs:
           echo "VITE_API_CART=http://api.localdev.me/cart" >> $GITHUB_ENV
           echo "VITE_API_ORDERS=http://api.localdev.me/orders" >> $GITHUB_ENV
           echo "VITE_API_PAYMENTS=http://api.localdev.me/payments" >> $GITHUB_ENV
-          echo "VITE_STRIPE_KEY=${{ secrets.VITE_STRIPE_KEY }}" >> $GITHUB_ENV
 
       # 5️⃣a Verify Stripe Key is present
       - name: Verify Stripe Key
