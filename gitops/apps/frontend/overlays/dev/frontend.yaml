@@ -66,7 +66,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: "devopsflow999/frontend:dev-v0.1.24"
+        image: "devopsflow999/frontend:dev-v0.1.25"
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
