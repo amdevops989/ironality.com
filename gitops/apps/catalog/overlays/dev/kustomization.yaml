@@ -5,4 +5,4 @@ namespace: dev
 
 resources:
   - catalog.yaml
-  - dev-catalog-sealedsecrets.yaml
+  - dev-catalog-sealedsecret.yaml
