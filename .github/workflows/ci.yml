@@ -9,7 +9,7 @@ on:
     paths:
       - "ironality-app/**"
       # - "frontend/**"
-  pull_request:
+  ## pull_request:
     paths:
       - "ironality-app/**"
 permissions:
