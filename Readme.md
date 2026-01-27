@@ -573,6 +573,115 @@ NAME↑         REFERENCE         TARGETS      MINPODS MAXPODS REPLICAS AGE    �
 │                                                                          
 
 
+launch a k6s test pou load 
+
+req : 
+
+while true; do
+  http_status=$(curl -o /dev/null -s -w "%{http_code}" http://frontend.localdev.me)
+  echo "Status: $http_status"
+  sleep 1
+done
+
+
+kubectl get hpa frontend-hpa -n demo -w
+
 
 ## later we gonna scale based on istio Requests ....
+
+
+## Prometheus queries ! and grafanadashboards 
+
+100 * sum(container_memory_working_set_bytes{namespace="demo", pod=~"frontend-.*", container!~"POD"})
+
+100 * sum(container_memory_working_set_bytes{namespace="demo", pod=~"frontend-.*", container!
+
+
+need to install : 
+ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install kube-state-metrics prometheus-community/kube-state-metrics -n kube-system
+
+
+to get metric reosurce limit of cpu and memory
+
+CPU usage %
+100 * sum(rate(container_cpu_usage_seconds_total{namespace="demo", pod=~"frontend-.*", container!~"POD"}[2m]))
+/ sum(kube_pod_container_resource_limits{namespace="demo", pod=~"frontend-.*", container!~"POD", resource="cpu"})
+
+Memory usage %
+100 * sum(container_memory_working_set_bytes{namespace="demo", pod=~"frontend-.*", container!~"POD"})
+/ sum(kube_pod_container_resource_limits{namespace="demo", pod=~"frontend-.*", container!~"POD", resource="memory"})
+
+
+pod=~"frontend-.*" → matches all dynamic pod names
+
+container!~"POD" → excludes pause container
+
+resource="cpu" / "memory" → selects the correct limit
+
+✅ These will now return correct percentages dynamically for all your frontend pods in demo.
+
+
+
+## extract apps business metrics 
+
+create svc for each microservice 
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: catalog
+  namespace: monitoring
+  labels:
+    release: kube-prom-stack   # MUST match your Prom stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - demo
+  selector:
+    matchLabels:
+      metrics: "true"
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s
+
+
+then 
+
+update rollout or deploy : by adding port of svc promtheus inside app
+
+ports:
+  - name: http
+    containerPort: 3001
+  - name: metrics
+    containerPort: 9464
+    
+    
+ then 
+ 
+ 
+ add service monitor (should i add for every microservice)!!!!
+ 
+ apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: catalog
+  namespace: monitoring
+  labels:
+    release: kube-prom-stack   # MUST match your Prom stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - demo
+  selector:
+    matchLabels:
+      metrics: "true"
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s
+
 

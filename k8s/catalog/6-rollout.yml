@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: catalog
-        image: devopsflow999/catalog:main-v0.1.2
+        image: devopsflow999/catalog:dev-v0.1.4
         imagePullPolicy: IfNotPresent
 
         envFrom:
@@ -35,14 +35,17 @@ spec:
           - name: http
             containerPort: 3001
             protocol: TCP
+          - name: metrics ## added for metrics svc 
+    	    containerPort: 9464
+    	    protocol: TCP
 
         resources:
           requests:
-            memory: 32Mi
-            cpu: 5m
-          limits:
+            cpu: 100m
             memory: 128Mi
-            cpu: 200m
+          limits:
+            cpu: 500m
+            memory: 256Mi
 
   strategy:
     canary:
