@@ -547,3 +547,32 @@ metadata:
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io  ## add to argocd app
+    
+    
+## Hpa PodautoScaller
+
+add files hpa podDistr
+
+ensure is metrics-serversis installed
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+ || in minikube minikube addons enable metrics-server
+ 
+ if necessary or check 
+ 
+ 1️⃣ Edit deployment
+kubectl -n kube-system edit deployment metrics-server
+
+2️⃣ Add this under args:
+- --kubelet-insecure-tls
+- --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+
+NAME↑         REFERENCE         TARGETS      MINPODS MAXPODS REPLICAS AGE    │
+│ frontend-hpa  Rollout/frontend  cpu: 2%/60%  2       10      2        10m    │
+│                                                                          
+
+
+
+## later we gonna scale based on istio Requests ....
+
