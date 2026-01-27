@@ -27,8 +27,11 @@ spec:
           protocol: TCP
         resources:
           requests:
-            memory: 32Mi
-            cpu: 5m
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
         env:
         - name: VITE_STRIPE_KEY
           valueFrom:
@@ -40,6 +43,7 @@ spec:
     canary:
       canaryService: frontend-canary
       stableService: frontend-stable
+      scaleDownDelaySeconds: 60
       # analysis will be performed in background, while rollout is progressing through its steps
       # analysis:
       #   startingStep: 1   # index of step list, of when to start this analysis
