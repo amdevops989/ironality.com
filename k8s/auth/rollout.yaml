@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: auth
-        image: devopsflow999/auth:main-v0.1.8
+        image: devopsflow999/auth:main-v0.1.4
         envFrom:
           - configMapRef:
               name: auth-config
@@ -29,10 +29,17 @@ spec:
         - name: http
           containerPort: 3002
           protocol: TCP
+        - name: metrics ## added for metrics svc 
+          containerPort: 9465
+          protocol: TCP
+
         resources:
           requests:
-            memory: 32Mi
-            cpu: 5m
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
   strategy:
     canary:
       canaryService: auth-canary

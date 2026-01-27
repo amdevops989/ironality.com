@@ -29,10 +29,17 @@ spec:
         - name: http
           containerPort: 3003
           protocol: TCP
+        - name: metrics
+          protocol: TCP
+          containerPort: 9466
+          
         resources:
           requests:
-            memory: 32Mi
-            cpu: 5m
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
   strategy:
     canary:
       canaryService: cart-canary

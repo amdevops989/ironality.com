@@ -36,8 +36,8 @@ spec:
             containerPort: 3001
             protocol: TCP
           - name: metrics ## added for metrics svc 
-    	    containerPort: 9464
-    	    protocol: TCP
+            containerPort: 9464
+            protocol: TCP
 
         resources:
           requests:

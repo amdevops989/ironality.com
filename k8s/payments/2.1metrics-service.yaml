@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-metrics
+  namespace: demo
+  labels:
+    app: payments
+    metrics: "true"
+spec:
+  selector:
+    app: payments
+  ports:
+    - name: metrics
+      port: 9468
+      targetPort: 9468
+      protocol: TCP
+

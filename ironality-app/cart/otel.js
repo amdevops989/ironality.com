@@ -8,7 +8,7 @@ const { PrometheusExporter } = require('@opentelemetry/exporter-prometheus');
 const { resourceFromAttributes } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 
-const promPort = Number(process.env.OTEL_PROM_PORT || 9465);
+const promPort = Number(process.env.OTEL_PROM_PORT || 9466);
 
 /**
  * 📊 Prometheus exporter (PULL model)
