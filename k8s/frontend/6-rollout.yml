@@ -1,24 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: istio-rollout
+  name: frontend
   namespace: demo
 spec:
   replicas: 2
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: istio-rollout
+      app: frontend
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        app: istio-rollout
+        app: frontend
         istio: monitor
     spec:
       containers:
-      - name: istio-rollout
+      - name: frontend
         # image: devopsflow999/frontend:test400
         image: devopsflow999/frontend:909
         ports:
@@ -38,8 +38,8 @@ spec:
 
   strategy:
     canary:
-      canaryService: istio-rollout-canary
-      stableService: istio-rollout-stable
+      canaryService: frontend-canary
+      stableService: frontend-stable
       # analysis will be performed in background, while rollout is progressing through its steps
       # analysis:
       #   startingStep: 1   # index of step list, of when to start this analysis
@@ -47,7 +47,7 @@ spec:
       #   - templateName: frontend-canary-quality
         # args:             # arguments allow AnalysisTemplates to be re-used
         # - name: service 
-        #   value: istio-rollout-canary
+        #   value: frontend-canary
         # - name: namespace
         #   valueFrom:
         #     fieldRef:
@@ -55,7 +55,7 @@ spec:
       trafficRouting:
         istio:
           virtualService:
-            name: istio-rollout-vsvc
+            name: frontend-vsvc
             routes:
             - primary
       steps:
