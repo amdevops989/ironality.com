@@ -5,12 +5,15 @@ metadata:
   namespace: monitoring
   labels:
     grafana_dashboard: "1"
+  annotations:
+    grafana_folder: "Catalog"
 data:
   catalog-stable.json: |
     {
-      "title": "catalog-Stable DevOps Dashboard",
+      "title": "Catalog Stable – DevOps & App Dashboard",
       "schemaVersion": 36,
       "version": 1,
+      "refresh": "10s",
       "annotations": {
         "list": [
           {
@@ -27,12 +30,12 @@ data:
       "panels": [
         {
           "type": "gauge",
-          "title": "Success Rate",
-          "gridPos": {"x": 0, "y": 0, "w": 12, "h": 6},
+          "title": "Success Rate (%)",
+          "gridPos": { "x": 0, "y": 0, "w": 8, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\", destination_service_name=\"catalog-stable\", response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\", destination_service_name=\"catalog-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m]))) * 100",
               "refId": "A"
             }
           ],
@@ -40,12 +43,12 @@ data:
         },
         {
           "type": "gauge",
-          "title": "4xx Error Rate",
-          "gridPos": {"x": 12, "y": 0, "w": 12, "h": 6},
+          "title": "4xx Error Rate (%)",
+          "gridPos": { "x": 8, "y": 0, "w": 8, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\", destination_service_name=\"catalog-stable\", response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\", destination_service_name=\"catalog-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m]))) * 100",
               "refId": "B"
             }
           ],
@@ -53,12 +56,12 @@ data:
         },
         {
           "type": "gauge",
-          "title": "5xx Error Rate",
-          "gridPos": {"x": 0, "y": 6, "w": 12, "h": 6},
+          "title": "5xx Error Rate (%)",
+          "gridPos": { "x": 16, "y": 0, "w": 8, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\", destination_service_name=\"catalog-stable\", response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\", destination_service_name=\"catalog-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m]))) * 100",
               "refId": "C"
             }
           ],
@@ -67,11 +70,11 @@ data:
         {
           "type": "gauge",
           "title": "P95 Latency (ms)",
-          "gridPos": {"x": 12, "y": 6, "w": 12, "h": 6},
+          "gridPos": { "x": 0, "y": 6, "w": 12, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\", destination_service_name=\"catalog-stable\"}[5m])) by (le))",
+              "expr": "histogram_quantile(0.95,sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m])) by (le))",
               "refId": "D"
             }
           ],
@@ -80,11 +83,11 @@ data:
         {
           "type": "gauge",
           "title": "CPU Usage (%)",
-          "gridPos": {"x": 0, "y": 12, "w": 12, "h": 6},
+          "gridPos": { "x": 12, "y": 6, "w": 6, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"demo\", pod=~\"catalog-.*\", container!~\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"demo\", pod=~\"catalog-.*\", container!~\"POD\", resource=\"cpu\"})",
+              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"catalog-.*\",resource=\"cpu\"})",
               "refId": "E"
             }
           ],
@@ -93,15 +96,51 @@ data:
         {
           "type": "gauge",
           "title": "Memory Usage (%)",
-          "gridPos": {"x": 12, "y": 12, "w": 12, "h": 6},
+          "gridPos": { "x": 18, "y": 6, "w": 6, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"demo\", pod=~\"catalog-.*\", container!~\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"demo\", pod=~\"catalog-.*\", container!~\"POD\", resource=\"memory\"})",
+              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"catalog-.*\",resource=\"memory\"})",
               "refId": "F"
             }
           ],
           "fieldConfig": { "defaults": { "unit": "percent" } }
+        },
+        {
+          "type": "stat",
+          "title": "Products Created / min",
+          "gridPos": { "x": 0, "y": 12, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(catalog_products_created_total[5m]) * 60",
+              "refId": "G"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Products Updated / min",
+          "gridPos": { "x": 8, "y": 12, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(catalog_products_updated_total[5m]) * 60",
+              "refId": "H"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Products Deleted / min",
+          "gridPos": { "x": 16, "y": 12, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(catalog_products_deleted_total[5m]) * 60",
+              "refId": "I"
+            }
+          ]
         }
       ]
     }
