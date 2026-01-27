@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: istio-rollout-canary
+  name: frontend-canary
   namespace: demo
 spec:
   ports:
@@ -10,13 +10,13 @@ spec:
     protocol: TCP
     name: http
   selector:
-    app: istio-rollout
+    app: frontend
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: istio-rollout-stable
+  name: frontend-stable
   namespace: demo
 
 spec:
@@ -26,4 +26,4 @@ spec:
     protocol: TCP
     name: http
   selector:
-    app: istio-rollout
+    app: frontend

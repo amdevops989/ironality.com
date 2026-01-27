@@ -1,14 +1,14 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: istio-rollout-vsvc
+  name: frontend-vsvc
   namespace: demo
 spec:
   gateways:
-    - istio-rollout-gateway
+    - frontend-gateway
   hosts:
     - "frontend.localdev.me"
-    # - istio-rollout.local
+    # - frontend.local
   http:
     # Canary header-based routing
     - name: canary-debug
@@ -18,15 +18,15 @@ spec:
               exact: "true"
       route:
         - destination:
-            host: istio-rollout-canary
+            host: frontend-canary
           weight: 100
 
     # Default routing (primary)
     - name: primary
       route:
         - destination:
-            host: istio-rollout-stable
+            host: frontend-stable
           weight: 100
         - destination:
-            host: istio-rollout-canary
+            host: frontend-canary
           weight: 0
