@@ -1,0 +1,89 @@
+slack_webhook_url = "https://hooks.s..............."
+
+terraform plan -var-file="secret.tfvars"
+terraform apply -var-file="secret.tfvars"
+
+1️⃣ Add your secret to GitHub
+
+Go to your GitHub repo → Settings → Secrets and Variables → Actions → New repository secret
+
+Name it, for example:
+
+TF_SECRET_CODE
+TF_API_KEY
+
+
+Paste the secret values and save.
+
+2️⃣ Reference secrets in GitHub Actions workflow
+
+Create .github/workflows/terraform.yml:
+
+name: Terraform CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    env:
+      TF_VAR_secret_code: ${{ secrets.TF_SECRET_CODE }}
+      TF_VAR_api_key: ${{ secrets.TF_API_KEY }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6.0
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve
+
+
+✅ Key points:
+
+TF_VAR_<variable_name> → maps to your Terraform variable automatically.
+
+GitHub secrets are never exposed in the logs.
+
+3️⃣ Update your Terraform variables
+variable "secret_code" {}
+variable "api_key" {}
+
+
+No need for .tfvars file locally — GitHub secrets inject values via env vars.
+
+Locally, you can still use .tfvars if needed.
+
+4️⃣ Local testing
+
+Locally, set environment variables before running Terraform:
+
+export TF_VAR_secret_code="mysecret123"
+export TF_VAR_api_key="abcdef"
+terraform plan
+
+
+Works the same way as GitHub Actions.
+
+✅ TL;DR
+
+Store secrets in GitHub repository secrets.
+
+Map them to Terraform variables using TF_VAR_ in the workflow.
+
+Avoid committing .tfvars with secrets.
+
+Local testing can use .tfvars or local environment variables.

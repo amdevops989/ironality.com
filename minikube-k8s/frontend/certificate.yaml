@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: travelersources-tls
+  namespace: demo           # the namespace where your frontend app runs
+spec:
+  secretName: travelersources-tls-secret  # the TLS certificate will be stored here
+  dnsNames:
+    - travelersources.com
+    - '*.travelersources.com'             # optional wildcard for subdomains
+  issuerRef:
+    name: production-cluster-issuer       # your DNS-01 ClusterIssuer defined in Terraform
+    kind: ClusterIssuer

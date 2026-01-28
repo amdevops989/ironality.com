@@ -1,13 +1,13 @@
-aws s3 mb s3://travelersources-tfstate --region us-east-1 --profile devops-am
+aws s3 mb s3://ironality-tfstate --region us-east-1 --profile dev-sso
 
 
 aws dynamodb create-table \
-  --table-name travelersources-tf-locks \
+  --table-name ironality-tf-locks \
   --attribute-definitions AttributeName=LockID,AttributeType=S \
   --key-schema AttributeName=LockID,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
   --region us-east-1 \
-  --profile devops-am
+  --profile dev-sso
 
 
 ## hashing password : 
@@ -18,13 +18,13 @@ htpasswd -nbBC 10 admin 'admin1233' | cut -d: -f2
 ## remove remote state
 
 aws dynamodb delete-item \
-  --table-name travelersources-tf-locks \
+  --table-name ironality-tf-locks \
   --key '{"LockID":{"S":"942012ca-2a61-d7ee-b2aa-e5bfe91a0655"}}' \
-  --profile devops-am \
+  --profile dev-sso \
   --region us-east-1
 
 
-aws eks update-kubeconfig --name travelersources-dev --region us-east-1 --profile devops-am
+aws eks update-kubeconfig --name ironality-dev --region us-east-1 --profile dev-sso
 
 
 ## to unlock terr lock
@@ -61,8 +61,8 @@ provider "kubernetes" {
 
 locals {
   aws_region   = "us-east-1"
-  aws_profile  = "devops-am"
-  project_name = "travelersources"
+  aws_profile  = "dev-sso"
+  project_name = "ironality"
 }
 
 # ------------------------------------------------------------

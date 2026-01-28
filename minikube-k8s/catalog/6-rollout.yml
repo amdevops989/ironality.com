@@ -1,0 +1,88 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: catalog
+  namespace: demo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+
+  selector:
+    matchLabels:
+      app: catalog
+
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: catalog
+        istio: monitor
+
+    spec:
+      containers:
+      - name: catalog
+        image: devopsflow999/catalog:dev-v0.1.4
+        imagePullPolicy: IfNotPresent
+
+        envFrom:
+          - configMapRef:
+              name: catalog-config
+          - secretRef:
+              name: demo-secrets
+
+        ports:
+          - name: http
+            containerPort: 3001
+            protocol: TCP
+          - name: metrics ## added for metrics svc 
+            containerPort: 9464
+            protocol: TCP
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+
+  strategy:
+    canary:
+      stableService: catalog-stable
+      canaryService: catalog-canary
+
+      trafficRouting:
+        istio:
+          virtualService:
+            name: catalog-vsvc
+            routes:
+              - catalog-route
+
+      steps:
+        - setWeight: 10
+        - pause: {}
+
+        - setWeight: 20
+        - pause: { duration: 20s }
+
+        - setWeight: 30
+        - pause: { duration: 20s }
+
+        - setWeight: 40
+        - pause: { duration: 20s }
+
+        - setWeight: 50
+        - pause: { duration: 20s }
+
+        - setWeight: 60
+        - pause: { duration: 20s }
+
+        - setWeight: 70
+        - pause: { duration: 20s }
+
+        - setWeight: 80
+        - pause: { duration: 20s }
+
+        - setWeight: 90
+        - pause: { duration: 20s }

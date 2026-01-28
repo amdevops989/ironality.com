@@ -1,0 +1,54 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: cart-vsvc
+  namespace: demo
+spec:
+  hosts:
+    - "api.travelersources.com"   # updated from api.localdev.me
+  gateways:
+    - api-gateway                 # use your API Gateway with TLS
+  http:
+
+    # ----------------- Canary Route -----------------
+    - name: cart-canary
+      match:
+        - uri:
+            prefix: "/cart/cart"
+          headers:
+            x-canary:
+              exact: "true"
+      rewrite:
+        uri: "/cart"
+      route:
+        - destination:
+            host: cart-canary
+            port:
+              number: 3003
+          weight: 100
+
+    # ----------------- Stable Route -----------------
+    - name: cart-stable
+      match:
+        - uri:
+            prefix: "/cart/cart"
+      rewrite:
+        uri: "/cart"
+      corsPolicy:
+        allowOrigins:
+          - exact: "https://travelersources.com"  # update to real frontend
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
+      route:
+        - destination:
+            host: cart-stable
+            port:
+              number: 3003
+          weight: 100
+        - destination:
+            host: cart-canary
+            port:
+              number: 3003
+          weight: 0

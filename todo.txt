@@ -1,23 +1,41 @@
-todo : 
+## devsecops : 
 
-dashboards ## need to enhance more ok 
-helm kustommize
-clean repos
-psa kyverno mtls
+  trivy ci
+  psa
+  kyverno
+  falco
+  
+## infra 
 
-## eks 
-terragrunt multi env dev prod  ## 
-prod way is to make like kyverno karpenter as argocd application so in case of delete it comeback
-cicd infra
-add karpenter
-kyverno
-cert manager 
-k10 /veam
-
-## aws organization 
-accounts / users / Groups
-aws config
-eventBridge
-cloudtrail
-lambdas 
-Rbacs: who can do what on where 
+  terragrunt multi env
+  modules:
+  	vpc
+  	eks + iam
+  	falco
+  	kyverno
+  	cert-manager
+	sealed-secrets
+  	karpenter
+  	istio
+  	prometheus stack + loki pvc
+  	argocd + argo rollout
+  	postgres  pvc
+  	kafka  pvc
+  	debezium
+  	redis pvc
+  	k10
+  	lambdas 
+  	eventBridge
+  	route53
+  	---
+  	aws-organization
+  	sso ...
+    aws config 
+    cloud trail
+    ssm
+    
+  	
+  	
+  	
+ 
+ 

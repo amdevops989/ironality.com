@@ -7,7 +7,7 @@ variable "region" {
 variable "profile" {
   description = "AWS CLI profile"
   type        = string
-  default     = "devops-am"
+  default     = "dev-sso"
 }
 
 variable "bucket_name" {

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod
+  labels:
+    istio-injection: enabled
+    pod-security.kubernetes.io/enforce: privileged   # must allow Istio init containers
+    pod-security.kubernetes.io/audit: restricted    # log stricter violations
+    pod-security.kubernetes.io/warn: restricted     # warn on extra privilege requests
+

@@ -1,0 +1,21 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: add-istio-monitor-label
+spec:
+  rules:
+    - name: inject-istio-label
+      match:
+        resources:
+          kinds:
+            - Pod
+          namespaces:
+            - demo
+            - dev
+            - prod
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              istio: monitor
+

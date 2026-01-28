@@ -1,0 +1,53 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: auth-vsvc
+  namespace: demo
+spec:
+  hosts:
+    - "api.travelersources.com"   # updated from api.localdev.me
+  gateways:
+    - api-gateway                 # updated to your real API Gateway
+  http:
+
+    # Canary route must be first
+    - name: auth-canary-debug
+      match:
+        - uri:
+            prefix: "/auth/"
+          headers:
+            x-canary:
+              exact: "true"
+        - uri:
+            exact: "/auth"
+          headers:
+            x-canary:
+              exact: "true"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: auth-canary
+            port:
+              number: 3002
+
+    # Stable route
+    - name: auth-route
+      match:
+        - uri:
+            prefix: "/auth/"
+        - uri:
+            exact: "/auth"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: auth-stable
+            port:
+              number: 3002
+          weight: 100
+        - destination:
+            host: auth-canary
+            port:
+              number: 3002
+          weight: 0
