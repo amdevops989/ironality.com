@@ -108,6 +108,18 @@ data:
         },
         {
           "type": "stat",
+          "title": "Orders paid total",
+          "gridPos": { "x": 0, "y": 12, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(orders_paid_total)",
+              "refId": "G"
+            }
+          ]
+        },
+        {
+          "type": "stat",
           "title": "Orders Created / min",
           "gridPos": { "x": 0, "y": 12, "w": 8, "h": 5 },
           "datasource": "Prometheus",
