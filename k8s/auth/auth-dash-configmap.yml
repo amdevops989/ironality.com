@@ -34,7 +34,7 @@ data:
           "gridPos": { "x": 0, "y": 0, "w": 8, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
-            { "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-service\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-service\"}[5m]))) * 100", "refId": "A" }
+            { "expr": "(sum(rate(istio_requests_total{reporter="source", destination_service_name="auth-stable", response_code=~"2.."}[5m])) / sum(rate(istio_requests_total{reporter="source", destination_service_name="auth-stable"}[5m]))) * 100", "refId": "A" }
           ],
           "fieldConfig": { "defaults": { "unit": "percent" } }
         },
@@ -44,7 +44,7 @@ data:
           "gridPos": { "x": 8, "y": 0, "w": 8, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
-            { "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-service\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-service\"}[5m]))) * 100", "refId": "B" }
+            { "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-stable\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-auth\"}[5m]))) * 100"
           ],
           "fieldConfig": { "defaults": { "unit": "percent" } }
         },
@@ -54,7 +54,7 @@ data:
           "gridPos": { "x": 16, "y": 0, "w": 8, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
-            { "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-service\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-service\"}[5m]))) * 100", "refId": "C" }
+            { "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-stable\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-stable\"}[5m]))) * 100", "refId": "C" }
           ],
           "fieldConfig": { "defaults": { "unit": "percent" } }
         },
@@ -64,7 +64,7 @@ data:
           "gridPos": { "x": 0, "y": 6, "w": 12, "h": 6 },
           "datasource": "Prometheus",
           "targets": [
-            { "expr": "histogram_quantile(0.95,sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"auth-service\"}[5m])) by (le))", "refId": "D" }
+            { "expr": "histogram_quantile(0.95,sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"auth-stable\"}[5m])) by (le))", "refId": "D" }
           ],
           "fieldConfig": { "defaults": { "unit": "ms" } }
         },
