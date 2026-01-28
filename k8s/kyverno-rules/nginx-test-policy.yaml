@@ -1,0 +1,67 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: nginx-demo-policy
+spec:
+  validationFailureAction: enforce
+  rules:
+    - name: add-istio-label
+      match:
+        resources:
+          kinds:
+            - Pod
+          namespaces:
+            - demo
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              istio: monitor
+
+    - name: set-default-resources
+      match:
+        resources:
+          kinds:
+            - Pod
+          namespaces:
+            - demo
+      mutate:
+        patchStrategicMerge:
+          spec:
+            containers:
+              - (name): "*"
+                resources:
+                  limits:
+                    cpu: "500m"
+                    memory: "512Mi"
+                  requests:
+                    cpu: "250m"
+                    memory: "256Mi"
+
+    - name: enforce-non-root
+      match:
+        resources:
+          kinds:
+            - Pod
+          namespaces:
+            - demo
+      validate:
+        message: "Containers must run as non-root"
+        pattern:
+          spec:
+            securityContext:
+              runAsNonRoot: true
+
+    - name: reject-latest-image
+      match:
+        resources:
+          kinds:
+            - Pod
+          namespaces:
+            - demo
+      validate:
+        message: "Do not use :latest image tag"
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest"
