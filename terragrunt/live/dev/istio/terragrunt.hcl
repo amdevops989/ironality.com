@@ -28,6 +28,6 @@ inputs = {
   k8s_host             = dependency.eks.outputs.cluster_endpoint
   k8s_ca               = dependency.eks.outputs.cluster_ca_certificate
   profile              = include.root.locals.aws_profile
-  domain_filters       = "demo.travelersources.com"
+  domain_filters       = "travelersources.com,api.travelersources.com"
   
 }

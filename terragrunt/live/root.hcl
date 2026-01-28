@@ -1,7 +1,7 @@
 locals {
   aws_region   = "us-east-1"
-  aws_profile  = "devops-am"
-  project_name = "travelersources"
+  aws_profile  = "dev-sso"
+  project_name = "travelersources.com"
 }
 
 # === AWS Provider ===
