@@ -10,7 +10,7 @@ metadata:
 data:
   orders-stable.json: |
     {
-      "title": "Orders Service – DevOps & Business Dashboard",
+      "title": "Orders Service – DevOps & App Dashboard",
       "schemaVersion": 36,
       "version": 1,
       "refresh": "10s",
@@ -35,7 +35,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-service\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-service\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m]))) * 100",
               "refId": "A"
             }
           ],
@@ -48,7 +48,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-service\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-service\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m]))) * 100",
               "refId": "B"
             }
           ],
@@ -61,7 +61,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-service\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-service\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m]))) * 100",
               "refId": "C"
             }
           ],
@@ -74,7 +74,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "histogram_quantile(0.95,sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"orders-service\"}[5m])) by (le))",
+              "expr": "histogram_quantile(0.95,sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m])) by (le))",
               "refId": "D"
             }
           ],
@@ -112,7 +112,10 @@ data:
           "gridPos": { "x": 0, "y": 12, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
-            { "expr": "rate(orders_created_total[5m]) * 60", "refId": "G" }
+            {
+              "expr": "sum(rate(orders_created_total[5m])) * 60",
+              "refId": "G"
+            }
           ]
         },
         {
@@ -121,7 +124,10 @@ data:
           "gridPos": { "x": 8, "y": 12, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
-            { "expr": "rate(orders_paid_total[5m]) * 60", "refId": "H" }
+            {
+              "expr": "sum(rate(orders_paid_total[5m])) * 60",
+              "refId": "H"
+            }
           ]
         },
         {
@@ -130,7 +136,10 @@ data:
           "gridPos": { "x": 16, "y": 12, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
-            { "expr": "rate(orders_creation_failures_total[5m]) * 60", "refId": "I" }
+            {
+              "expr": "sum(rate(orders_creation_failures_total[5m])) * 60",
+              "refId": "I"
+            }
           ]
         },
         {
@@ -139,31 +148,37 @@ data:
           "gridPos": { "x": 0, "y": 17, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
-            { "expr": "rate(orders_payment_failures_total[5m]) * 60", "refId": "J" }
+            {
+              "expr": "sum(rate(orders_payment_failures_total[5m])) * 60",
+              "refId": "J"
+            }
           ]
         },
         {
           "type": "stat",
-          "title": "Total Revenue",
+          "title": "Revenue / min",
           "gridPos": { "x": 8, "y": 17, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
-            { "expr": "sum(orders_revenue_total)", "refId": "K" }
+            {
+              "expr": "sum(rate(orders_revenue_total[5m]))",
+              "refId": "K"
+            }
           ],
-          "fieldConfig": { "defaults": { "unit": "currencyUSD" } }
+          "fieldConfig": { "defaults": { "unit": "currency" } }
         },
         {
-          "type": "stat",
-          "title": "Avg Order Amount",
+          "type": "graph",
+          "title": "Order Amount P95",
           "gridPos": { "x": 16, "y": 17, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "histogram_quantile(0.5, sum(rate(orders_amount_bucket[5m])) by (le))",
+              "expr": "histogram_quantile(0.95,sum(rate(orders_amount_bucket[5m])) by (le))",
               "refId": "L"
             }
-          ],
-          "fieldConfig": { "defaults": { "unit": "currencyUSD" } }
+          ]
         }
       ]
     }
+

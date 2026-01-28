@@ -4,8 +4,8 @@ metadata:
   name: cart
   namespace: demo
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2
+  replicas: 1
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       app: cart
