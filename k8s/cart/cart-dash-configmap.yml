@@ -12,7 +12,7 @@ data:
     {
       "title": "Cart Service – DevOps & App Dashboard",
       "schemaVersion": 36,
-      "version": 1,
+      "version": 2,
       "refresh": "10s",
       "annotations": {
         "list": [
@@ -120,6 +120,18 @@ data:
         },
         {
           "type": "stat",
+          "title": "Items Added",
+          "gridPos": { "x": 0, "y": 12, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(cart_items_added_total)",
+              "refId": "G"
+            }
+          ]
+        },
+        {
+          "type": "stat",
           "title": "Cart Reads / min",
           "gridPos": { "x": 8, "y": 12, "w": 8, "h": 5 },
           "datasource": "Prometheus",
@@ -168,14 +180,27 @@ data:
           "fieldConfig": { "defaults": { "unit": "currency" } }
         },
         {
-          "type": "graph",
-          "title": "Checkout Amount Distribution",
+          "type": "stat",
+          "title": "Total Checkout Amount",
           "gridPos": { "x": 16, "y": 17, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "histogram_quantile(0.95,sum(rate(cart_checkout_amount_bucket[5m])) by (le))",
+              "expr": "sum(cart_checkout_amount_sum)",
               "refId": "L"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "currency" } }
+        },
+        {
+          "type": "graph",
+          "title": "Checkout Amount P95",
+          "gridPos": { "x": 0, "y": 22, "w": 24, "h": 6 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95,sum(rate(cart_checkout_amount_bucket[5m])) by (le))",
+              "refId": "M"
             }
           ]
         }
