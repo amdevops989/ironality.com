@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: frontend-gateway
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: gateway
+  servers:
+    - port:x
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: tls-travelersources-com
+      hosts:
+        - "travelersources.com"
+
+
+## sudo apt install mkcert libnss3-tools -y
+## mkdir mkcert && cd mkcert
+## mkcert frontend.localdev.me api.localdev.me "*.localdev.me"
+## # kubectl create -n istio-system secret tls localdev-credential \
+#   --key frontend.localdev.me+2-key.pem \
+#   --cert frontend.localdev.me+2.pem

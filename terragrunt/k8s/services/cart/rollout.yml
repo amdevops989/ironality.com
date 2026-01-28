@@ -1,0 +1,68 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: cart
+  namespace: mv100
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cart
+  strategy:
+    canary:
+      stableService: cart
+      canaryService: cart-canary
+      trafficRouting:
+        istio:
+          virtualService:
+            name: api-vs
+            routes:
+              - cart-route
+      steps:
+        - setWeight: 20
+        - pause:
+            duration: 30
+        - setWeight: 50
+        - pause:
+            duration: 60
+        - setWeight: 100
+  template:
+    metadata:
+      labels:
+        app: cart
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3002"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: cart
+          image: devopsflow999/cart:test10
+          ports:
+            - containerPort: 3002
+          env:
+            - name: PGUSER
+              value: appuser
+            - name: PGPASSWORD
+              value: appuser
+            - name: PGDATABASE
+              value: mv100db
+            - name: PGHOST
+              value: postgres-postgresql.kafka.svc.cluster.local
+            - name: PGPORT
+              value: "5432"
+            - name: REDIS_URL
+              value: redis://redis-master.kafka.svc.cluster.local:6379
+            - name: KAFKA_BROKERS
+              value: kafka.kafka.svc.cluster.local:9092
+            - name: KAFKA_CLIENT_ID
+              value: cart-service
+            - name: KAFKA_TOPIC
+              value: mv100db_public_orders
+            - name: JWT_SECRET
+              value: supersecretkey
+            - name: PORT
+              value: "3002"
+            - name: CORS_ORIGIN
+              value: http://frontend.localdev.me

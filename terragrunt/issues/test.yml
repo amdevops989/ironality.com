@@ -1,0 +1,160 @@
+# -----------------------------
+# Namespace with Istio injection
+# -----------------------------
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+  labels:
+    istio-injection: enabled   # Enables Istio sidecar injection
+---
+
+# -----------------------------
+# Deployment
+# -----------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  namespace: test
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.25
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+---
+
+# -----------------------------
+# Service (ClusterIP, internal only)
+# -----------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+  namespace: test
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+
+# -----------------------------
+# DestinationRule (Istio traffic policy)
+# -----------------------------
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: nginx-destination
+  namespace: test
+spec:
+  host: nginx-svc.test.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+
+# -----------------------------
+# Gateway (Istio ingress)
+# -----------------------------
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: travelersources-gateway
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: gateway  # matches your LoadBalancer Service
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "test.travelersources.com"
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: tls-test-travelersources-com  # cert-manager secret
+      hosts:
+        - "test.travelersources.com"
+---
+
+# -----------------------------
+# VirtualService (route traffic to nginx)
+# -----------------------------
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nginx-virtualservice
+  namespace: test
+spec:
+  hosts:
+    - "test.travelersources.com"
+  gateways:
+    - istio-ingress/travelersources-gateway
+  http:
+    - match:
+        - uri:
+            prefix: "/"
+      route:
+        - destination:
+            host: nginx-svc.test.svc.cluster.local
+            port:
+              number: 80
+---
+
+# -----------------------------
+# TLS Certificate (cert-manager)
+# -----------------------------
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tls-test-travelersources-com
+  namespace: istio-ingress
+spec:
+  secretName: tls-test-travelersources-com
+  dnsNames:
+    - test.travelersources.com
+  issuerRef:
+    name: production-cluster-issuer-http
+    kind: ClusterIssuer
+---
+
+# # -----------------------------
+# # ExternalDNS annotation for gateway Service
+# # -----------------------------
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: gateway
+#   namespace: istio-ingress
+#   annotations:
+#     external-dns.alpha.kubernetes.io/hostname: test.travelersources.com
+# spec:
+#   type: LoadBalancer

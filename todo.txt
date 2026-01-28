@@ -1,0 +1,23 @@
+todo : 
+
+dashboards ## need to enhance more ok 
+helm kustommize
+clean repos
+psa kyverno mtls
+
+## eks 
+terragrunt multi env dev prod  ## 
+prod way is to make like kyverno karpenter as argocd application so in case of delete it comeback
+cicd infra
+add karpenter
+kyverno
+cert manager 
+k10 /veam
+
+## aws organization 
+accounts / users / Groups
+aws config
+eventBridge
+cloudtrail
+lambdas 
+Rbacs: who can do what on where 

@@ -1,0 +1,67 @@
+# =====================================================
+# Terraform + Terragrunt .gitignore
+# =====================================================
+
+# Local .terraform directories
+**/.terraform/*
+**/.terragrunt-cache/*
+
+# Terraform plan files
+*.tfplan
+*.tfstate
+*.tfstate.backup
+*.tfstate.*
+
+# Terragrunt working directories
+**/.terragrunt-cache/
+**/.terragrunt-temp/
+
+# Local override files (developer-specific)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Local variable files (sensitive data)
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Sensitive or temporary files
+*.log
+*.bak
+*.backup
+*.tmp
+*.swp
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Provider or plugin lock file (optional)
+.terraform.lock.hcl
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python or shell scripts caches
+__pycache__/
+*.pyc
+
+# Misc Terragrunt/Terraform debugging files
+.terragrunt-debug.tfvars.json
+
+# =====================================================
+# Optional: allow lock file if you want reproducible builds
+# =====================================================
+# Uncomment this if you want to keep .terraform.lock.hcl under version control
+# !.terraform.lock.hcl

@@ -1,0 +1,25 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: api
+  namespace: production
+spec:
+  selector:
+    istio: gateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - test.travelersources.com
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - test.travelersources.com
+      tls:
+        credentialName: test-travelersources-com-crt
+        mode: SIMPLE

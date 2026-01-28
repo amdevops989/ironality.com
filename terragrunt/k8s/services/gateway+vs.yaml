@@ -1,0 +1,58 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: api-gateway
+  namespace: mv100
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 443
+        name: https-api
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: localdev-credential
+      hosts:
+        - "api.localdev.me"
+
+
+
+
+
+## sudo apt install mkcert libnss3-tools -y
+## mkdir mkcert && cd mkcert
+## mkcert frontend.localdev.me api.localdev.me "*.localdev.me"
+## # kubectl create -n istio-system secret tls localdev-credential \
+#   --key frontend.localdev.me+2-key.pem \
+#   --cert frontend.localdev.me+2.pem
+
+
+## check cors and make them as variables in backend services 
+
+## after we focus in real world certificate with lets encrypt we will do lab in aws 
+
+## persistent volumes 
+
+## and also secrets using Vault or sealedSecrets 
+
+## pod autoscaller 
+
+## karpenter 
+
+## rbac and pod identity and policirs 
+
+##istio mtls 
+
+## k10
+
+## users and groups (rancher )
+
+## rollout wirh analysistemplate and auto promote 
+
+## devsecops ci 
+
+## vpcs and networking cdn 
+
+## disaster recovery 
