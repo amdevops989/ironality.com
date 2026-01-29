@@ -44,20 +44,20 @@ spec:
         {{- end }}
         {{- end }}
   strategy:
-	  canary:
-	    stableService: frontend-stable
-	    canaryService: frontend-canary
-	    scaleDownDelaySeconds: {{ .Values.strategy.scaleDownDelaySeconds | default 60 }}
-	    trafficRouting:
-	      istio:
-		virtualService:
-		  name: frontend-vsvc
-		  routes:
-		    - primary
-	    steps:
-	    {{- range .Values.strategy.steps }}
-	    - setWeight: {{ .weight }}
-	      {{- if .pause }}
-	      pause: {{ .pause }}
-	      {{- end }}
-	    {{- end }}
+   canary:
+    stableService: frontend-stable
+    canaryService: frontend-canary
+    scaleDownDelaySeconds: {{ .Values.strategy.scaleDownDelaySeconds | default 60 }}
+    trafficRouting:
+      istio:
+        virtualService:
+          name: frontend-vsvc
+          routes:
+            - primary
+    steps:
+    {{- range .Values.strategy.steps }}
+    - setWeight: {{ .weight }}
+      {{- if .pause }}
+      pause: {{ .pause }}
+      {{- end }}
+    {{- end }}
