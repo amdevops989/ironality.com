@@ -24,7 +24,7 @@ spec:
           - configMapRef:
               name: auth-config
           - secretRef:
-              name: auth-secret   # SealedSecret creates a normal Secret in the cluster
+              name: app-secret   # SealedSecret creates a normal Secret in the cluster
         ports:
         - name: http
           containerPort: 3002

@@ -10,7 +10,7 @@ data:
   REDIS_URL: redis-master.redis.svc.cluster.local:6379
   KAFKA_BROKERS: kafka.kafka.svc.cluster.local:9092
   KAFKA_CLIENT_ID: products-service
-  KAFKA_TOPIC_USERS: mv100db.public.products
+  KAFKA_TOPIC_PRODUCTS: mv100db.public.products
   LOG_LEVEL: {{ .Values.env.LOG_LEVEL }}
   PORT: "{{ .Values.env.PORT }}"
   FRONTEND_URL: "http://frontend.localdev.me"

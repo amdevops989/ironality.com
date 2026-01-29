@@ -685,3 +685,35 @@ spec:
       scrapeTimeout: 10s
 
 
+
+
+## eso and secrers manager :
+
+aws secretsmanager create-secret \
+  --name dev/app-secrets \
+  --description "Application secrets for dev environment" \
+  --secret-string '{
+    "VITE_STRIPE_KEY": "example",
+    "PGPASSWORD": "appuser",
+    "JWT_SECRET": "superToken",
+    "STRIPE_SECRET_KEY": "example",
+    "STRIPE_WEBHOOK_SECRET": "example"
+  }'
+
+
+## to update later ,
+
+aws secretsmanager put-secret-value \
+  --secret-id dev/app-secrets \
+  --secret-string '{
+    "VITE_STRIPE_KEY": "examplesecret",
+    "PGPASSWORD": "appuser",
+    "JWT_SECRET": "superToken",
+    "STRIPE_SECRET_KEY": "NEWStripeSecretKey",
+    "STRIPE_WEBHOOK_SECRET": "NEWWebhookSecret"
+  }'
+
+## verify 
+
+aws secretsmanager get-secret-value \
+  --secret-id dev/app-secrets

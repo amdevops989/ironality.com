@@ -10,12 +10,12 @@ data:
   PGPORT: "5432"
   REDIS_URL: redis-master.redis.svc.cluster.local:6379
   KAFKA_BROKERS: kafka.kafka.svc.cluster.local:9092
-  KAFKA_CLIENT_ID: orders-service
-  KAFKA_TOPIC_USERS: mv100db.public.payments
+  KAFKA_CLIENT_ID: payments-service
+  KAFKA_TOPIC_PAYMENTS: mv100db.public.payments
   LOG_LEVEL: info
   PORT: "3005"
-  FRONTEND_URL: "http://frontend.localdev.me"
-  ORDERS_SERVICE_URL: http://api.localdev.me:3003/orders
-  SUCCESS_URL: http://frontend.localdev.me/success
-  CANCEL_URL: http://frontend.localdev.me/cancel
+  FRONTEND_URL: "https://travelersources.com"
+  ORDERS_SERVICE_URL: https://travelersources.com:3003/orders
+  SUCCESS_URL: https://travelersources.com/success
+  CANCEL_URL: https://travelersources.com/cancel
   OTEL_PROM_PORT: "9468"

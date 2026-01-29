@@ -24,7 +24,7 @@ spec:
           - configMapRef:
               name: payments-config
           - secretRef:
-              name: payments-secrets
+              name: app-secrets
         ports:
         - name: http
           containerPort: 3005

@@ -14,4 +14,5 @@ data:
   KAFKA_TOPIC_USERS: mv100db.public.products
   LOG_LEVEL: info
   PORT: "3001"
-  FRONTEND_URL: "http://frontend.localdev.me"
+  FRONTEND_URL: "https://travelersources.com"
+  OTEL_PROM_PORT: "9464"

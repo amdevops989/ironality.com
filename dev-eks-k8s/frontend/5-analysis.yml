@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
   name: frontend-canary-quality
-  namespace: demo
+  namespace: dev
 spec:
   args:
     - name: service

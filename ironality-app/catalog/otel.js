@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 'use strict';
 
 /**
@@ -15,11 +17,11 @@ const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventi
  */
 const prometheusExporter = new PrometheusExporter(
   {
-    port: 9464,
+    port: Number(process.env.OTEL_PROM_PORT || 9464),
     endpoint: '/metrics',
   },
   () => {
-    console.log('📊 Prometheus metrics available at http://localhost:9464/metrics');
+    console.log(`📊 Prometheus metrics available at http://localhost:${process.env.OTEL_PROM_PORT}/metrics`);
   }
 );
 

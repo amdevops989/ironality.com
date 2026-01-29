@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: frontend-hpa
-  namespace: demo
+  namespace: dev
 spec:
   scaleTargetRef:
     apiVersion: argoproj.io/v1alpha1

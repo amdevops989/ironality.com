@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontend-canary
-  namespace: demo
+  namespace: dev
 spec:
   ports:
   - port: 80
@@ -17,7 +17,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontend-stable
-  namespace: demo
+  namespace: dev
 
 spec:
   ports:

@@ -24,7 +24,7 @@ spec:
           - configMapRef:
               name: cart-config
           - secretRef:
-              name: demo-secrets
+              name: app-secrets
         ports:
         - name: http
           containerPort: 3003
