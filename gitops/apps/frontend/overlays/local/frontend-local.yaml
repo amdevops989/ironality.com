@@ -282,12 +282,14 @@ spec:
   selector:
     matchLabels:
       app: frontend
+      app.kubernetes.io/environment: demo
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
         app: frontend
+        app.kubernetes.io/environment: demo
         istio: monitor
     spec:
       containers:
