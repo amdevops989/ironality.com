@@ -1,6 +1,6 @@
 replicaCount: 2
 image:
-  tag: dev-v0.1.4
+  tag: dev-v0.1.5
 env:
   LOG_LEVEL: debug
 ##
