@@ -9,12 +9,14 @@ spec:
   selector:
     matchLabels:
       app: frontend
+      app.kubernetes.io/environment: {{ .Values.namespace | default "dev" }}
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
         app: frontend
+        app.kubernetes.io/environment: {{ .Values.namespace | default "dev" }}
         istio: monitor
     spec:
       containers:
