@@ -1,151 +1,111 @@
-Ah! Got it — **PSA (Pod Security Admission / Pod Security Admission controller)** is another **cluster-level security module**, similar to Kyverno but lighter-weight if you’re just enforcing Kubernetes pod-level security standards. We need to add it **before deploying workloads**, after the cluster exists but before apps are deployed.
-
-Let’s rebuild the **multi-env Terragrunt deployment order including PSA**.
-
+RoadMap
 ---
 
-# **Terragrunt Multi-Environment Deployment Order (with PSA + ExternalDNS)**
+## **1️⃣ AWS Foundation / Org Level Modules (with KMS)**
 
----
+* **AWS Organization / Accounts / SSO**
+* **AWS Config**
+* **CloudTrail**
+* **SSM Parameter Store**
+* **KMS**
 
-## **1️⃣ AWS Core / Org Level Modules (Foundation)**
-
-1. **AWS Organization / Accounts / SSO**
-2. **AWS Config**
-3. **CloudTrail**
-4. **SSM Parameter Store**
-
-> These are foundation modules, providing IAM, security tracking, and parameters for downstream modules.
+  * Used for encrypting SSM parameters, secrets, EBS volumes, RDS, and S3 buckets.
+  * Must be created **before** workloads or other resources that require encryption.
 
 ---
 
 ## **2️⃣ Networking / Cluster Base**
 
-1. **VPC**
-2. **IAM Roles for EKS**
-3. **EKS Cluster**
-4. **Karpenter**
-5. **ExternalDNS**
-
-> After this step, you have a working cluster, node autoscaling, and DNS management in place.
+* **VPC**
+* **IAM Roles for EKS**
+* **EKS Cluster**
+* **Karpenter**
+* **ExternalDNS**
 
 ---
 
-## **3️⃣ Security / Pod-Level Policies**
+## **3️⃣ Security / Policy Layer**
 
-1. **Falco**
+* **Falco**
+* **PSA (Pod Security Admission)**
+* **Kyverno**
+* **Sealed-Secrets**
 
-   * Runtime security monitoring.
-2. **PSA (Pod Security Admission)**
-
-   * Enforce PodSecurity standards (restricted, baseline, privileged) at the namespace level.
-3. **Kyverno**
-
-   * Policy enforcement (optional policies, network policies, more granular controls).
-4. **Sealed-Secrets**
-
-   * Encrypt secrets for GitOps.
-
-> ✅ Must be applied **before workloads** so that all pods comply with security standards.
+> PSA first, then Kyverno. Sealed-Secrets requires KMS if using AWS for secret encryption.
 
 ---
 
 ## **4️⃣ Certificate / Ingress / Mesh**
 
-1. **Cert-Manager**
-
-   * TLS certificates via DNS-01 challenge.
-2. **Istio**
-
-   * Service mesh + ingress gateways.
-3. **Route53**
-
-   * DNS zones (used by ExternalDNS and cert-manager).
-4. **Configure Istio Gateways**
-
-   * Attach TLS secrets from cert-manager.
-
-> ✅ After this, your applications can be exposed securely over HTTPS.
+* **Cert-Manager**
+* **Istio**
+* **Route53**
+* **Ingress Gateways with TLS secrets**
 
 ---
 
-## **5️⃣ Observability / Monitoring**
+## **5️⃣ Observability / Monitoring Layer (with AlertRules)**
 
-1. **Prometheus + Grafana**
-2. **Loki + PVC**
+* **Prometheus + Grafana**
+* **Loki + PVC**
+* **AlertRules** (PrometheusRule CRDs)
 
-> Metrics and logs available before applications start.
-
----
-
-## **6️⃣ GitOps / Deployment Automation**
-
-1. **ArgoCD**
-2. **Argo Rollouts**
-
-> Enables controlled GitOps deployments with canary / blue-green strategies.
+  * Define alerts for CPU, memory, pod restarts, node issues, etc.
+  * Must be deployed **after Prometheus** but **before workloads** so you can monitor apps immediately.
 
 ---
 
-## **7️⃣ Stateful / Data Layer Modules**
+## **6️⃣ GitOps / Deployment**
 
-1. **Postgres + PVC**
-2. **Kafka + PVC**
-3. **Debezium**
-4. **Redis + PVC**
-5. **K10 (Backup)**
+* **ArgoCD**
+* **Argo Rollouts**
 
-> Databases, cache, messaging, and backup services ready for microservices.
+---
+
+## **7️⃣ Stateful / Data Layer**
+
+* **Postgres + PVC**
+* **Kafka + PVC**
+* **Debezium**
+* **Redis + PVC**
+* **K10 Backup**
+
+> KMS can be used here to encrypt secrets, PVCs, and S3 backups.
 
 ---
 
 ## **8️⃣ Serverless / Event Modules**
 
-1. **Lambdas**
-2. **EventBridge**
-
-> Integrates with data layer and APIs.
+* **Lambdas**
+* **EventBridge**
 
 ---
 
 ## **9️⃣ Application Microservices**
 
-* `frontend` → `travelersources.com`
-* `catalog` → `api.travelersources.com/catalog`
-* `auth` → `api.travelersources.com/auth`
-* `cart` → `api.travelersources.com/cart`
-* `orders` → `api.travelersources.com/orders`
-* `payments` → `api.travelersources.com/payments`
+* Frontend → `travelersources.com`
+* Catalog API → `api.travelersources.com/catalog`
+* Auth API → `api.travelersources.com/auth`
+* Cart API → `api.travelersources.com/cart`
+* Orders API → `api.travelersources.com/orders`
+* Payments API → `api.travelersources.com/payments`
 
-> ✅ At this stage, TLS, DNS, PSA, and security policies are all in place.
-
----
-
-### **⚡ Quick Reference Table (with PSA)**
-
-| Step | Modules                                 | Notes                           |
-| ---- | --------------------------------------- | ------------------------------- |
-| 1    | AWS Org, SSO, Config, CloudTrail, SSM   | Foundation                      |
-| 2    | VPC, IAM, EKS, Karpenter, ExternalDNS   | Cluster + DNS                   |
-| 3    | Falco, PSA, Kyverno, Sealed-Secrets     | Pod-level security & compliance |
-| 4    | Cert-Manager, Istio, Route53 / Gateways | TLS + ingress                   |
-| 5    | Prometheus + Grafana, Loki              | Observability                   |
-| 6    | ArgoCD + Argo Rollouts                  | GitOps & deployment             |
-| 7    | Postgres, Kafka, Debezium, Redis, K10   | Stateful apps                   |
-| 8    | Lambdas, EventBridge                    | Serverless / triggers           |
-| 9    | Application Microservices               | Frontend + APIs                 |
+> At this stage, TLS, DNS, PSA, KMS encryption, AlertRules, and security policies are all in place.
 
 ---
 
-💡 **Notes on PSA**:
+### **Updated Quick Reference Table (with KMS + AlertRules)**
 
-* PSA is **native Kubernetes** (from v1.25+) and can enforce **baseline / restricted / privileged** policies per namespace.
-* If you combine PSA + Kyverno, PSA should be first because Kyverno can reference PSA namespace labels in policies.
-* Always apply PSA **before workloads** to avoid pods failing admission checks.
+| Step | Modules                                    | Notes                      |
+| ---- | ------------------------------------------ | -------------------------- |
+| 1    | AWS Org, SSO, Config, CloudTrail, SSM, KMS | Foundation + encryption    |
+| 2    | VPC, IAM, EKS, Karpenter, ExternalDNS      | Cluster + DNS              |
+| 3    | Falco, PSA, Kyverno, Sealed-Secrets        | Pod-level security         |
+| 4    | Cert-Manager, Istio, Route53               | TLS + ingress              |
+| 5    | Prometheus + Grafana, Loki, AlertRules     | Observability + monitoring |
+| 6    | ArgoCD + Argo Rollouts                     | GitOps & deployment        |
+| 7    | Postgres, Kafka, Debezium, Redis, K10      | Stateful apps              |
+| 8    | Lambdas, EventBridge                       | Serverless / triggers      |
+| 9    | Application Microservices                  | Frontend + APIs            |
 
----
-
-If you want, I can now **draw a full visual diagram of all your Terragrunt modules including PSA, ExternalDNS, Cert-Manager, Istio, and your microservices**, showing **exact dependencies and deployment order** — it’s super useful for production multi-env setups.
-
-Do you want me to do that?
 
