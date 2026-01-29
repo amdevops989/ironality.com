@@ -4,7 +4,7 @@ metadata:
   name: frontend
   namespace: {{ .Values.namespace | default "dev" }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicaCount | default 1 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 2 }}
   selector:
     matchLabels:
@@ -23,7 +23,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
         ports:
         - name: http
-          containerPort: {{ .Values.service.port }}
+          containerPort: {{ .Values.service.port | default 80 }}
           protocol: TCP
         resources:
           requests:
@@ -43,6 +43,7 @@ spec:
           value: "{{ $value }}"
         {{- end }}
         {{- end }}
+
   strategy:
     canary:
       stableService: frontend-stable
@@ -57,27 +58,27 @@ spec:
       steps:
         - setWeight: 10
         - setWeight: 20
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 30
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 40
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 50
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 60
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 70
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 80
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 90
-          pause:
+        - pause:
             duration: 20s
 
