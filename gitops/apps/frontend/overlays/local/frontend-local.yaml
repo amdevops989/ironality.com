@@ -309,7 +309,7 @@ spec:
         - secretRef:
             name: frontend-secrets
   strategy:
-  canary:
+   canary:
     stableService: frontend-stable
     canaryService: frontend-canary
     scaleDownDelaySeconds: 60
