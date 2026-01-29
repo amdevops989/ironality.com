@@ -6,11 +6,11 @@ resources:
   - certificate.yaml
   - gateway.yaml
   - kyverno_rules.yaml
-  # - secret.yaml
+  # - secret.yaml  we gonna use eso instead of sealed secrets 
   - vs.yaml
   - cluster_issuer.yaml
   - mTLs.yaml
   - ClusterSecretStore.yaml
   - ExternalSecret.yaml
   - svc-monitor.yaml
-  - configmap.yaml
+  # - configmap-app.yaml  every mircoservice has it s own variables like port otel_pro_port ...
