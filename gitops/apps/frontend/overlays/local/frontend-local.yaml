@@ -308,6 +308,7 @@ spec:
         envFrom:
         - secretRef:
             name: frontend-secrets
+
   strategy:
     canary:
       stableService: frontend-stable
@@ -322,28 +323,28 @@ spec:
       steps:
         - setWeight: 10
         - setWeight: 20
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 30
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 40
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 50
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 60
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 70
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 80
-          pause:
+        - pause:
             duration: 20s
         - setWeight: 90
-          pause:
+        - pause:
             duration: 20s
 ---
 # Source: frontend/templates/virtualservice.yaml
