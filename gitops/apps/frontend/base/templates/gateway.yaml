@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: frontend-gateway
-  namespace: demo
+  namespace: {{ .Values.namespace | default "dev" }}
 spec:
   selector:
     istio: gateway
@@ -12,4 +12,15 @@ spec:
         name: http
         protocol: HTTP
       hosts:
-        - {{ .Values.istio.host }}
+        - "{{ .Values.istio.host }}"
+{{- if .Values.istio.tls.enabled }}
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: "{{ .Values.istio.tls.secretName }}"
+      hosts:
+        - "{{ .Values.istio.host }}"
+{{- end }}

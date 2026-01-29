@@ -2,12 +2,12 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: frontend-vsvc
-  namespace: demo
+  namespace: {{ .Values.namespace | default "dev" }}
 spec:
   hosts:
-    - {{ .Values.istio.host }}
+    - "{{ .Values.istio.host }}"
   gateways:
-    - {{ .Values.istio.gateway }}
+    - "{{ .Values.istio.gateway }}"
   http:
     - name: canary-debug
       match:

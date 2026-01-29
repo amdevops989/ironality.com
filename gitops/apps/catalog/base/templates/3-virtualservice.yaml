@@ -1,18 +1,17 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ .Chart.Name }}-vsvc
-  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  name: catalog-vsvc
+  namespace: {{ .Values.namespace | default "dev" }}
 spec:
   hosts:
-    - "{{ .Values.istio.host }}"
+    - {{ .Values.host | quote }}
   gateways:
-    - {{ .Values.istio.gateway }}
+    - {{ .Values.istio.gateway | default "api-gateway" }}
 
   http:
-
-    # Canary route must be first
-    - name: {{ .Chart.Name }}-canary-debug
+    # Canary route (must be first)
+    - name: catalog-canary
       match:
         - uri:
             prefix: "/catalog/"
@@ -28,12 +27,12 @@ spec:
         uri: "/"
       route:
         - destination:
-            host: {{ .Values.canaryService }}
+            host: catalog-canary
             port:
               number: {{ .Values.service.port }}
 
     # Stable route
-    - name: {{ .Chart.Name }}-route
+    - name: catalog-stable
       match:
         - uri:
             prefix: "/catalog/"
@@ -41,22 +40,14 @@ spec:
             exact: "/catalog"
       rewrite:
         uri: "/"
-      corsPolicy:
-        allowOrigins:
-          - exact: "{{ .Values.frontendUrl }}"
-        allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-        allowHeaders: ["*"]
-        allowCredentials: true
-        maxAge: "24h"
       route:
         - destination:
-            host: {{ .Values.stableService }}
+            host: catalog-stable
             port:
               number: {{ .Values.service.port }}
           weight: 100
         - destination:
-            host: {{ .Values.canaryService }}
+            host: catalog-canary
             port:
               number: {{ .Values.service.port }}
           weight: 0
-

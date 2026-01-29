@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cart-config
+  namespace: {{ .Values.namespace | default "demo" }}
+data:
+  PGUSER: {{ .Values.database.user | default "appuser" }}
+  PGHOST: {{ .Values.database.host | default "my-postgresql.postgres.svc.cluster.local" }}
+  PGDATABASE: {{ .Values.database.name | default "mv100db" }}
+  PGPORT: "{{ .Values.database.port | default "5432" }}"
+  REDIS_URL: {{ .Values.redis.url | default "redis-master.redis.svc.cluster.local:6379" }}
+  LOG_LEVEL: {{ .Values.env.LOG_LEVEL | default "info" }}
+  PORT: "{{ .Values.service.port | default "3003" }}"
+  FRONTEND_URL: "{{ .Values.frontend.url | default "https://travelersources.com" }}"
+  OTEL_PROM_PORT: "{{ .Values.otel.promPort | default "9466" }}"

@@ -103,6 +103,10 @@ env:
 ```bash
 cd apps/frontend/base
 helm template frontend . -f values.yaml -f ../overlays/dev/values-dev.yaml -n demo > ../overlays/dev/frontend.yaml
+
+or 
+
+helm template frontend-dev . -f overlays/dev/values-dev.yaml --output-dir overlays/dev/rendered ## let ns injected from values-dev.yml
 ```
 
 ### For Prod:

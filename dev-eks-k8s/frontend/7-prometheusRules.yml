@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: istio-rollout-stable-rules
+  name: frontend-stable-rules
   namespace: monitoring
   labels:
     release: kube-prom-stack
@@ -17,20 +17,20 @@ spec:
       expr: |
         (sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="istio-rollout-stable",
+            destination_service_name="frontend-stable",
             response_code=~"2.."
         }[5m]))
         /
         sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="istio-rollout-stable"
+            destination_service_name="frontend-stable"
         }[5m]))) * 100 < 95
       for: 2m
       labels:
         severity: warning
       annotations:
         summary: "Stable service success rate is low"
-        description: "Success rate for istio-rollout-stable dropped below 95%."
+        description: "Success rate for frontend-stable dropped below 95%."
 
     # ----------------------------------------------------
     # 2. Stable 5xx Error Rate Alert (>1%)
@@ -39,20 +39,20 @@ spec:
       expr: |
         sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="istio-rollout-stable",
+            destination_service_name="frontend-stable",
             response_code=~"5.."
         }[5m]))
         /
         sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="istio-rollout-stable"
+            destination_service_name="frontend-stable"
         }[5m])) > 0.01
       for: 2m
       labels:
         severity: critical
       annotations:
         summary: "Stable service 5xx error rate is too high"
-        description: "More than 1% of requests to istio-rollout-stable are 5xx errors."
+        description: "More than 1% of requests to frontend-stable are 5xx errors."
 
     # ----------------------------------------------------
     # 3. Stable P95 Latency Alert (>500ms)
@@ -63,7 +63,7 @@ spec:
           0.95,
           sum(rate(istio_request_duration_milliseconds_bucket{
               reporter="destination",
-              destination_service_name="istio-rollout-stable"
+              destination_service_name="frontend-stable"
           }[5m])) by (le)
         ) > 500
       for: 3m
@@ -71,4 +71,4 @@ spec:
         severity: warning
       annotations:
         summary: "Stable service P95 latency is high"
-        description: "P95 latency for istio-rollout-stable exceeded 500ms."
+        description: "P95 latency for frontend-stable exceeded 500ms."
