@@ -6,7 +6,11 @@ resources:
   - certificate.yaml
   - gateway.yaml
   - kyverno_rules.yaml
-  - secret.yaml
+  # - secret.yaml
   - vs.yaml
   - cluster_issuer.yaml
   - mTLs.yaml
+  - ClusterSecretStore.yaml
+  - ExternalSecret.yaml
+  - svc-monitor.yaml
+  - configmap.yaml
