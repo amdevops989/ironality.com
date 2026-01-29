@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    istio-injection: enabled
-   # pod-security.kubernetes.io/enforce: baseline   ## it gonna blocks istion init so in other namespaces you can restricted 
-    pod-security.kubernetes.io/audit: restricted
-    pod-security.kubernetes.io/enforce: privileged
-  name: dev
