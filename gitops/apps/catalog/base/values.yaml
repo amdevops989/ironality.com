@@ -1,0 +1,131 @@
+env:
+  PGUSER: appuser
+  PGHOST: my-postgresql.postgres.svc.cluster.local
+  PGDATABASE: mv100db
+  PGPORT: "5432"
+
+  REDIS_URL: redis-master.redis.svc.cluster.local:6379
+
+  KAFKA_BROKERS: kafka.kafka.svc.cluster.local:9092
+  KAFKA_CLIENT_ID: catalog-service
+  KAFKA_TOPIC_PRODUCTS: mv100db.public.products
+
+  LOG_LEVEL: info
+  PORT: "3001"
+
+  FRONTEND_URL: https://travelersources.com
+
+  OTEL_PROM_PORT: "9464"
+
+host: ""
+
+
+namespace: dev
+
+service:
+  port: 3001
+
+istio:
+  gateway: api-gateway
+
+namespace: dev
+
+host: ""
+
+istio:
+  gateway: api-gateway
+  tls:
+    enabled: false
+    secretName: ""
+
+namespace: dev
+
+replicaCount: 1
+revisionHistoryLimit: 1
+
+image:
+  repository: devopsflow999/catalog
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  port: 3001
+
+metrics:
+  port: 9464
+
+configMapName: catalog-config
+secretName: app-secrets
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+strategy:
+  stableService: catalog-stable
+  canaryService: catalog-canary
+  virtualService: catalog-vsvc
+  routeName: catalog-route
+
+  steps:
+    - weight: 10
+    - weight: 20
+      pause:
+        duration: 20s
+    - weight: 30
+      pause:
+        duration: 20s
+    - weight: 40
+      pause:
+        duration: 20s
+    - weight: 50
+      pause:
+        duration: 20s
+    - weight: 60
+      pause:
+        duration: 20s
+    - weight: 70
+      pause:
+        duration: 20s
+    - weight: 80
+      pause:
+        duration: 20s
+    - weight: 90
+      pause:
+        duration: 20s
+
+
+monitoringNamespace: monitoring
+
+prometheusRule:
+  release: kube-prom-stack
+
+alerts:
+  successRateThreshold: 95
+  successRateFor: 2m
+
+  errorRateThreshold: 0.01
+  errorRateFor: 2m
+
+  latencyP95Threshold: 500
+  latencyP95For: 3m
+
+  namespace: demo
+
+monitoringNamespace: monitoring
+
+strategy:
+  stableService: catalog-stable
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilization: 60
+
+
+pdb:
+  minAvailable: 1

@@ -1,0 +1,196 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders-stable-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: "Orders Service"
+data:
+  orders-stable.json: |
+    {
+      "title": "Orders Service – DevOps & App Dashboard",
+      "schemaVersion": 36,
+      "version": 1,
+      "refresh": "10s",
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "panels": [
+        {
+          "type": "gauge",
+          "title": "Success Rate (%)",
+          "gridPos": { "x": 0, "y": 0, "w": 8, "h": 6 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m]))) * 100",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "percent" } }
+        },
+        {
+          "type": "gauge",
+          "title": "4xx Error Rate (%)",
+          "gridPos": { "x": 8, "y": 0, "w": 8, "h": 6 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m]))) * 100",
+              "refId": "B"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "percent" } }
+        },
+        {
+          "type": "gauge",
+          "title": "5xx Error Rate (%)",
+          "gridPos": { "x": 16, "y": 0, "w": 8, "h": 6 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m]))) * 100",
+              "refId": "C"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "percent" } }
+        },
+        {
+          "type": "gauge",
+          "title": "P95 Latency (ms)",
+          "gridPos": { "x": 0, "y": 6, "w": 12, "h": 6 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95,sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m])) by (le))",
+              "refId": "D"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "ms" } }
+        },
+        {
+          "type": "gauge",
+          "title": "CPU Usage (%)",
+          "gridPos": { "x": 12, "y": 6, "w": 6, "h": 6 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"demo\",pod=~\"orders-.*\",container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"orders-.*\",resource=\"cpu\"})",
+              "refId": "E"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "percent" } }
+        },
+        {
+          "type": "gauge",
+          "title": "Memory Usage (%)",
+          "gridPos": { "x": 18, "y": 6, "w": 6, "h": 6 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"demo\",pod=~\"orders-.*\",container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"orders-.*\",resource=\"memory\"})",
+              "refId": "F"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "percent" } }
+        },
+        {
+          "type": "stat",
+          "title": "Orders paid total",
+          "gridPos": { "x": 0, "y": 12, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(orders_paid_total)",
+              "refId": "G"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Orders Created / min",
+          "gridPos": { "x": 0, "y": 12, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(rate(orders_created_total[5m])) * 60",
+              "refId": "G"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Orders Paid / min",
+          "gridPos": { "x": 8, "y": 12, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(rate(orders_paid_total[5m])) * 60",
+              "refId": "H"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Order Creation Failures / min",
+          "gridPos": { "x": 16, "y": 12, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(rate(orders_creation_failures_total[5m])) * 60",
+              "refId": "I"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Payment Failures / min",
+          "gridPos": { "x": 0, "y": 17, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(rate(orders_payment_failures_total[5m])) * 60",
+              "refId": "J"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Revenue / min",
+          "gridPos": { "x": 8, "y": 17, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(rate(orders_revenue_total[5m]))",
+              "refId": "K"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "currency" } }
+        },
+        {
+          "type": "graph",
+          "title": "Order Amount P95",
+          "gridPos": { "x": 16, "y": 17, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95,sum(rate(orders_amount_bucket[5m])) by (le))",
+              "refId": "L"
+            }
+          ]
+        }
+      ]
+    }
+

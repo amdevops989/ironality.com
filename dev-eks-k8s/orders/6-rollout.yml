@@ -1,0 +1,83 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: orders
+  namespace: demo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: orders
+        istio: monitor
+    spec:
+      containers:
+      - name: orders
+        image: devopsflow999/orders:main-v0.1.1
+        envFrom:
+          - configMapRef:
+              name: orders-config
+          - secretRef:
+              name: app-secrets
+        ports:
+        - name: http
+          containerPort: 3004
+          protocol: TCP
+        - name: metrics ## added for metrics svc 
+          containerPort: 9467
+          protocol: TCP
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+  strategy:
+    canary:
+      canaryService: orders-canary
+      stableService: orders-stable
+      # analysis will be performed in background, while rollout is progressing through its steps
+      # analysis:
+      #   startingStep: 1   # index of step list, of when to start this analysis
+      #   templates:
+      #   - templateName: orders-canary-quality
+        # args:             # arguments allow AnalysisTemplates to be re-used
+        # - name: service 
+        #   value: orders-canary
+        # - name: namespace
+        #   valueFrom:
+        #     fieldRef:
+        #       fieldPath: metadata.namespace
+      trafficRouting:
+        istio:
+          virtualService:
+            name: orders-vsvc
+            routes:
+            - orders-route
+      steps:
+      - setWeight: 10
+      - pause: {}         # pause indefinitely
+      - setWeight: 20
+      - pause: {duration: 20s}
+      - setWeight: 30
+      - pause: {duration: 20s}
+      - setWeight: 40
+      - pause: {duration: 20s}
+      - setWeight: 50
+      - pause: {duration: 20s}
+      - setWeight: 60
+      - pause: {duration: 20s}
+      - setWeight: 70
+      - pause: {duration: 20s}
+      - setWeight: 80
+      - pause: {duration: 20s}
+      - setWeight: 90
+      - pause: {duration: 20s}

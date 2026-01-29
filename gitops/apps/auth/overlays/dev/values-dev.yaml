@@ -1,0 +1,118 @@
+namespace: "dev"
+
+service:
+  port: 3002
+
+
+gateway:
+  host: "dev.api.travelersources.com"
+  name: "api-gateway"
+
+database:
+  user: "appuser"
+  name: "mv100db"
+  host: "my-postgresql.postgres.svc.cluster.local"
+  port: "5432"
+
+redis:
+  url: "redis-master.redis.svc.cluster.local:6379"
+
+kafka:
+  brokers: "kafka.kafka.svc.cluster.local:9092"
+  clientId: "auth-service"
+  topicUsers: "mv100db.public.users"
+
+logLevel: "info"
+
+frontend:
+  url: "https://travelersources.com"
+
+otel:
+  promPort: "9465"
+
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 5
+  cpuUtilization: 50
+
+pdb:
+  minAvailable: 1
+
+namespace: "demo"
+replicaCount: 1
+revisionHistoryLimit: 1
+
+image:
+  repository: devopsflow999/auth
+  tag: main-v0.1.4
+  pullPolicy: IfNotPresent
+
+configMapName: auth-config
+secretName: app-secret
+
+service:
+  port: 3002
+
+metrics:
+  port: 9465
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+strategy:
+  stableService: auth-stable
+  canaryService: auth-canary
+  virtualService: auth-vsvc
+  routeName: auth-route
+  steps:
+    - weight: 10
+      pause: {}
+    - weight: 20
+      pause:
+        duration: 20s
+    - weight: 30
+      pause:
+        duration: 20s
+    - weight: 40
+      pause:
+        duration: 20s
+    - weight: 50
+      pause:
+        duration: 20s
+    - weight: 60
+      pause:
+        duration: 20s
+    - weight: 70
+      pause:
+        duration: 20s
+    - weight: 80
+      pause:
+        duration: 20s
+    - weight: 90
+      pause:
+        duration: 20s
+
+monitoringNamespace: "monitoring"
+
+strategy:
+  stableService: auth-stable
+
+
+prometheusRule:
+  release: "kube-prom-stack"
+
+
+
+alerts:
+  successRateThreshold: 95      # % success rate
+  successRateFor: 5m            # alert if below threshold for this duration
+  errorRateThreshold: 0.01      # 1% for 5xx
+  errorRateFor: 5m
+  latencyP95Threshold: 500      # 500ms
+  latencyP95For: 5m

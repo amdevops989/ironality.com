@@ -1,0 +1,53 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: catalog-vsvc
+  namespace: {{ .Values.namespace | default "dev" }}
+spec:
+  hosts:
+    - {{ .Values.host | quote }}
+  gateways:
+    - {{ .Values.istio.gateway | default "api-gateway" }}
+
+  http:
+    # Canary route (must be first)
+    - name: catalog-canary
+      match:
+        - uri:
+            prefix: "/catalog/"
+          headers:
+            x-canary:
+              exact: "true"
+        - uri:
+            exact: "/catalog"
+          headers:
+            x-canary:
+              exact: "true"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: catalog-canary
+            port:
+              number: {{ .Values.service.port }}
+
+    # Stable route
+    - name: catalog-stable
+      match:
+        - uri:
+            prefix: "/catalog/"
+        - uri:
+            exact: "/catalog"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: catalog-stable
+            port:
+              number: {{ .Values.service.port }}
+          weight: 100
+        - destination:
+            host: catalog-canary
+            port:
+              number: {{ .Values.service.port }}
+          weight: 0
