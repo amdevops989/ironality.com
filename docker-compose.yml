@@ -23,7 +23,7 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
 
-
+##
 
       # ---- Storage ----
       KAFKA_LOG_DIRS: /var/lib/kafka/data
