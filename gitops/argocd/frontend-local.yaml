@@ -13,7 +13,7 @@ spec:
     path: gitops/apps/frontend/overlays/local
   destination:
     server: https://kubernetes.default.svc
-    namespace: local
+    namespace: demo
   syncPolicy:
     automated:
       prune: true
