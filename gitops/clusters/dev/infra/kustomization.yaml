@@ -9,3 +9,4 @@ resources:
   - secret.yaml
   - vs.yaml
   - cluster_issuer.yaml
+  - mTLs.yaml
