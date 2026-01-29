@@ -309,34 +309,42 @@ spec:
         - secretRef:
             name: frontend-secrets
   strategy:
-   canary:
-    stableService: frontend-stable
-    canaryService: frontend-canary
-    scaleDownDelaySeconds: 60
-    trafficRouting:
-      istio:
-        virtualService:
-          name: frontend-vsvc
-          routes:
-            - primary
-    steps:
-    - setWeight: 10
-    - setWeight: 20
-      pause: map[duration:20s]
-    - setWeight: 30
-      pause: map[duration:20s]
-    - setWeight: 40
-      pause: map[duration:20s]
-    - setWeight: 50
-      pause: map[duration:20s]
-    - setWeight: 60
-      pause: map[duration:20s]
-    - setWeight: 70
-      pause: map[duration:20s]
-    - setWeight: 80
-      pause: map[duration:20s]
-    - setWeight: 90
-      pause: map[duration:20s]
+    canary:
+      stableService: frontend-stable
+      canaryService: frontend-canary
+      scaleDownDelaySeconds: 60
+      trafficRouting:
+        istio:
+          virtualService:
+            name: frontend-vsvc
+            routes:
+              - primary
+      steps:
+        - setWeight: 10
+        - setWeight: 20
+          pause:
+            duration: 20s
+        - setWeight: 30
+          pause:
+            duration: 20s
+        - setWeight: 40
+          pause:
+            duration: 20s
+        - setWeight: 50
+          pause:
+            duration: 20s
+        - setWeight: 60
+          pause:
+            duration: 20s
+        - setWeight: 70
+          pause:
+            duration: 20s
+        - setWeight: 80
+          pause:
+            duration: 20s
+        - setWeight: 90
+          pause:
+            duration: 20s
 ---
 # Source: frontend/templates/virtualservice.yaml
 apiVersion: networking.istio.io/v1beta1

@@ -33,7 +33,7 @@ strategy:
   scaleDownDelaySeconds: 60
   steps:
     - weight: 10
-      pause: {}
+#      pause: {}
     - weight: 20
       pause:
         duration: 20s
