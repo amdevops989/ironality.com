@@ -8,6 +8,6 @@ resources:
   - frontend-local.yaml
   - frontend-sealdsecret.yaml
 
-commonLabels:
-  app.kubernetes.io/name: frontend
-  app.kubernetes.io/environment: demo
+# commonLabels:
+#   app.kubernetes.io/name: frontend
+#   app.kubernetes.io/environment: demo

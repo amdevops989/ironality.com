@@ -284,7 +284,6 @@ spec:
   selector:
     matchLabels:
       app: frontend
-      #app.kubernetes.io/environment: demo
 
   template:
     metadata:
@@ -292,7 +291,6 @@ spec:
         sidecar.istio.io/inject: "true"
       labels:
         app: frontend
-        #app.kubernetes.io/environment: demo
         istio: monitor
 
     spec:
