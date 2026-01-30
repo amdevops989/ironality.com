@@ -276,52 +276,60 @@ kind: Rollout
 metadata:
   name: frontend
   namespace: demo
+
 spec:
   replicas: 1
   revisionHistoryLimit: 2
+
   selector:
     matchLabels:
       app: frontend
-      app.kubernetes.io/environment: demo
+      #app.kubernetes.io/environment: demo
+
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
         app: frontend
-        app.kubernetes.io/environment: demo
+        #app.kubernetes.io/environment: demo
         istio: monitor
+
     spec:
       containers:
-      - name: frontend
-        image: "devopsflow999/frontend:909"
-        imagePullPolicy: IfNotPresent
-        ports:
-        - name: http
-          containerPort: 80
-          protocol: TCP
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 256Mi
-        envFrom:
-        - secretRef:
-            name: frontend-secrets
+        - name: frontend
+          image: "devopsflow999/frontend:909"
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          envFrom:
+            - secretRef:
+                name: frontend-secrets
 
   strategy:
     canary:
       stableService: frontend-stable
       canaryService: frontend-canary
       scaleDownDelaySeconds: 60
+
       trafficRouting:
         istio:
           virtualService:
             name: frontend-vsvc
             routes:
               - primary
+
       steps:
         - setWeight: 10
         - setWeight: 20

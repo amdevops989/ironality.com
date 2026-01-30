@@ -11,7 +11,7 @@ spec:
   selector:
     matchLabels:
       app: frontend
-      app.kubernetes.io/environment: {{ .Values.namespace | default "dev" }}
+      #app.kubernetes.io/environment: {{ .Values.namespace | default "dev" }}
 
   template:
     metadata:
@@ -19,7 +19,7 @@ spec:
         sidecar.istio.io/inject: "true"
       labels:
         app: frontend
-        app.kubernetes.io/environment: {{ .Values.namespace | default "dev" }}
+        #app.kubernetes.io/environment: {{ .Values.namespace | default "dev" }}
         istio: monitor
 
     spec:
