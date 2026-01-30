@@ -1,6 +1,6 @@
 # Dev-specific values
 namespace: demo
-replicaCount: 15
+replicaCount: 2
 
 image:
   repository: devopsflow999/frontend
@@ -18,8 +18,8 @@ istio:
     secretName: api-travelersources-tls-secret
 
 hpa:
-  minReplicas: 15
-  maxReplicas: 20
+  minReplicas: 2
+  maxReplicas: 10
   targetCPUUtilization: 60
 
 pdb:

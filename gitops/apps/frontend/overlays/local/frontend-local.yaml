@@ -163,8 +163,8 @@ spec:
     kind: Rollout
     name: frontend
 
-  minReplicas: 15
-  maxReplicas: 20
+  minReplicas: 2
+  maxReplicas: 10
 
   metrics:
     - type: Resource
@@ -279,7 +279,7 @@ metadata:
   namespace: demo
 
 spec:
-  replicas: 15
+  replicas: 2
   revisionHistoryLimit: 2
 
   selector:
