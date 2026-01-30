@@ -33,7 +33,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": '(sum(rate(istio_requests_total{reporter="source", destination_service_name="frontend-stable", response_code=~"2..", namespace="{{ .Values.namespace | default "dev" }}" }[5m])) / sum(rate(istio_requests_total{reporter="source", destination_service_name="frontend-stable", namespace="{{ .Values.namespace | default "dev" }}" }[5m]))) * 100',
+              "expr": '(sum(rate(istio_requests_total{reporter="source",destination_service_name="frontend-stable",response_code=~"2..",namespace="{{ .Values.namespace | default "dev" }}"}[5m])) / sum(rate(istio_requests_total{reporter="source",destination_service_name="frontend-stable",namespace="{{ .Values.namespace | default "dev" }}"}[5m]))) * 100',
               "refId": "A"
             }
           ],
@@ -46,7 +46,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": '(sum(rate(istio_requests_total{reporter="source", destination_service_name="frontend-stable", response_code=~"4..", namespace="{{ .Values.namespace | default "dev" }}" }[5m])) / sum(rate(istio_requests_total{reporter="source", destination_service_name="frontend-stable", namespace="{{ .Values.namespace | default "dev" }}" }[5m]))) * 100',
+              "expr": '(sum(rate(istio_requests_total{reporter="source",destination_service_name="frontend-stable",response_code=~"4..",namespace="{{ .Values.namespace | default "dev" }}"}[5m])) / sum(rate(istio_requests_total{reporter="source",destination_service_name="frontend-stable",namespace="{{ .Values.namespace | default "dev" }}"}[5m]))) * 100',
               "refId": "B"
             }
           ],
@@ -59,7 +59,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": '(sum(rate(istio_requests_total{reporter="source", destination_service_name="frontend-stable", response_code=~"5..", namespace="{{ .Values.namespace | default "dev" }}" }[5m])) / sum(rate(istio_requests_total{reporter="source", destination_service_name="frontend-stable", namespace="{{ .Values.namespace | default "dev" }}" }[5m]))) * 100',
+              "expr": '(sum(rate(istio_requests_total{reporter="source",destination_service_name="frontend-stable",response_code=~"5..",namespace="{{ .Values.namespace | default "dev" }}"}[5m])) / sum(rate(istio_requests_total{reporter="source",destination_service_name="frontend-stable",namespace="{{ .Values.namespace | default "dev" }}"}[5m]))) * 100',
               "refId": "C"
             }
           ],
@@ -72,7 +72,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": 'histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{reporter="source", destination_service_name="frontend-stable", namespace="{{ .Values.namespace | default "dev" }}" }[5m])) by (le))',
+              "expr": 'histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{reporter="source",destination_service_name="frontend-stable",namespace="{{ .Values.namespace | default "dev" }}"}[5m])) by (le))',
               "refId": "D"
             }
           ],
@@ -85,7 +85,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": '100 * sum(rate(container_cpu_usage_seconds_total{namespace="{{ .Values.namespace | default "dev" }}", pod=~"frontend-.*", container!~"POD"}[2m])) / sum(kube_pod_container_resource_limits{namespace="{{ .Values.namespace | default "dev" }}", pod=~"frontend-.*", container!~"POD", resource="cpu"})',
+              "expr": '100 * sum(rate(container_cpu_usage_seconds_total{namespace="{{ .Values.namespace | default "dev" }}",pod=~"frontend-.*",container!~"POD"}[2m])) / sum(kube_pod_container_resource_limits{namespace="{{ .Values.namespace | default "dev" }}",pod=~"frontend-.*",container!~"POD",resource="cpu"})',
               "refId": "E"
             }
           ],
@@ -98,7 +98,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": '100 * sum(container_memory_working_set_bytes{namespace="{{ .Values.namespace | default "dev" }}", pod=~"frontend-.*", container!~"POD"}) / sum(kube_pod_container_resource_limits{namespace="{{ .Values.namespace | default "dev" }}", pod=~"frontend-.*", container!~"POD", resource="memory"})',
+              "expr": '100 * sum(container_memory_working_set_bytes{namespace="{{ .Values.namespace | default "dev" }}",pod=~"frontend-.*",container!~"POD"}) / sum(kube_pod_container_resource_limits{namespace="{{ .Values.namespace | default "dev" }}",pod=~"frontend-.*",container!~"POD",resource="memory"})',
               "refId": "F"
             }
           ],
@@ -106,3 +106,4 @@ data:
         }
       ]
     }
+
