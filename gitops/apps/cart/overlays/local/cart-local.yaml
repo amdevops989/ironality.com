@@ -323,7 +323,7 @@ spec:
     spec:
       containers:
         - name: cart
-          image: "devopsflow999/cart:main-v0.1.1"
+          image: "devopsflow999/cart:test"
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
