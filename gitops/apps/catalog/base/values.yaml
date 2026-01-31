@@ -37,7 +37,7 @@ prometheusRule:
 
 # Istio configuration (for VirtualService / Gateway)
 istio:
-  host: api.travelersources.com
+  host: api.localdev.me
   tls:
     enabled: false
     secretName: ""  # only required if TLS is enabled

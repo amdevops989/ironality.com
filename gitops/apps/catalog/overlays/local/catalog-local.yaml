@@ -233,7 +233,7 @@ spec:
         name: http
         protocol: HTTP
       hosts:
-        - "api.travelersources.com"
+        - "api.localdev.me"
 ---
 # Source: catalog/templates/10-prometheus-rules.yaml
 apiVersion: monitoring.coreos.com/v1
@@ -410,7 +410,7 @@ metadata:
   namespace: demo
 spec:
   hosts:
-    - "api.travelersources.com"
+    - "api.localdev.me"
   gateways:
     - "api-gateway"
   http:
