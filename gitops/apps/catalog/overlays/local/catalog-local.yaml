@@ -158,8 +158,8 @@ spec:
     app: catalog
   ports:
     - protocol: TCP
-      port: 
-      targetPort: http
+      port: 3001
+      targetPort: 3001
       name: http
 ---
 # Source: catalog/templates/1-services.yaml
@@ -173,8 +173,8 @@ spec:
     app: catalog
   ports:
     - protocol: TCP
-      port: 
-      targetPort: http
+      port: 3001
+      targetPort: 3001
       name: http
 ---
 # Source: catalog/templates/4-serviceMonitor.yaml
