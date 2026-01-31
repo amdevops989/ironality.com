@@ -63,8 +63,7 @@ spec:
             virtualService:
               name: {{ .Chart.Name }}-vsvc
               routes:
-                - catalog-route
-
+                - primary
         steps:
           {{- range .Values.strategy.steps }}
           - setWeight: {{ .weight | default 10 }}

@@ -374,8 +374,7 @@ spec:
             virtualService:
               name: catalog-vsvc
               routes:
-                - catalog-route
-
+                - primary
         steps:
           - setWeight: 10
           - setWeight: 20
