@@ -33,10 +33,14 @@ logLevel: info
 
 # Istio configuration (for VirtualService / Gateway)
 istio:
-  host: api.localdev.me
-  gateway: api-gateway
+  host: api.travelersources.com
+  tls:
+    enabled: false
+    secretName: ""  # only required if TLS is enabled
+# PrometheusRule configuration
+prometheusRule:
+  release: kube-prom-stack  # label for release
 
-## rollout 
 
 
 # Number of replicas and revision history

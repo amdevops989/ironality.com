@@ -30,14 +30,17 @@ app:
 # Logging level
 logLevel: info
 
-# # Metrics / Prometheus configuration
-# appMetrics:
-#   port: 9464
-#   targetPort: 9464
+# PrometheusRule configuration
+prometheusRule:
+  release: kube-prom-stack  # label for release
+
+
 # Istio configuration (for VirtualService / Gateway)
 istio:
   host: api.travelersources.com
-  gateway: api-gateway
+  tls:
+    enabled: false
+    secretName: ""  # only required if TLS is enabled
 
 ## rollout 
 # Namespace for deployment

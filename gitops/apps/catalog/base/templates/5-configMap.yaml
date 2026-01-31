@@ -21,4 +21,4 @@ data:
   LOG_LEVEL: {{ .Values.logLevel | default "info" | quote }}
   PORT: {{ .Values.app.port | default "3001" | quote }}
   FRONTEND_URL: {{ .Values.app.frontendUrl | default "http://frontend.localdev.me" | quote }}
-  OTEL_PROM_PORT: {{ .Values.metrics.port | default "9464" | quote }}
+  OTEL_PROM_PORT: {{ .Values.service.metricsPort | default "9464" | quote }}
