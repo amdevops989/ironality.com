@@ -224,13 +224,13 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "Frontend-stable service success rate is low"
+        summary: "frontend-stable service success rate is low"
         description: "Success rate for frontend-stable dropped below 95%."
 
     # ----------------------------------------------------
     # 2. Stable 5xx Error Rate Alert (>1%)
     # ----------------------------------------------------
-    - alert: IstioFrontendStableHigh5xxRate
+    - alert: IstiofrontendStableHigh5xxRate
       expr: |
         sum(rate(istio_requests_total{
             reporter="destination",
@@ -248,13 +248,13 @@ spec:
       labels:
         severity: critical
       annotations:
-        summary: "Frontend-stable service 5xx error rate is too high"
+        summary: "frontend-stable service 5xx error rate is too high"
         description: "More than 1% of requests to frontend-stable are 5xx errors."
 
     # ----------------------------------------------------
     # 3. Stable P95 Latency Alert (>500ms)
     # ----------------------------------------------------
-    - alert: IstioFrontendStableHighP95Latency
+    - alert: IstiofrontendStableHighP95Latency
       expr: |
         histogram_quantile(
           0.95,
@@ -268,7 +268,7 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "Frontend-stable service P95 latency is high"
+        summary: "frontend-stable service P95 latency is high"
         description: "P95 latency for frontend-stable exceeded 500ms."
 ---
 # Source: frontend/templates/rollout.yaml

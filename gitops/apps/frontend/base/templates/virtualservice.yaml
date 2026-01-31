@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: frontend-vsvc
+  name: {{ .Chart.Name }}-vsvc
   namespace: {{ .Values.namespace | default "dev" }}
 spec:
   hosts:
@@ -16,13 +16,13 @@ spec:
               exact: "true"
       route:
         - destination:
-            host: frontend-canary
+            host: {{ .Chart.Name }}-canary
           weight: 100
     - name: primary
       route:
         - destination:
-            host: frontend-stable
+            host: {{ .Chart.Name }}-stable
           weight: 100
         - destination:
-            host: frontend-canary
+            host: {{ .Chart.Name }}-canary
           weight: 0
