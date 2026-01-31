@@ -16,7 +16,6 @@ redis:
 # Kafka configuration
 kafka:
   brokers: kafka.kafka.svc.cluster.local:9092
-  clientId: auth-service
   KAFKA_TOPIC_PRODUCTS: mv100db.public.products
   KAFKA_TOPIC_USERS: mv100db.public.users
   KAFKA_TOPIC_ORDERS: mv100db.public.orders
@@ -24,7 +23,7 @@ kafka:
 
 # Application-level settings
 app:
-  port: "3002"
+  port: "3003"
   frontendUrl: "http://frontend.localdev.me"
 
 # Logging level
@@ -52,14 +51,14 @@ revisionHistoryLimit: 1
 
 # Container image settings
 image:
-  repository: devopsflow999/auth
+  repository: devopsflow999/cart
   tag: main-v0.1.4
   pullPolicy: IfNotPresent
 
 # Service ports
 service:
-  httpPort: 3002
-  metricsPort: 9465
+  httpPort: 3003
+  metricsPort: 9466
 
 # Resource requests and limits
 resources:
@@ -72,7 +71,7 @@ resources:
 
 # Environment variables from ConfigMap and Secret
 envFrom:
-  configMap: auth-config
+  configMap: cart-config
   secret: demo-secrets
 
 # Rollout canary strategy
