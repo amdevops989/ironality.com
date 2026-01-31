@@ -340,7 +340,7 @@ spec:
     spec:
       containers:
         - name: catalog
-          image: "devopsflow999/catalog:dev-v0.1.5"
+          image: "devopsflow999/catalog:dev-v0.1.6"
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
