@@ -419,13 +419,13 @@ spec:
             port:
               number: 3003
           weight: 100
-      # corsPolicy:
-      #   allowOrigins:
-      #     - exact: "http://frontend.localdev.me"
-      #   allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
-      #   allowHeaders: ["*"]
-      #   allowCredentials: true
-      #   maxAge: "1h"
+      corsPolicy:
+        allowOrigins:
+          - exact: "http://frontend.localdev.me"
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
 
     # Stable route
     - name: primary
@@ -447,10 +447,10 @@ spec:
             port:
               number: 3003
           weight: 0
-      # corsPolicy:
-      #   allowOrigins:
-      #     - exact: "http://frontend.localdev.me"
-      #   allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
-      #   allowHeaders: ["*"]
-      #   allowCredentials: true
-      #   maxAge: "1h"
+      corsPolicy:
+        allowOrigins:
+          - exact: "http://frontend.localdev.me"
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
