@@ -5,6 +5,7 @@ on:
     branches:
       - prod
       - dev
+      - local
       - "release/**"
     paths:
       - "ironality-app/**"
