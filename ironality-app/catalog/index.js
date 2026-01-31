@@ -22,13 +22,15 @@ const {
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 const app = express();
 
+// Use FRONTEND_URL env variable for allowed origin
+const allowedOrigin = process.env.FRONTEND_URL || 'https://travelersources.com';
 
 app.use(cors({
-  origin: 'https://travelersources.com',  // same as Istio allowOrigin
+  origin: allowedOrigin,
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: '*',
   credentials: true,
-  maxAge: 3600
+  maxAge: 3600 // 1 hour
 }));
 app.use(bodyParser.json());
 app.use(morgan('combined'));
