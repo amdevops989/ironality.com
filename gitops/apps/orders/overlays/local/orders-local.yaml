@@ -35,7 +35,7 @@ data:
   LOG_LEVEL: "info"
   PORT: "3004"
   FRONTEND_URL: "http://frontend.localdev.me"
-  OTEL_PROM_PORT: "9467s"
+  OTEL_PROM_PORT: "9467"
 ---
 # Source: orders/templates/6-dashboard-configmap.yaml
 apiVersion: v1
@@ -191,8 +191,8 @@ spec:
     app: orders
   ports:
     - name: metrics
-      port: 9467s
-      targetPort: 9467s
+      port: 9467
+      targetPort: 9467
       protocol: TCP
 ---
 # Source: orders/templates/7-hpa.yaml
@@ -336,7 +336,7 @@ spec:
               containerPort: 3004
               protocol: TCP
             - name: metrics
-              containerPort: 9467s
+              containerPort: 9467
               protocol: TCP
 
           resources:
