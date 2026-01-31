@@ -54,24 +54,25 @@ spec:
               memory: {{ .Values.resources.limits.memory | default "256Mi" }}
 
   strategy:
-    canary:
-      stableService: {{ .Chart.Name }}-stable
-      canaryService: {{ .Chart.Name }}-canary
+      canary:
+        stableService: {{ .Chart.Name }}-stable
+        canaryService: {{ .Chart.Name }}-canary
 
-      trafficRouting:
-        istio:
-          virtualService:
-            name: {{ .Chart.Name }}-vsvc
-            routes:
-              - primary
+        trafficRouting:
+          istio:
+            virtualService:
+              name: {{ .Chart.Name }}-vsvc
+              routes:
+                - catalog-route
 
-      steps:
-        {{- range .Values.strategy.steps }}
-        - setWeight: {{ .weight | default 10 }}
+        steps:
+          {{- range .Values.strategy.steps }}
+          - setWeight: {{ .weight | default 10 }}
           {{- if .pause }}
-          pause:
-            {{- if .pause.duration }}
-            duration: {{ .pause.duration }}
-            {{- end }}
+          - pause:
+              {{- if .pause.duration }}
+              duration: {{ .pause.duration }}
+              {{- end }}
           {{- end }}
-        {{- end }}
+          {{- end }}
+

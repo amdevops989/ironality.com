@@ -365,43 +365,43 @@ spec:
               memory: 256Mi
 
   strategy:
-    canary:
-      stableService: catalog-stable
-      canaryService: catalog-canary
+      canary:
+        stableService: catalog-stable
+        canaryService: catalog-canary
 
-      trafficRouting:
-        istio:
-          virtualService:
-            name: catalog-vsvc
-            routes:
-              - primary
+        trafficRouting:
+          istio:
+            virtualService:
+              name: catalog-vsvc
+              routes:
+                - catalog-route
 
-      steps:
-        - setWeight: 10
-        - setWeight: 20
-          pause:
-            duration: 20s
-        - setWeight: 30
-          pause:
-            duration: 20s
-        - setWeight: 40
-          pause:
-            duration: 20s
-        - setWeight: 50
-          pause:
-            duration: 20s
-        - setWeight: 60
-          pause:
-            duration: 20s
-        - setWeight: 70
-          pause:
-            duration: 20s
-        - setWeight: 80
-          pause:
-            duration: 20s
-        - setWeight: 90
-          pause:
-            duration: 20s
+        steps:
+          - setWeight: 10
+          - setWeight: 20
+          - pause:
+              duration: 20s
+          - setWeight: 30
+          - pause:
+              duration: 20s
+          - setWeight: 40
+          - pause:
+              duration: 20s
+          - setWeight: 50
+          - pause:
+              duration: 20s
+          - setWeight: 60
+          - pause:
+              duration: 20s
+          - setWeight: 70
+          - pause:
+              duration: 20s
+          - setWeight: 80
+          - pause:
+              duration: 20s
+          - setWeight: 90
+          - pause:
+              duration: 20s
 ---
 # Source: catalog/templates/2-virtualservice.yaml
 apiVersion: networking.istio.io/v1beta1
