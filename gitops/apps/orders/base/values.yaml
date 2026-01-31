@@ -58,7 +58,7 @@ image:
 # Service ports
 service:
   httpPort: 3004
-  metricsPort: 9467
+  metricsPort: 9467s
 
 # Resource requests and limits
 resources:

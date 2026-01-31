@@ -5,7 +5,7 @@ kind: Kustomization
 # namespace: dd
 
 resources:
-  - cart-local.yaml
+  - orders-local.yaml
   # - auth-sealedsecret.yaml
   # - api-gateway.yaml
 

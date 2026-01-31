@@ -1,21 +1,21 @@
 ---
-# Source: cart/templates/8-pdb.yaml
+# Source: orders/templates/8-pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: cart-pdb
+  name: orders-pdb
   namespace: demo
 spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: cart
+      app: orders
 ---
-# Source: cart/templates/5-configMap.yaml
+# Source: orders/templates/5-configMap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cart-config
+  name: orders-config
   namespace: demo
 data:
   PGUSER: "appuser"
@@ -33,23 +33,23 @@ data:
   KAFKA_TOPIC_PAYMENTS: "mv100db.public.payments"
 
   LOG_LEVEL: "info"
-  PORT: "3003"
+  PORT: "3004"
   FRONTEND_URL: "http://frontend.localdev.me"
-  OTEL_PROM_PORT: "9466"
+  OTEL_PROM_PORT: "9467s"
 ---
-# Source: cart/templates/6-dashboard-configmap.yaml
+# Source: orders/templates/6-dashboard-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cart-stable-dashboard
+  name: orders-stable-dashboard
   namespace: monitoring
   labels:
     grafana_dashboard: "1"
     release: kube-prom-stack
 data:
-  cart-stable.json: |
+  orders-stable.json: |
     {
-      "title": "cart-Stable DevOps Dashboard",
+      "title": "orders-Stable DevOps Dashboard",
       "schemaVersion": 36,
       "version": 1,
       "annotations": {
@@ -73,7 +73,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"cart-stable\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"cart-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m]))) * 100",
               "refId": "A"
             }
           ],
@@ -86,7 +86,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"cart-stable\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"cart-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m]))) * 100",
               "refId": "B"
             }
           ],
@@ -99,7 +99,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"cart-stable\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"cart-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m]))) * 100",
               "refId": "C"
             }
           ],
@@ -112,7 +112,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"cart-stable\"}[5m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"orders-stable\"}[5m])) by (le))",
               "refId": "D"
             }
           ],
@@ -125,7 +125,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"demo\",pod=~\"cart-.*\",container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"cart-.*\",container!=\"POD\",resource=\"cpu\"})",
+              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"demo\",pod=~\"orders-.*\",container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"orders-.*\",container!=\"POD\",resource=\"cpu\"})",
               "refId": "E"
             }
           ],
@@ -138,7 +138,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"demo\",pod=~\"cart-.*\",container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"cart-.*\",container!=\"POD\",resource=\"memory\"})",
+              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"demo\",pod=~\"orders-.*\",container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"orders-.*\",container!=\"POD\",resource=\"memory\"})",
               "refId": "F"
             }
           ],
@@ -147,65 +147,65 @@ data:
       ]
     }
 ---
-# Source: cart/templates/1-services.yaml
+# Source: orders/templates/1-services.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: cart-canary
+  name: orders-canary
   namespace: demo
 spec:
   selector:
-    app: cart
+    app: orders
   ports:
     - protocol: TCP
-      port: 3003
-      targetPort: 3003
+      port: 3004
+      targetPort: 3004
       name: http
 ---
-# Source: cart/templates/1-services.yaml
+# Source: orders/templates/1-services.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: cart-stable
+  name: orders-stable
   namespace: demo
 spec:
   selector:
-    app: cart
+    app: orders
   ports:
     - protocol: TCP
-      port: 3003
-      targetPort: 3003
+      port: 3004
+      targetPort: 3004
       name: http
 ---
-# Source: cart/templates/4-serviceMonitor.yaml
+# Source: orders/templates/4-serviceMonitor.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: cart-metrics
+  name: orders-metrics
   namespace: demo
   labels:
-    app: cart
+    app: orders
     metrics: "true"
 spec:
   selector:
-    app: cart
+    app: orders
   ports:
     - name: metrics
-      port: 9466
-      targetPort: 9466
+      port: 9467s
+      targetPort: 9467s
       protocol: TCP
 ---
-# Source: cart/templates/7-hpa.yaml
+# Source: orders/templates/7-hpa.yaml
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: cart-hpa
+  name: orders-hpa
   namespace: demo
 spec:
   scaleTargetRef:
     apiVersion: argoproj.io/v1alpha1
     kind: Rollout
-    name: cart
+    name: orders
 
   minReplicas: 2
   maxReplicas: 10
@@ -218,11 +218,11 @@ spec:
           type: Utilization
           averageUtilization: 60
 ---
-# Source: cart/templates/10-prometheus-rules.yaml
+# Source: orders/templates/10-prometheus-rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: cart-stable-rules
+  name: orders-stable-rules
   namespace: monitoring
   labels:
     release: kube-prom-stack
@@ -238,56 +238,56 @@ spec:
       expr: |
         (sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="cart-stable",
+            destination_service_name="orders-stable",
             namespace="demo"
         }[5m]))
         /
         sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="cart-stable",
+            destination_service_name="orders-stable",
             namespace="demo"
         }[5m]))) * 100 < 95
       for: 2m
       labels:
         severity: warning
       annotations:
-        summary: "cart-stable service success rate is low"
-        description: "Success rate for cart-stable dropped below 95%."
+        summary: "orders-stable service success rate is low"
+        description: "Success rate for orders-stable dropped below 95%."
 
     # ----------------------------------------------------
     # 2. Stable 5xx Error Rate Alert (>1%)
     # ----------------------------------------------------
-    - alert: IstiocartStableHigh5xxRate
+    - alert: IstioordersStableHigh5xxRate
       expr: |
         sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="cart-stable",
+            destination_service_name="orders-stable",
             response_code=~"5..",
             namespace="demo"
         }[5m]))
         /
         sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="cart-stable",
+            destination_service_name="orders-stable",
             namespace="demo"
         }[5m])) > 0.01
       for: 2m
       labels:
         severity: critical
       annotations:
-        summary: "cart-stable service 5xx error rate is too high"
-        description: "More than 1% of requests to cart-stable are 5xx errors."
+        summary: "orders-stable service 5xx error rate is too high"
+        description: "More than 1% of requests to orders-stable are 5xx errors."
 
     # ----------------------------------------------------
     # 3. Stable P95 Latency Alert (>500ms)
     # ----------------------------------------------------
-    - alert: IstiocartStableHighP95Latency
+    - alert: IstioordersStableHighP95Latency
       expr: |
         histogram_quantile(
           0.95,
           sum(rate(istio_request_duration_milliseconds_bucket{
               reporter="destination",
-              destination_service_name="cart-stable",
+              destination_service_name="orders-stable",
               namespace="demo"
           }[5m])) by (le)
         ) > 500
@@ -295,14 +295,14 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "cart-stable service P95 latency is high"
-        description: "P95 latency for cart-stable exceeded 500ms."
+        summary: "orders-stable service P95 latency is high"
+        description: "P95 latency for orders-stable exceeded 500ms."
 ---
-# Source: cart/templates/11-rollout.yaml
+# Source: orders/templates/11-rollout.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: cart
+  name: orders
   namespace: demo
 spec:
   replicas: 2
@@ -310,33 +310,33 @@ spec:
 
   selector:
     matchLabels:
-      app: cart
+      app: orders
 
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        app: cart
+        app: orders
         istio: monitor
 
     spec:
       containers:
-        - name: cart
-          image: "devopsflow999/cart:main-v0.1.1"
+        - name: orders
+          image: "devopsflow999/orders:main-v0.1.1"
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: cart-config
+                name: orders-config
             - secretRef:
                 name: demo-secrets
 
           ports:
             - name: http
-              containerPort: 3003
+              containerPort: 3004
               protocol: TCP
             - name: metrics
-              containerPort: 9466
+              containerPort: 9467s
               protocol: TCP
 
           resources:
@@ -349,13 +349,13 @@ spec:
 
   strategy:
       canary:
-        stableService: cart-stable
-        canaryService: cart-canary
+        stableService: orders-stable
+        canaryService: orders-canary
 
         trafficRouting:
           istio:
             virtualService:
-              name: cart-vsvc
+              name: orders-vsvc
               routes:
                 - primary
         steps:
@@ -385,11 +385,11 @@ spec:
           - pause:
               duration: 20s
 ---
-# Source: cart/templates/2-virtualservice.yaml
+# Source: orders/templates/2-virtualservice.yaml
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: cart-vsvc
+  name: orders-vsvc
   namespace: demo
 spec:
   hosts:
@@ -399,20 +399,19 @@ spec:
   http:
 
     # Canary route
-    - name: cart-canary-debug
+    - name: orders-canary-debug
       match:
+        match:
         - uri:
-            prefix: "/cart/cart"
+            prefix: "/orders/"
           headers:
             x-canary:
               exact: "true"
-      rewrite:
-        uri: "/cart"
       route:
         - destination:
-            host: cart-canary
+            host: orders-canary
             port:
-              number: 3003
+              number: 3004
           weight: 100
       # corsPolicy:
       #   allowOrigins:
@@ -426,19 +425,19 @@ spec:
     - name: primary
       match:
         - uri:
-            prefix: "/cart/cart"
-      rewrite:
-        uri: "/cart"
+            prefix: "/orders/"
+        - uri:
+            exact: "/orders"
       route:
         - destination:
-            host: cart-stable
+            host: orders-stable
             port:
-              number: 3003
+              number: 3004
           weight: 100
         - destination:
-            host: cart-canary
+            host: orders-canary
             port:
-              number: 3003
+              number: 3004
           weight: 0
       # corsPolicy:
       #   allowOrigins:

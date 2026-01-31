@@ -23,7 +23,7 @@ kafka:
 
 # Application-level settings
 app:
-  port: "3003"
+  port: "3004"
   frontendUrl: "http://frontend.localdev.me"
 
 # Logging level
@@ -51,14 +51,14 @@ revisionHistoryLimit: 2
 
 # Container image settings
 image:
-  repository: devopsflow999/cart
+  repository: devopsflow999/orders
   tag: main-v0.1.1
   pullPolicy: IfNotPresent
 
 # Service ports
 service:
-  httpPort: 3003
-  metricsPort: 9466
+  httpPort: 3004
+  metricsPort: 9467s
 
 # Resource requests and limits
 resources:
@@ -71,7 +71,7 @@ resources:
 
 # Environment variables from ConfigMap and Secret
 envFrom:
-  configMap: cart-config
+  configMap: orders-config
   secret: demo-secrets
 
 # Rollout canary strategy
