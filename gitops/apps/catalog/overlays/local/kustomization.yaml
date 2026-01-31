@@ -6,7 +6,7 @@ kind: Kustomization
 
 resources:
   - catalog-local.yaml
-  - catalog-sealdsecret.yaml
+  - catalog-sealedsecret.yaml
   # - api-gateway.yaml
 
 # commonLabels:
