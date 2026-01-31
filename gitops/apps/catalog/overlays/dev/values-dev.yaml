@@ -30,10 +30,7 @@ app:
 # Logging level
 logLevel: info
 
-# Metrics / Prometheus configuration
-appMetrics:
-  port: 9464
-  targetPort: 9464
+
 # Istio configuration (for VirtualService / Gateway)
 istio:
   host: api.localdev.me
