@@ -33,7 +33,7 @@ spec:
           weight: 100
       corsPolicy:
         allowOrigins:
-          - exact: "{{ .Values.cors.allowOrigin }}"
+          - exact: "{{ .Values.frontendUrl }}"
         allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
         allowHeaders: ["*"]
         allowCredentials: true
@@ -61,7 +61,7 @@ spec:
           weight: 0
       corsPolicy:
         allowOrigins:
-          - exact: "{{ .Values.cors.allowOrigin }}"
+          - exact: "{{ .Values.frontendUrl }}"
         allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
         allowHeaders: ["*"]
         allowCredentials: true

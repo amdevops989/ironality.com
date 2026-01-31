@@ -36,6 +36,7 @@ data:
   PORT: "3001"
   FRONTEND_URL: "http://frontend.localdev.me"
   OTEL_PROM_PORT: "9464"
+  FRONTEND_URL: http://frontend.localdev.me
 ---
 # Source: catalog/templates/6-dashboard-configmap.yaml
 apiVersion: v1
@@ -340,7 +341,7 @@ spec:
     spec:
       containers:
         - name: catalog
-          image: "devopsflow999/catalog:dev-v0.1.6"
+          image: "devopsflow999/catalog:dev-v0.1.8"
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

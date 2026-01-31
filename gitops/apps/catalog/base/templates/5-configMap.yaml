@@ -22,3 +22,4 @@ data:
   PORT: {{ .Values.app.port | default "3001" | quote }}
   FRONTEND_URL: {{ .Values.app.frontendUrl | default "http://frontend.localdev.me" | quote }}
   OTEL_PROM_PORT: {{ .Values.service.metricsPort | default "9464" | quote }}
+  FRONTEND_URL: {{ .Values.frontendUrl}}
