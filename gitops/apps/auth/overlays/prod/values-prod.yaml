@@ -1,5 +1,0 @@
-replicaCount: 1
-image:
-  tag: main-v0.1.2
-env:
-  LOG_LEVEL: debug

@@ -1,76 +1,79 @@
-env:
-  PGUSER: appuser
-  PGHOST: my-postgresql.postgres.svc.cluster.local
-  PGDATABASE: mv100db
-  PGPORT: "5432"
 
-  REDIS_URL: redis-master.redis.svc.cluster.local:6379
+# Namespace where resources will be deployed
+namespace: demo
 
-  KAFKA_BROKERS: kafka.kafka.svc.cluster.local:9092
-  KAFKA_CLIENT_ID: catalog-service
-  KAFKA_TOPIC_PRODUCTS: mv100db.public.products
+# Database configuration
+database:
+  user: appuser
+  host: my-postgresql.postgres.svc.cluster.local
+  name: mv100db
+  port: "5432"
 
-  LOG_LEVEL: info
-  PORT: "3001"
+# Redis configuration
+redis:
+  url: redis-master.redis.svc.cluster.local:6379
 
-  FRONTEND_URL: https://travelersources.com
+# Kafka configuration
+kafka:
+  brokers: kafka.kafka.svc.cluster.local:9092
+  clientId: products-service
+  topicProducts: mv100db.public.products
+  topicUsers: mv100db.public.users
+  topicOrders: mv100db.public.orders
+  topicPayments: mv100db.public.payments
 
-  OTEL_PROM_PORT: "9464"
+# Application-level settings
+app:
+  port: "3001"
+  frontendUrl: "http://frontend.localdev.me"
 
-host: ""
+# Logging level
+logLevel: info
 
-
-namespace: dev
-
-service:
-  port: 3001
-
+# # Metrics / Prometheus configuration
+# appMetrics:
+#   port: 9464
+#   targetPort: 9464
+# Istio configuration (for VirtualService / Gateway)
 istio:
+  host: api.travelersources.com
   gateway: api-gateway
 
-namespace: dev
+## rollout 
+# Namespace for deployment
+namespace: demo
 
-host: ""
-
-istio:
-  gateway: api-gateway
-  tls:
-    enabled: false
-    secretName: ""
-
-namespace: dev
-
+# Number of replicas and revision history
 replicaCount: 1
 revisionHistoryLimit: 1
 
+# Container image settings
 image:
   repository: devopsflow999/catalog
-  tag: latest
+  tag: dev-v0.1.4
   pullPolicy: IfNotPresent
 
+# Service ports
 service:
-  port: 3001
+  httpPort: 3001
+  metricsPort: 9464
 
-metrics:
-  port: 9464
-
-configMapName: catalog-config
-secretName: app-secrets
-
+# Resource requests and limits
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: "100m"
+    memory: "128Mi"
   limits:
-    cpu: 500m
-    memory: 256Mi
+    cpu: "500m"
+    memory: "256Mi"
 
+# Environment variables from ConfigMap and Secret
+envFrom:
+  configMap: catalog-config
+  secret: demo-secrets
+
+# Rollout canary strategy
 strategy:
-  stableService: catalog-stable
-  canaryService: catalog-canary
-  virtualService: catalog-vsvc
-  routeName: catalog-route
-
   steps:
     - weight: 10
     - weight: 20
@@ -99,33 +102,16 @@ strategy:
         duration: 20s
 
 
-monitoringNamespace: monitoring
 
-prometheusRule:
-  release: kube-prom-stack
-
-alerts:
-  successRateThreshold: 95
-  successRateFor: 2m
-
-  errorRateThreshold: 0.01
-  errorRateFor: 2m
-
-  latencyP95Threshold: 500
-  latencyP95For: 3m
-
-  namespace: demo
-
-monitoringNamespace: monitoring
-
-strategy:
-  stableService: catalog-stable
-
+# Horizontal Pod Autoscaler configuration
 hpa:
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilization: 60
 
-
+# PodDisruptionBudget configuration
 pdb:
   minAvailable: 1
+
+# Namespace for monitoring / Grafana dashboards
+monitoringNamespace: monitoring

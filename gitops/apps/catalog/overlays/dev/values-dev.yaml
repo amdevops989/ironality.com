@@ -1,54 +1,115 @@
-replicaCount: 2
 
-image:
-  tag: dev-v0.1.4
+# Namespace where resources will be deployed
+namespace: demo
 
-##
+# Database configuration
+database:
+  user: appuser
+  host: my-postgresql.postgres.svc.cluster.local
+  name: mv100db
+  port: "5432"
 
-env:
-  PGUSER: appuser
-  PGHOST: my-postgresql.postgres.svc.cluster.local
-  PGDATABASE: mv100db
-  PGPORT: "5432"
+# Redis configuration
+redis:
+  url: redis-master.redis.svc.cluster.local:6379
 
-  REDIS_URL: redis-master.redis.svc.cluster.local:6379
+# Kafka configuration
+kafka:
+  brokers: kafka.kafka.svc.cluster.local:9092
+  clientId: products-service
+  topicProducts: mv100db.public.products
+  topicUsers: mv100db.public.users
+  topicOrders: mv100db.public.orders
+  topicPayments: mv100db.public.payments
 
-  KAFKA_BROKERS: kafka.kafka.svc.cluster.local:9092
-  KAFKA_CLIENT_ID: catalog-service
-  KAFKA_TOPIC_PRODUCTS: mv100db.public.products
+# Application-level settings
+app:
+  port: "3001"
+  frontendUrl: "http://frontend.localdev.me"
 
-  LOG_LEVEL: info
-  PORT: "3001"
+# Logging level
+logLevel: info
 
-  FRONTEND_URL: https://travelersources.com
-
-  OTEL_PROM_PORT: "9464"
-
-
-
-namespace: dev
-
-host: dev.api.travelersources.com
-
+# Metrics / Prometheus configuration
+appMetrics:
+  port: 9464
+  targetPort: 9464
+# Istio configuration (for VirtualService / Gateway)
 istio:
+  host: api.localdev.me
   gateway: api-gateway
-  tls:
-    enabled: true
-    secretName: api-travelersources-tls-secret
+
+## rollout 
 
 
-alerts:
-  successRateThreshold: 90
-  latencyP95Threshold: 800
+# Number of replicas and revision history
+replicaCount: 2
+revisionHistoryLimit: 2
+
+# Container image settings
+image:
+  repository: devopsflow999/catalog
+  tag: dev-v0.1.4
+  pullPolicy: IfNotPresent
+
+# Service ports
+service:
+  httpPort: 3001
+  metricsPort: 9464
+
+# Resource requests and limits
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+# Environment variables from ConfigMap and Secret
+envFrom:
+  configMap: catalog-config
+  secret: demo-secrets
+
+# Rollout canary strategy
+strategy:
+  steps:
+    - weight: 10
+    - weight: 20
+      pause:
+        duration: 20s
+    - weight: 30
+      pause:
+        duration: 20s
+    - weight: 40
+      pause:
+        duration: 20s
+    - weight: 50
+      pause:
+        duration: 20s
+    - weight: 60
+      pause:
+        duration: 20s
+    - weight: 70
+      pause:
+        duration: 20s
+    - weight: 80
+      pause:
+        duration: 20s
+    - weight: 90
+      pause:
+        duration: 20s
 
 
-configMapName: catalog-config
-secretName: app-secrets
-
+# Horizontal Pod Autoscaler configuration
 hpa:
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 10
   targetCPUUtilization: 60
 
+# PodDisruptionBudget configuration
 pdb:
   minAvailable: 1
+
+# Namespace for monitoring / Grafana dashboards
+monitoringNamespace: monitoring

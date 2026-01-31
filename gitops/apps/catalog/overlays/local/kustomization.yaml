@@ -1,8 +1,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
+
 kind: Kustomization
 
-namespace: dev
+# namespace: dd
 
 resources:
-  - catalog.yaml
-  - dev-catalog-sealedsecret.yaml
+  - catalog-local.yaml
+  - catalog-sealdsecret.yaml
+  # - api-gateway.yaml
+
+# commonLabels:
+#   app.kubernetes.io/name: frontend
+#   app.kubernetes.io/environment: demo
