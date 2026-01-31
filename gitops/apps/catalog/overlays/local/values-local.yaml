@@ -50,7 +50,7 @@ revisionHistoryLimit: 2
 # Container image settings
 image:
   repository: devopsflow999/catalog
-  tag: dev-v0.1.5
+  tag: dev-v0.1.6
   pullPolicy: IfNotPresent
 
 # Service ports

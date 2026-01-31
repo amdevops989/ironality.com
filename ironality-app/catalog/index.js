@@ -22,7 +22,14 @@ const {
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 const app = express();
 
-app.use(cors());
+
+app.use(cors({
+  origin: 'https://travelersources.com',  // same as Istio allowOrigin
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: '*',
+  credentials: true,
+  maxAge: 3600
+}));
 app.use(bodyParser.json());
 app.use(morgan('combined'));
 
