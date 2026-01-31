@@ -29,8 +29,15 @@ spec:
         - destination:
             host: {{ .Chart.Name }}-canary
             port:
-              number: 3001
+              number: {{ .Values.service.port | default 3001 }}
           weight: 100
+      corsPolicy:
+        allowOrigins:
+          - exact: "{{ .Values.cors.allowOrigin }}"
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
 
     # Stable route
     - name: primary
@@ -45,10 +52,17 @@ spec:
         - destination:
             host: {{ .Chart.Name }}-stable
             port:
-              number: 3001
+              number: {{ .Values.service.port | default 3001 }}
           weight: 100
         - destination:
             host: {{ .Chart.Name }}-canary
             port:
-              number: 3001
+              number: {{ .Values.service.port | default 3001 }}
           weight: 0
+      corsPolicy:
+        allowOrigins:
+          - exact: "{{ .Values.cors.allowOrigin }}"
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"

@@ -114,3 +114,7 @@ pdb:
 
 # Namespace for monitoring / Grafana dashboards
 monitoringNamespace: monitoring
+
+
+cors:
+  allowOrigin: "http://frontend.localdev.me"

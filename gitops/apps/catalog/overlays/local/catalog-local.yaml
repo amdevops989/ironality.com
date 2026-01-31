@@ -436,6 +436,13 @@ spec:
             port:
               number: 3001
           weight: 100
+      corsPolicy:
+        allowOrigins:
+          - exact: "http://frontend.localdev.me"
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
 
     # Stable route
     - name: primary
@@ -457,3 +464,10 @@ spec:
             port:
               number: 3001
           weight: 0
+      corsPolicy:
+        allowOrigins:
+          - exact: "http://frontend.localdev.me"
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
