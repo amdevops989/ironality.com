@@ -14,40 +14,33 @@ spec:
     - name: {{ .Chart.Name }}-canary-debug
       match:
         - uri:
-            prefix: "/auth/"  ## {{ .Chart.Name }}
-          headers:
-            x-canary:
-              exact: "true"
-        - uri:
-            exact: "/auth"
+            prefix: "/cart/cart"
           headers:
             x-canary:
               exact: "true"
       rewrite:
-        uri: "/"
+        uri: "/cart"
       route:
         - destination:
             host: {{ .Chart.Name }}-canary
             port:
-              number: {{ .Values.service.httpPort | default 3002 }}
+              number: {{ .Values.service.httpPort | default 3003 }}
           weight: 100
-      corsPolicy:
-        allowOrigins:
-          - exact: "{{ .Values.frontendUrl }}"
-        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
-        allowHeaders: ["*"]
-        allowCredentials: true
-        maxAge: "1h"
+      # corsPolicy:
+      #   allowOrigins:
+      #     - exact: "{{ .Values.frontendUrl }}"
+      #   allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+      #   allowHeaders: ["*"]
+      #   allowCredentials: true
+      #   maxAge: "1h"
 
     # Stable route
     - name: primary
       match:
         - uri:
-            prefix: "/auth/"
-        - uri:
-            exact: "/auth"
+            prefix: "/cart/cart"
       rewrite:
-        uri: "/"
+        uri: "/cart"
       route:
         - destination:
             host: {{ .Chart.Name }}-stable
@@ -59,10 +52,10 @@ spec:
             port:
               number: {{ .Values.service.httpPort | default 3002 }}
           weight: 0
-      corsPolicy:
-        allowOrigins:
-          - exact: "{{ .Values.frontendUrl }}"
-        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
-        allowHeaders: ["*"]
-        allowCredentials: true
-        maxAge: "1h"
+      # corsPolicy:
+      #   allowOrigins:
+      #     - exact: "{{ .Values.frontendUrl }}"
+      #   allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+      #   allowHeaders: ["*"]
+      #   allowCredentials: true
+      #   maxAge: "1h"

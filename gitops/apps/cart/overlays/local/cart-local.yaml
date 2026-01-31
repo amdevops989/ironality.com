@@ -323,7 +323,7 @@ spec:
     spec:
       containers:
         - name: cart
-          image: "devopsflow999/cart:test"
+          image: "devopsflow999/cart:main-v0.1.1"
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
@@ -402,40 +402,33 @@ spec:
     - name: cart-canary-debug
       match:
         - uri:
-            prefix: "/auth/"  ## cart
-          headers:
-            x-canary:
-              exact: "true"
-        - uri:
-            exact: "/auth"
+            prefix: "/cart/cart"
           headers:
             x-canary:
               exact: "true"
       rewrite:
-        uri: "/"
+        uri: "/cart"
       route:
         - destination:
             host: cart-canary
             port:
               number: 3003
           weight: 100
-      corsPolicy:
-        allowOrigins:
-          - exact: "http://frontend.localdev.me"
-        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
-        allowHeaders: ["*"]
-        allowCredentials: true
-        maxAge: "1h"
+      # corsPolicy:
+      #   allowOrigins:
+      #     - exact: "http://frontend.localdev.me"
+      #   allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+      #   allowHeaders: ["*"]
+      #   allowCredentials: true
+      #   maxAge: "1h"
 
     # Stable route
     - name: primary
       match:
         - uri:
-            prefix: "/auth/"
-        - uri:
-            exact: "/auth"
+            prefix: "/cart/cart"
       rewrite:
-        uri: "/"
+        uri: "/cart"
       route:
         - destination:
             host: cart-stable
@@ -447,10 +440,10 @@ spec:
             port:
               number: 3003
           weight: 0
-      corsPolicy:
-        allowOrigins:
-          - exact: "http://frontend.localdev.me"
-        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
-        allowHeaders: ["*"]
-        allowCredentials: true
-        maxAge: "1h"
+      # corsPolicy:
+      #   allowOrigins:
+      #     - exact: "http://frontend.localdev.me"
+      #   allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+      #   allowHeaders: ["*"]
+      #   allowCredentials: true
+      #   maxAge: "1h"

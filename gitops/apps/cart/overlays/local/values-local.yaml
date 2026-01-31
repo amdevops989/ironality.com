@@ -52,7 +52,7 @@ revisionHistoryLimit: 2
 # Container image settings
 image:
   repository: devopsflow999/cart
-  tag: test
+  tag: main-v0.1.1
   pullPolicy: IfNotPresent
 
 # Service ports
