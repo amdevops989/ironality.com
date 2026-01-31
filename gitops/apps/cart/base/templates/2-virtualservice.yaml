@@ -31,13 +31,13 @@ spec:
             port:
               number: {{ .Values.service.httpPort | default 3002 }}
           weight: 100
-      # corsPolicy:
-      #   allowOrigins:
-      #     - exact: "{{ .Values.frontendUrl }}"
-      #   allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
-      #   allowHeaders: ["*"]
-      #   allowCredentials: true
-      #   maxAge: "1h"
+      corsPolicy:
+        allowOrigins:
+          - exact: "{{ .Values.frontendUrl }}"
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
 
     # Stable route
     - name: primary
@@ -59,10 +59,10 @@ spec:
             port:
               number: {{ .Values.service.httpPort | default 3002 }}
           weight: 0
-      # corsPolicy:
-      #   allowOrigins:
-      #     - exact: "{{ .Values.frontendUrl }}"
-      #   allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
-      #   allowHeaders: ["*"]
-      #   allowCredentials: true
-      #   maxAge: "1h"
+      corsPolicy:
+        allowOrigins:
+          - exact: "{{ .Values.frontendUrl }}"
+        allowMethods: ["GET","POST","PUT","DELETE","OPTIONS"]
+        allowHeaders: ["*"]
+        allowCredentials: true
+        maxAge: "1h"
