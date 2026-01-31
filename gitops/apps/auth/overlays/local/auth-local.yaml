@@ -1,21 +1,21 @@
 ---
-# Source: catalog/templates/8-pdb.yaml
+# Source: auth/templates/8-pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: catalog-pdb
+  name: auth-pdb
   namespace: demo
 spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: catalog
+      app: auth
 ---
-# Source: catalog/templates/5-configMap.yaml
+# Source: auth/templates/5-configMap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: catalog-config
+  name: auth-config
   namespace: demo
 data:
   PGUSER: "appuser"
@@ -26,30 +26,30 @@ data:
   REDIS_URL: "redis-master.redis.svc.cluster.local:6379"
 
   KAFKA_BROKERS: "kafka.kafka.svc.cluster.local:9092"
-  KAFKA_CLIENT_ID: "products-service"
+  KAFKA_CLIENT_ID: "auth-service"
   KAFKA_TOPIC_PRODUCTS: "mv100db.public.products"
   KAFKA_TOPIC_USERS: "mv100db.public.users"
   KAFKA_TOPIC_ORDERS: "mv100db.public.orders"
   KAFKA_TOPIC_PAYMENTS: "mv100db.public.payments"
 
   LOG_LEVEL: "info"
-  PORT: "3001"
+  PORT: "3002"
   FRONTEND_URL: "http://frontend.localdev.me"
-  OTEL_PROM_PORT: "9464"
+  OTEL_PROM_PORT: "9465"
 ---
-# Source: catalog/templates/6-dashboard-configmap.yaml
+# Source: auth/templates/6-dashboard-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: catalog-stable-dashboard
+  name: auth-stable-dashboard
   namespace: monitoring
   labels:
     grafana_dashboard: "1"
     release: kube-prom-stack
 data:
-  catalog-stable.json: |
+  auth-stable.json: |
     {
-      "title": "catalog-Stable DevOps Dashboard",
+      "title": "auth-Stable DevOps Dashboard",
       "schemaVersion": 36,
       "version": 1,
       "annotations": {
@@ -73,7 +73,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-stable\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-stable\"}[5m]))) * 100",
               "refId": "A"
             }
           ],
@@ -86,7 +86,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-stable\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-stable\"}[5m]))) * 100",
               "refId": "B"
             }
           ],
@@ -99,7 +99,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-stable\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"auth-stable\"}[5m]))) * 100",
               "refId": "C"
             }
           ],
@@ -112,7 +112,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"auth-stable\"}[5m])) by (le))",
               "refId": "D"
             }
           ],
@@ -125,7 +125,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\",resource=\"cpu\"})",
+              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"demo\",pod=~\"auth-.*\",container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"auth-.*\",container!=\"POD\",resource=\"cpu\"})",
               "refId": "E"
             }
           ],
@@ -138,7 +138,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\",resource=\"memory\"})",
+              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"demo\",pod=~\"auth-.*\",container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"auth-.*\",container!=\"POD\",resource=\"memory\"})",
               "refId": "F"
             }
           ],
@@ -147,65 +147,65 @@ data:
       ]
     }
 ---
-# Source: catalog/templates/1-services.yaml
+# Source: auth/templates/1-services.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalog-canary
+  name: auth-canary
   namespace: demo
 spec:
   selector:
-    app: catalog
+    app: auth
   ports:
     - protocol: TCP
-      port: 3001
-      targetPort: 3001
+      port: 3002
+      targetPort: 3002
       name: http
 ---
-# Source: catalog/templates/1-services.yaml
+# Source: auth/templates/1-services.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalog-stable
+  name: auth-stable
   namespace: demo
 spec:
   selector:
-    app: catalog
+    app: auth
   ports:
     - protocol: TCP
-      port: 3001
-      targetPort: 3001
+      port: 3002
+      targetPort: 3002
       name: http
 ---
-# Source: catalog/templates/4-serviceMonitor.yaml
+# Source: auth/templates/4-serviceMonitor.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalog-metrics
+  name: auth-metrics
   namespace: demo
   labels:
-    app: catalog
+    app: auth
     metrics: "true"
 spec:
   selector:
-    app: catalog
+    app: auth
   ports:
     - name: metrics
-      port: 9464
-      targetPort: 9464
+      port: 9465
+      targetPort: 9465
       protocol: TCP
 ---
-# Source: catalog/templates/7-hpa.yaml
+# Source: auth/templates/7-hpa.yaml
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: catalog-hpa
+  name: auth-hpa
   namespace: demo
 spec:
   scaleTargetRef:
     apiVersion: argoproj.io/v1alpha1
     kind: Rollout
-    name: catalog
+    name: auth
 
   minReplicas: 2
   maxReplicas: 10
@@ -218,28 +218,11 @@ spec:
           type: Utilization
           averageUtilization: 60
 ---
-# Source: catalog/templates/3-gateway.yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: api-gateway
-  namespace: demo
-spec:
-  selector:
-    istio: gateway
-  servers:
-    - port:
-        number: 80
-        name: http
-        protocol: HTTP
-      hosts:
-        - "api.localdev.me"
----
-# Source: catalog/templates/10-prometheus-rules.yaml
+# Source: auth/templates/10-prometheus-rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: catalog-stable-rules
+  name: auth-stable-rules
   namespace: monitoring
   labels:
     release: kube-prom-stack
@@ -255,56 +238,56 @@ spec:
       expr: |
         (sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="catalog-stable",
+            destination_service_name="auth-stable",
             namespace="demo"
         }[5m]))
         /
         sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="catalog-stable",
+            destination_service_name="auth-stable",
             namespace="demo"
         }[5m]))) * 100 < 95
       for: 2m
       labels:
         severity: warning
       annotations:
-        summary: "catalog-stable service success rate is low"
-        description: "Success rate for catalog-stable dropped below 95%."
+        summary: "auth-stable service success rate is low"
+        description: "Success rate for auth-stable dropped below 95%."
 
     # ----------------------------------------------------
     # 2. Stable 5xx Error Rate Alert (>1%)
     # ----------------------------------------------------
-    - alert: IstiocatalogStableHigh5xxRate
+    - alert: IstioauthStableHigh5xxRate
       expr: |
         sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="catalog-stable",
+            destination_service_name="auth-stable",
             response_code=~"5..",
             namespace="demo"
         }[5m]))
         /
         sum(rate(istio_requests_total{
             reporter="destination",
-            destination_service_name="catalog-stable",
+            destination_service_name="auth-stable",
             namespace="demo"
         }[5m])) > 0.01
       for: 2m
       labels:
         severity: critical
       annotations:
-        summary: "catalog-stable service 5xx error rate is too high"
-        description: "More than 1% of requests to catalog-stable are 5xx errors."
+        summary: "auth-stable service 5xx error rate is too high"
+        description: "More than 1% of requests to auth-stable are 5xx errors."
 
     # ----------------------------------------------------
     # 3. Stable P95 Latency Alert (>500ms)
     # ----------------------------------------------------
-    - alert: IstiocatalogStableHighP95Latency
+    - alert: IstioauthStableHighP95Latency
       expr: |
         histogram_quantile(
           0.95,
           sum(rate(istio_request_duration_milliseconds_bucket{
               reporter="destination",
-              destination_service_name="catalog-stable",
+              destination_service_name="auth-stable",
               namespace="demo"
           }[5m])) by (le)
         ) > 500
@@ -312,14 +295,14 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "catalog-stable service P95 latency is high"
-        description: "P95 latency for catalog-stable exceeded 500ms."
+        summary: "auth-stable service P95 latency is high"
+        description: "P95 latency for auth-stable exceeded 500ms."
 ---
-# Source: catalog/templates/11-rollout.yaml
+# Source: auth/templates/11-rollout.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: catalog
+  name: auth
   namespace: demo
 spec:
   replicas: 2
@@ -327,20 +310,20 @@ spec:
 
   selector:
     matchLabels:
-      app: catalog
+      app: auth
 
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        app: catalog
+        app: auth
         istio: monitor
 
     spec:
       containers:
-        - name: catalog
-          image: "devopsflow999/catalog:dev-v0.1.8"
+        - name: auth
+          image: "devopsflow999/auth:main-v0.1.4"
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
@@ -350,10 +333,10 @@ spec:
 
           ports:
             - name: http
-              containerPort: 3001
+              containerPort: 3002
               protocol: TCP
             - name: metrics
-              containerPort: 9464
+              containerPort: 9465
               protocol: TCP
 
           resources:
@@ -366,13 +349,13 @@ spec:
 
   strategy:
       canary:
-        stableService: catalog-stable
-        canaryService: catalog-canary
+        stableService: auth-stable
+        canaryService: auth-canary
 
         trafficRouting:
           istio:
             virtualService:
-              name: catalog-vsvc
+              name: auth-vsvc
               routes:
                 - primary
         steps:
@@ -402,11 +385,11 @@ spec:
           - pause:
               duration: 20s
 ---
-# Source: catalog/templates/2-virtualservice.yaml
+# Source: auth/templates/2-virtualservice.yaml
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: catalog-vsvc
+  name: auth-vsvc
   namespace: demo
 spec:
   hosts:
@@ -416,15 +399,15 @@ spec:
   http:
 
     # Canary route
-    - name: catalog-canary-debug
+    - name: auth-canary-debug
       match:
         - uri:
-            prefix: "/catalog/"
+            prefix: "/auth/"  ## auth
           headers:
             x-canary:
               exact: "true"
         - uri:
-            exact: "/catalog"
+            exact: "/auth"
           headers:
             x-canary:
               exact: "true"
@@ -432,9 +415,9 @@ spec:
         uri: "/"
       route:
         - destination:
-            host: catalog-canary
+            host: auth-canary
             port:
-              number: 3001
+              number: 3002
           weight: 100
       corsPolicy:
         allowOrigins:
@@ -448,19 +431,19 @@ spec:
     - name: primary
       match:
         - uri:
-            prefix: "/catalog/"
+            prefix: "/auth/"
         - uri:
-            exact: "/catalog"
+            exact: "/auth"
       rewrite:
         uri: "/"
       route:
         - destination:
-            host: catalog-stable
+            host: auth-stable
             port:
               number: 3001
           weight: 100
         - destination:
-            host: catalog-canary
+            host: auth-canary
             port:
               number: 3001
           weight: 0
