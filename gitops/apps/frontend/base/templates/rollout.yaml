@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: frontend
+  name: {{ .Chart.Name }}
   namespace: {{ .Values.namespace | default "dev" }}
 
 spec:
@@ -10,19 +10,19 @@ spec:
 
   selector:
     matchLabels:
-      app: frontend
+      app: {{ .Chart.Name }}
 
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        app: frontend
+        app: {{ .Chart.Name }}
         istio: monitor
 
     spec:
       containers:
-        - name: frontend
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
 
@@ -53,14 +53,14 @@ spec:
 
   strategy:
     canary:
-      stableService: frontend-stable
-      canaryService: frontend-canary
+      stableService: {{ .Chart.Name }}-stable
+      canaryService: {{ .Chart.Name }}-canary
       scaleDownDelaySeconds: {{ .Values.strategy.scaleDownDelaySeconds | default 60 }}
 
       trafficRouting:
         istio:
           virtualService:
-            name: frontend-vsvc
+            name: {{ .Chart.Name }}-vsvc
             routes:
               - primary
 
