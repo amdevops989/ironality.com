@@ -19,7 +19,7 @@ metadata:
   namespace: monitoring
   labels:
     grafana_dashboard: "1"
-    release: kube-prom-stack
+    # release: kube-prom-stack
 data:
   frontend-stable.json: |
     {

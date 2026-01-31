@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Values.monitoringNamespace | default "monitoring" }}
   labels:
     grafana_dashboard: "1"
-    release: kube-prom-stack
+    # release: kube-prom-stack
 data:
   {{ .Chart.Name }}-stable.json: |
     {
