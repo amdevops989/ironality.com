@@ -16,7 +16,7 @@ redis:
 # Kafka configuration
 kafka:
   brokers: kafka.kafka.svc.cluster.local:9092
-  clientId: products-service
+  clientId: auth-service
   KAFKA_TOPIC_PRODUCTS: mv100db.public.products
   KAFKA_TOPIC_USERS: mv100db.public.users
   KAFKA_TOPIC_ORDERS: mv100db.public.orders
@@ -24,7 +24,7 @@ kafka:
 
 # Application-level settings
 app:
-  port: "3001"
+  port: "3002"
   frontendUrl: "http://frontend.localdev.me"
 
 # Logging level
@@ -52,14 +52,14 @@ revisionHistoryLimit: 1
 
 # Container image settings
 image:
-  repository: devopsflow999/catalog
-  tag: dev-v0.1.8
+  repository: devopsflow999/auth
+  tag: main-v0.1.4
   pullPolicy: IfNotPresent
 
 # Service ports
 service:
-  httpPort: 3001
-  metricsPort: 9464
+  httpPort: 3002
+  metricsPort: 9465
 
 # Resource requests and limits
 resources:
