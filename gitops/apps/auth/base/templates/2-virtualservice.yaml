@@ -29,7 +29,7 @@ spec:
         - destination:
             host: {{ .Chart.Name }}-canary
             port:
-              number: {{ .Values.service.port | default 3002 }}
+              number: {{ .Values.service.httpPort | default 3002 }}
           weight: 100
       # corsPolicy:
       #   allowOrigins:
@@ -52,12 +52,12 @@ spec:
         - destination:
             host: {{ .Chart.Name }}-stable
             port:
-              number: {{ .Values.service.port | default 3001 }}
+              number: {{ .Values.service.httpPort | default 3002 }}
           weight: 100
         - destination:
             host: {{ .Chart.Name }}-canary
             port:
-              number: {{ .Values.service.port | default 3001 }}
+              number: {{ .Values.service.httpPort | default 3002 }}
           weight: 0
       # corsPolicy:
       #   allowOrigins:
