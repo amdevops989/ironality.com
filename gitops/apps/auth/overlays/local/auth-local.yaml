@@ -440,12 +440,12 @@ spec:
         - destination:
             host: auth-stable
             port:
-              number: 3001
+              number: 3002
           weight: 100
         - destination:
             host: auth-canary
             port:
-              number: 3001
+              number: 3002
           weight: 0
       # corsPolicy:
       #   allowOrigins:
