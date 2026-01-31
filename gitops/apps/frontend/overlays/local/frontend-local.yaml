@@ -133,7 +133,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: http
+      targetPort: 80
       name: http
 ---
 # Source: frontend/templates/service.yaml
@@ -148,7 +148,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: http
+      targetPort: 80
       name: http
 ---
 # Source: frontend/templates/hpa.yaml
