@@ -329,6 +329,7 @@ spec:
     matchLabels:
       app: catalog
 
+  template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
