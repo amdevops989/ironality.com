@@ -11,6 +11,7 @@ spec:
     matchLabels:
       app: {{ .Chart.Name }}
 
+  template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
