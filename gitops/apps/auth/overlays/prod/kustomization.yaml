@@ -5,8 +5,8 @@ kind: Kustomization
 # namespace: dd
 
 resources:
-  - catalog-local.yaml
-  - catalog-sealedsecret.yaml
+  - auth-local.yaml
+  # - auth-sealedsecret.yaml  ## they sould be cluster deploys
   # - api-gateway.yaml
 
 # commonLabels:

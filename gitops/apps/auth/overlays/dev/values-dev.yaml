@@ -72,7 +72,7 @@ resources:
 
 # Environment variables from ConfigMap and Secret
 envFrom:
-  configMap: catalog-config
+  configMap: auth-config
   secret: demo-secrets
 
 # Rollout canary strategy

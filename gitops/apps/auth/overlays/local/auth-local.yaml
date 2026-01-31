@@ -327,7 +327,7 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: catalog-config
+                name: auth-config
             - secretRef:
                 name: demo-secrets
 
