@@ -23,7 +23,7 @@ metadata:
 data:
   frontend-stable.json: |
     {
-      "title": "Frontend-Stable DevOps Dashboard",
+      "title": "frontend-Stable DevOps Dashboard",
       "schemaVersion": 36,
       "version": 1,
       "annotations": {
