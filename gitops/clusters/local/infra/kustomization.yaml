@@ -8,5 +8,6 @@ resources:
   - svc-monitor.yaml
   - demo-sealedsecret.yaml
   - mTLs.yaml
+  - mTLs-metrics.yaml
 
  

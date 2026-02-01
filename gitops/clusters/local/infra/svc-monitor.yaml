@@ -17,6 +17,4 @@ spec:
       path: /metrics
       interval: 15s
       scrapeTimeout: 10s
-      scheme: https                 # important for mTLS
-      tlsConfig:
-        insecureSkipVerify: true    # skip verification if using Istio auto-generated certs
+      scheme: http  # plain HTTP works due to PERMISSIVE
