@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: demo-apps-serviceMonitor
+  name: demo-apps-svcmonitor
   namespace: monitoring
   labels:
     release: kube-prom-stack   # MUST match your Prom stack
