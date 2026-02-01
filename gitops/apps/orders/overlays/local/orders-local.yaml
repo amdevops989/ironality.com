@@ -207,7 +207,7 @@ spec:
     kind: Rollout
     name: orders
 
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 10
 
   metrics:
@@ -305,8 +305,8 @@ metadata:
   name: orders
   namespace: demo
 spec:
-  replicas: 1
-  revisionHistoryLimit: 1
+  replicas: 2
+  revisionHistoryLimit: 2
 
   selector:
     matchLabels:
