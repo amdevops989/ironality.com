@@ -177,7 +177,7 @@ spec:
       targetPort: 3004
       name: http
 ---
-# Source: orders/templates/4-serviceMonitor.yaml
+# Source: orders/templates/4-serviceMetrics.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -319,6 +319,7 @@ spec:
       labels:
         app: orders
         istio: monitor
+        metrics: "true"   ## to let prometheus scrap metrics in mtls mode 
 
     spec:
       containers:

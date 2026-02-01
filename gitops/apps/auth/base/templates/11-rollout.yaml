@@ -18,6 +18,7 @@ spec:
       labels:
         app: {{ .Chart.Name }}
         istio: monitor
+        metrics: "true"   ## to let prometheus scrap metrics in mtls mode 
 
     spec:
       containers:

@@ -322,6 +322,7 @@ spec:
       labels:
         app: payments
         istio: monitor
+        metrics: "true"   ## to let prometheus scrap metrics in mtls mode 
 
     spec:
       containers:
