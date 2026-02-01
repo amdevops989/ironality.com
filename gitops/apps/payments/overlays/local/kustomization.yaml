@@ -6,7 +6,7 @@ kind: Kustomization
 
 resources:
   - payments-local.yaml
-  - payments-sealedsecret.yaml
+  # - payments-sealedsecret.yaml
   # - api-gateway.yaml
 
 # commonLabels:
