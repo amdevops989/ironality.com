@@ -180,7 +180,7 @@ spec:
       targetPort: 3005
       name: http
 ---
-# Source: payments/templates/4-serviceMonitor.yaml
+# Source: payments/templates/4-serviceMetrics.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -332,7 +332,7 @@ spec:
             - configMapRef:
                 name: payments-config
             - secretRef:
-                name: payments-secrets
+                name: demo-secrets
 
           ports:
             - name: http
