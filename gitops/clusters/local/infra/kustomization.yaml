@@ -7,5 +7,6 @@ resources:
   # - frontend-gateway.yaml
   - svc-monitor.yaml
   - demo-sealedsecret.yaml
+  - mTLs.yaml
 
  
