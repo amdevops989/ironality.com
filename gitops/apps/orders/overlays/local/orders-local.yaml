@@ -401,9 +401,13 @@ spec:
     # Canary route
     - name: orders-canary-debug
       match:
-        match:
         - uri:
             prefix: "/orders/"
+          headers:
+            x-canary:
+              exact: "true"
+        - uri:
+            prefix: "/orders"
           headers:
             x-canary:
               exact: "true"
@@ -426,6 +430,10 @@ spec:
       match:
         - uri:
             prefix: "/orders/"
+        - uri:
+            exact: "/orders"
+        - uri:
+            prefix: "/orders"
         - uri:
             exact: "/orders"
       route:
