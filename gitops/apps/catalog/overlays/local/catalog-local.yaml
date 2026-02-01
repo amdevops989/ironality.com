@@ -47,7 +47,7 @@ metadata:
     grafana_dashboard: "1"
     release: kube-prom-stack
 data:
-  catalog-stable.json: |
+  catalog-stable.json: |-
     {
       "title": "catalog-Stable DevOps Dashboard",
       "schemaVersion": 36,
@@ -73,7 +73,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\",response_code=~\"2..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter='source',destination_service_name='catalog-stable',response_code=~'2..'}[5m])) / sum(rate(istio_requests_total{reporter='source',destination_service_name='catalog-stable'}[5m]))) * 100",
               "refId": "A"
             }
           ],
@@ -86,7 +86,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\",response_code=~\"4..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter='source',destination_service_name='catalog-stable',response_code=~'4..'}[5m])) / sum(rate(istio_requests_total{reporter='source',destination_service_name='catalog-stable'}[5m]))) * 100",
               "refId": "B"
             }
           ],
@@ -99,7 +99,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "(sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\",response_code=~\"5..\"}[5m])) / sum(rate(istio_requests_total{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m]))) * 100",
+              "expr": "(sum(rate(istio_requests_total{reporter='source',destination_service_name='catalog-stable',response_code=~'5..'}[5m])) / sum(rate(istio_requests_total{reporter='source',destination_service_name='catalog-stable'}[5m]))) * 100",
               "refId": "C"
             }
           ],
@@ -112,7 +112,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"source\",destination_service_name=\"catalog-stable\"}[5m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{reporter='source',destination_service_name='catalog-stable'}[5m])) by (le))",
               "refId": "D"
             }
           ],
@@ -125,7 +125,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\",resource=\"cpu\"})",
+              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace='demo',pod=~'catalog-.*',container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace='demo',pod=~'catalog-.*',container!=\"POD\",resource='cpu'})",
               "refId": "E"
             }
           ],
@@ -138,11 +138,74 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"demo\",pod=~\"catalog-.*\",container!=\"POD\",resource=\"memory\"})",
+              "expr": "100 * sum(container_memory_working_set_bytes{namespace='demo',pod=~'catalog-.*',container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace='demo',pod=~'catalog-.*',container!=\"POD\",resource='memory'})",
               "refId": "F"
             }
           ],
           "fieldConfig": { "defaults": { "unit": "percent" } }
+        },
+        {
+          "type": "stat",
+          "title": "Products Created / min",
+          "gridPos": { "x": 0, "y": 18, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "rate(catalog_products_created_total[5m]) * 60", "refId": "G" }]
+        },
+        {
+          "type": "stat",
+          "title": "Products Updated / min",
+          "gridPos": { "x": 8, "y": 18, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "rate(catalog_products_updated_total[5m]) * 60", "refId": "H" }]
+        },
+        {
+          "type": "stat",
+          "title": "Products Deleted / min",
+          "gridPos": { "x": 16, "y": 18, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "rate(catalog_products_deleted_total[5m]) * 60", "refId": "I" }]
+        },
+        {
+          "type": "stat",
+          "title": "Cache Hits / min",
+          "gridPos": { "x": 0, "y": 23, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(rate(catalog_cache_hits_total[5m])) * 60", "refId": "J" }]
+        },
+        {
+          "type": "stat",
+          "title": "Cache Misses / min",
+          "gridPos": { "x": 8, "y": 23, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(rate(catalog_cache_misses_total[5m])) * 60", "refId": "K" }]
+        },
+        {
+          "type": "stat",
+          "title": "Kafka Publish Failures / min",
+          "gridPos": { "x": 16, "y": 23, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(rate(catalog_kafka_publish_failures_total[5m])) * 60", "refId": "L" }]
+        },
+        {
+          "type": "stat",
+          "title": "Total Products Created",
+          "gridPos": { "x": 0, "y": 28, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(catalog_products_created_total)", "refId": "M" }]
+        },
+        {
+          "type": "stat",
+          "title": "Total Products Updated",
+          "gridPos": { "x": 8, "y": 28, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(catalog_products_updated_total)", "refId": "N" }]
+        },
+        {
+          "type": "stat",
+          "title": "Total Products Deleted",
+          "gridPos": { "x": 16, "y": 28, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(catalog_products_deleted_total)", "refId": "O" }]
         }
       ]
     }
@@ -177,7 +240,7 @@ spec:
       targetPort: 3001
       name: http
 ---
-# Source: catalog/templates/4-serviceMonitor.yaml
+# Source: catalog/templates/4-serviceMetrics.yaml
 apiVersion: v1
 kind: Service
 metadata:
