@@ -16,7 +16,6 @@ redis:
 # Kafka configuration
 kafka:
   brokers: kafka.kafka.svc.cluster.local:9092
-  clientId: products-service
   topicProducts: mv100db.public.products
   topicUsers: mv100db.public.users
   topicOrders: mv100db.public.orders
