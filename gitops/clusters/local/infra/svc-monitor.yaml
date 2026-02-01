@@ -4,7 +4,7 @@ metadata:
   name: demo-apps-svcmonitor
   namespace: monitoring
   labels:
-    release: kube-prom-stack   # MUST match your Prom stack
+    release: kube-prom-stack
 spec:
   namespaceSelector:
     matchNames:
@@ -17,4 +17,6 @@ spec:
       path: /metrics
       interval: 15s
       scrapeTimeout: 10s
-
+      scheme: https                 # important for mTLS
+      tlsConfig:
+        insecureSkipVerify: true    # skip verification if using Istio auto-generated certs
