@@ -76,7 +76,7 @@ resources:
 # Environment variables from ConfigMap and Secret
 envFrom:
   configMap: payments-config
-  secret: payments-secrets
+  secret: demo-secrets
 
 # Rollout canary strategy
 strategy:

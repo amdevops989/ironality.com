@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dev-ns
+  name: local-ns
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,8 +10,8 @@ spec:
 
   source:
     repoURL: https://github.com/amdevops989/ironality.com.git
-    targetRevision: dev
-    path: gitops/clusters/dev/infra
+    targetRevision: local
+    path: gitops/clusters/local/infra
     directory:
       recurse: false   # 🔴 VERY IMPORTAN
 
