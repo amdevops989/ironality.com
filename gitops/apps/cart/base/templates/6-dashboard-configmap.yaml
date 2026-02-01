@@ -85,7 +85,7 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"{{ .Values.namespace | default "demo" }}\",pod=~\"{{ .Chart.Name }}-.*\",container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"{{ .Values.namespace | default "demo" }}\",pod=~\"{{ .Chart.Name }}-.*\",container!=\"POD\",resource=\"cpu\"})",
+              "expr": "100 * sum(rate(container_cpu_usage_seconds_total{namespace=\"{{ .Values.namespace }}\",pod=~\"{{ .Chart.Name }}-.*\",container!=\"POD\"}[2m])) / sum(kube_pod_container_resource_limits{namespace=\"{{ .Values.namespace }}\",pod=~\"{{ .Chart.Name }}-.*\",container!=\"POD\",resource=\"cpu\"})",
               "refId": "E"
             }
           ],
@@ -98,11 +98,70 @@ data:
           "datasource": "Prometheus",
           "targets": [
             {
-              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"{{ .Values.namespace | default "demo" }}\",pod=~\"{{ .Chart.Name }}-.*\",container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"{{ .Values.namespace | default "demo" }}\",pod=~\"{{ .Chart.Name }}-.*\",container!=\"POD\",resource=\"memory\"})",
+              "expr": "100 * sum(container_memory_working_set_bytes{namespace=\"{{ .Values.namespace }}\",pod=~\"{{ .Chart.Name }}-.*\",container!=\"POD\"}) / sum(kube_pod_container_resource_limits{namespace=\"{{ .Values.namespace }}\",pod=~\"{{ .Chart.Name }}-.*\",container!=\"POD\",resource=\"memory\"})",
               "refId": "F"
             }
           ],
           "fieldConfig": { "defaults": { "unit": "percent" } }
+        },
+
+        {
+          "type": "stat",
+          "title": "Items Added / min",
+          "gridPos": { "x": 0, "y": 18, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(rate(cart_items_added_total[5m])) * 60", "refId": "G" }]
+        },
+        {
+          "type": "stat",
+          "title": "Total Items Added",
+          "gridPos": { "x": 8, "y": 18, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(cart_items_added_total)", "refId": "H" }]
+        },
+        {
+          "type": "stat",
+          "title": "Cart Reads / min",
+          "gridPos": { "x": 16, "y": 18, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(rate(cart_reads_total[5m])) * 60", "refId": "I" }]
+        },
+        {
+          "type": "stat",
+          "title": "Checkouts / min",
+          "gridPos": { "x": 0, "y": 23, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(rate(cart_checkouts_total[5m])) * 60", "refId": "J" }]
+        },
+        {
+          "type": "stat",
+          "title": "Checkout Failures / min",
+          "gridPos": { "x": 8, "y": 23, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(rate(cart_checkout_failures_total[5m])) * 60", "refId": "K" }]
+        },
+        {
+          "type": "stat",
+          "title": "Revenue / min",
+          "gridPos": { "x": 16, "y": 23, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(rate(cart_checkout_revenue_total[5m]))", "refId": "L" }],
+          "fieldConfig": { "defaults": { "unit": "currencyUSD" } }
+        },
+        {
+          "type": "stat",
+          "title": "Total Checkout Amount",
+          "gridPos": { "x": 0, "y": 28, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "sum(cart_checkout_amount_sum)", "refId": "M" }],
+          "fieldConfig": { "defaults": { "unit": "currencyUSD" } }
+        },
+        {
+          "type": "graph",
+          "title": "Checkout Amount P95",
+          "gridPos": { "x": 0, "y": 33, "w": 24, "h": 6 },
+          "datasource": "Prometheus",
+          "targets": [{ "expr": "histogram_quantile(0.95,sum(rate(cart_checkout_amount_bucket[5m])) by (le))", "refId": "N" }]
         }
       ]
     }
