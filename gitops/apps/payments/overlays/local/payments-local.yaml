@@ -326,7 +326,7 @@ spec:
     spec:
       containers:
         - name: payments
-          image: "devopsflow999/orders:main-v0.1.4"
+          image: "devopsflow999/payments:main-v0.1.4"
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

@@ -46,8 +46,8 @@ istio:
 namespace: demo
 
 # Number of replicas and revision history
-replicaCount: 2
-revisionHistoryLimit: 2
+replicaCount: 1
+revisionHistoryLimit: 1
 
 # Container image settings
 image:
@@ -107,7 +107,7 @@ strategy:
 
 # Horizontal Pod Autoscaler configuration
 hpa:
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 10
   targetCPUUtilization: 60
 

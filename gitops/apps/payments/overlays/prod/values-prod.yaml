@@ -55,7 +55,7 @@ revisionHistoryLimit: 1
 
 # Container image settings
 image:
-  repository: devopsflow999/orders
+  repository: devopsflow999/payments
   tag: main-v0.1.4
   pullPolicy: IfNotPresent
 
