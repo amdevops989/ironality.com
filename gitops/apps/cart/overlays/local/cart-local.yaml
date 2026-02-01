@@ -207,7 +207,7 @@ spec:
     kind: Rollout
     name: cart
 
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 10
 
   metrics:
@@ -305,8 +305,8 @@ metadata:
   name: cart
   namespace: demo
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2
+  replicas: 1
+  revisionHistoryLimit: 1
 
   selector:
     matchLabels:
