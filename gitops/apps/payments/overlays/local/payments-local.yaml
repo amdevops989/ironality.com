@@ -36,6 +36,9 @@ data:
   PORT: "3005"
   FRONTEND_URL: "http://frontend.localdev.me"
   OTEL_PROM_PORT: "9468"
+  ORDERS_SERVICE_URL: http://api.localdev.me:3004/orders
+  SUCCESS_URL: http://frontend.localdev.me/success
+  CANCEL_URL: http://frontend.localdev.me/cancel
 ---
 # Source: payments/templates/6-dashboard-configmap.yaml
 apiVersion: v1
@@ -323,7 +326,7 @@ spec:
     spec:
       containers:
         - name: payments
-          image: "devopsflow999/payments:main-v0.1.4"
+          image: "devopsflow999/orders:main-v0.1.4"
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
