@@ -144,6 +144,7 @@ data:
           ],
           "fieldConfig": { "defaults": { "unit": "percent" } }
         },
+
         {
           "type": "stat",
           "title": "Users Signed Up / min",
@@ -155,8 +156,17 @@ data:
         },
         {
           "type": "stat",
-          "title": "Users Logged In / min",
+          "title": "Total Users Signed Up",
           "gridPos": { "x": 8, "y": 18, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            { "expr": "sum(auth_users_signed_up_total)", "refId": "L" }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Users Logged In / min",
+          "gridPos": { "x": 0, "y": 23, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
             { "expr": "sum(rate(auth_users_logged_in_total[5m])) * 60", "refId": "H" }
@@ -164,8 +174,17 @@ data:
         },
         {
           "type": "stat",
+          "title": "Total Users Logged In",
+          "gridPos": { "x": 8, "y": 23, "w": 8, "h": 5 },
+          "datasource": "Prometheus",
+          "targets": [
+            { "expr": "sum(auth_users_logged_in_total)", "refId": "M" }
+          ]
+        },
+        {
+          "type": "stat",
           "title": "Cache Hits / min",
-          "gridPos": { "x": 0, "y": 23, "w": 8, "h": 5 },
+          "gridPos": { "x": 0, "y": 28, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
             { "expr": "sum(rate(auth_cache_hits_total[5m])) * 60", "refId": "I" }
@@ -174,7 +193,7 @@ data:
         {
           "type": "stat",
           "title": "Cache Misses / min",
-          "gridPos": { "x": 8, "y": 23, "w": 8, "h": 5 },
+          "gridPos": { "x": 8, "y": 28, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
             { "expr": "sum(rate(auth_cache_misses_total[5m])) * 60", "refId": "J" }
@@ -183,7 +202,7 @@ data:
         {
           "type": "stat",
           "title": "Kafka Publish Failures / min",
-          "gridPos": { "x": 16, "y": 23, "w": 8, "h": 5 },
+          "gridPos": { "x": 16, "y": 28, "w": 8, "h": 5 },
           "datasource": "Prometheus",
           "targets": [
             { "expr": "sum(rate(auth_kafka_publish_failures_total[5m])) * 60", "refId": "K" }
