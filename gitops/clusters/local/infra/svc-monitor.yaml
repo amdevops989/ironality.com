@@ -17,4 +17,4 @@ spec:
       path: /metrics
       interval: 15s
       scrapeTimeout: 10s
-      scheme: http  # plain HTTP works due to PERMISSIVE
+      scheme: http  # plain HTTP works due to PERMISSIVE ok 
