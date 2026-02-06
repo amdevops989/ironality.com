@@ -1,0 +1,37 @@
+# apiVersion: karpenter.k8s.aws/v1beta1
+# kind: EC2NodeClass
+# metadata:
+#   name: spot-t3
+# spec:
+#   # Reuse existing EKS node IAM role
+#   role: {{PROJECT_NAME}}-{{ENV}}-node-role
+
+#   # PRIVATE SUBNETS ONLY
+#   subnetSelectorTerms:
+#     - tags:
+#         karpenter.sh/discovery: {{PROJECT_NAME}}-{{ENV}}
+#         Tier: private
+
+#   # Cluster security group
+#   securityGroupSelectorTerms:
+#     - tags:
+#         kubernetes.io/cluster/{{PROJECT_NAME}}-{{ENV}}: owned
+
+#   amiFamily: AL2023
+
+#   # Encrypted root volume (gp3 + KMS)
+#   blockDeviceMappings:
+#     - deviceName: /dev/xvda
+#       ebs:
+#         volumeSize: 50Gi
+#         volumeType: gp3
+#         encrypted: true
+#         kmsKeyID: {{KMS_KEY_ARN}}
+
+#   # IMDSv2 enforced
+#   metadataOptions:
+#     httpEndpoint: enabled
+#     httpTokens: required
+
+#   tags:
+#     Name: {{PROJECT_NAME}}-{{ENV}}-karpenter-spot

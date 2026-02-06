@@ -1,10 +1,12 @@
 locals {
   aws_region   = "us-east-1"
   aws_profile  = "dev-sso"
-  project_name = "travelersources.com"
+  project_name = "travelersources"
 }
 
-# === AWS Provider ===
+# ===============================
+# Generate AWS Provider
+# ===============================
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
@@ -16,25 +18,30 @@ provider "aws" {
 EOF
 }
 
-
-
-# === Remote Backend (S3 + DynamoDB) ===
-remote_state {
-  backend = "s3"
-
-  config = {
+# ===============================
+# Generate Terraform Backend
+# ===============================
+generate "backend" {
+  path      = "backend.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = <<EOF
+terraform {
+  backend "s3" {
     bucket         = "${local.project_name}-tfstate"
-    key            = "${path_relative_to_include()}/terraform.tfstate"
-    region         = local.aws_region
-    profile        = local.aws_profile
+    key            = "eks/${path_relative_to_include()}/terraform.tfstate"
+    region         = "${local.aws_region}"
     dynamodb_table = "${local.project_name}-tf-locks"
     encrypt        = true
   }
 }
+EOF
+}
 
-# === Global Inputs for all modules ===
+# ===============================
+# Global Inputs
+# ===============================
 inputs = {
-  project_name = local.project_name
   aws_region   = local.aws_region
   aws_profile  = local.aws_profile
+  project_name = local.project_name
 }

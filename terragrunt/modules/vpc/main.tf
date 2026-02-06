@@ -7,9 +7,6 @@ terraform {
   }
 }
 
-terraform {
-  backend "s3" {}
-}
 
 
 data "aws_availability_zones" "available" {}
@@ -40,6 +37,7 @@ resource "aws_subnet" "public" {
     Tier = "public"
     "kubernetes.io/role/elb"     = "1"
     "kubernetes.io/cluster/${var.project_name}-${var.env}" = "shared"
+    "karpenter.sh/discovery"                  = "${var.project_name}-${var.env}" # <-- added for Karpenter
   })
 }
 
@@ -54,6 +52,7 @@ resource "aws_subnet" "private" {
     Tier = "private"
     "kubernetes.io/role/internal-elb"    = "1"
     "kubernetes.io/cluster/${var.project_name}-${var.env}" = "shared"
+    "karpenter.sh/discovery"                  = "${var.project_name}-${var.env}" # cluster name
   })
 }
 

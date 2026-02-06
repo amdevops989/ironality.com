@@ -15,6 +15,8 @@ variable "cidr_block" {
 
 
 
+
+
 variable "az_count" {
   description = "Number of AZs to use"
   type        = number

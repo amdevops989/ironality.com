@@ -1,0 +1,41 @@
+# apiVersion: karpenter.sh/v1beta1
+# kind: NodePool
+# metadata:
+#   name: spot-t3-medium
+# spec:
+#   template:
+#     spec:
+#       nodeClassRef:
+#         name: spot-t3
+
+#       # STRICT REQUIREMENTS
+#       requirements:
+#         # Architecture: Intel ONLY (no AMD)
+#         - key: kubernetes.io/arch
+#           operator: In
+#           values: ["amd64"]
+
+#         # Instance family
+#         - key: karpenter.k8s.aws/instance-family
+#           operator: In
+#           values: ["t3"]
+
+#         # Instance size
+#         - key: karpenter.k8s.aws/instance-size
+#           operator: In
+#           values: ["medium"]
+
+#         # Capacity type: SPOT ONLY
+#         - key: karpenter.k8s.aws/capacity-type
+#           operator: In
+#           values: ["spot"]
+
+#   # Hard limits (protects your wallet)
+#   limits:
+#     cpu: "20"
+#     memory: "80Gi"
+
+#   # Spot-friendly disruption behavior
+#   disruption:
+#     consolidationPolicy: WhenEmpty
+#     consolidateAfter: 60s

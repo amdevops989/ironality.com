@@ -13,9 +13,7 @@ terraform {
       version = "~> 2.10"
     }
   }
-  backend "s3" {
-    
-  }
+  
 }
 
 provider "kubernetes" {

@@ -1,5 +1,6 @@
 include {
   path = find_in_parent_folders("root.hcl")
+  expose= true
 }
 
 include "env" {
@@ -7,6 +8,7 @@ include "env" {
   expose         = true
   merge_strategy = "no_merge"
 }
+
 
 
 terraform {
