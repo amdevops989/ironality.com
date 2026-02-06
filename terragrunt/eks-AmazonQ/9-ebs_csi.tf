@@ -66,7 +66,7 @@ resource "aws_iam_role_policy" "ebs_csi_kms_policy" {
           "kms:GenerateDataKey*",
           "kms:DescribeKey"
         ]
-        Resource = aws_kms_key.eks_ebs.arn
+        Resource = var.kms_key_arn
         Condition = {
           StringEquals = {
             "kms:ViaService" = "ec2.${data.aws_region.current.name}.amazonaws.com"
@@ -79,7 +79,7 @@ resource "aws_iam_role_policy" "ebs_csi_kms_policy" {
         Action = [
           "kms:CreateGrant"
         ]
-        Resource = aws_kms_key.eks_ebs.arn
+        Resource = var.kms_key_arn
         Condition = {
           Bool = {
             "kms:GrantIsForAWSResource" = "true"
@@ -111,7 +111,7 @@ resource "kubernetes_storage_class" "encrypted_gp3" {
   parameters = {
     type      = "gp3"
     encrypted = "true"
-    kmsKeyId  = aws_kms_key.eks_ebs.arn  # Your existing KMS key
+    kmsKeyId  = var.kms_key_arn  # Your existing KMS key
     fsType    = "ext4"
     iops      = "3000"
     throughput = "125"

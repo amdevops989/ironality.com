@@ -28,15 +28,15 @@ output "node_group_arn" {
   value       = aws_eks_node_group.main.arn
 }
 
-# output "kms_key_arn" {
-#   description = "ARN of the KMS key used for EBS encryption"
-#   value       = aws_kms_key.eks_ebs.arn
-# }
-
-output "kms_key_alias" {
-  description = "Alias of the KMS key used for EBS encryption"
-  value       = aws_kms_alias.eks_ebs.name
+output "kms_key_arn" {
+  description = "ARN of the KMS key used for EBS encryption"
+  value       = var.kms_key_arn
 }
+
+# output "kms_key_alias" {
+#   description = "Alias of the KMS key used for EBS encryption"
+#   value       = aws_kms_alias.eks_ebs.name
+# }
 
 output "cluster_platform_version" {
   description = "Platform version for the EKS cluster"
@@ -91,4 +91,16 @@ output "node_security_group_id" {
 output "node_group_status" {
   description = "Status of the EKS Node Group"
   value       = aws_eks_node_group.main.status
+}
+
+
+# Karpenter outputs
+output "karpenter_nodepool_name" {
+  description = "Name of the Karpenter spot test NodePool"
+  value       = "${var.cluster_name}-spot-test"
+}
+
+output "karpenter_controller_role_arn" {
+  description = "ARN of the Karpenter controller IAM role"
+  value       = aws_iam_role.karpenter_controller.arn
 }
