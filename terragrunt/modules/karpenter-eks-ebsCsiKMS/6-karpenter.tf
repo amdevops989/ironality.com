@@ -7,6 +7,9 @@ module "karpenter" {
 
   cluster_name = module.eks.cluster_name
 
+##  in case you want to use the node group iam role
+#   node_iam_role_arn    = module.eks.eks_managed_node_groups["initial"].iam_role_arn
+
   # enable_v1_permissions = true
 
   # enable_pod_identity             = true
@@ -104,14 +107,15 @@ resource "kubectl_manifest" "karpenter_node_class" {
         karpenter.sh/discovery: ${module.eks.cluster_name}
       blockDeviceMappings:
         - deviceName: /dev/xvda
-            ebs:
-                volumeSize: 20
-                volumeType: gp3
-                encrypted: true
-                #kmsKeyId: "alias/aws/ebs"   # AWS-managed KMS
+          ebs:
+            volumeSize: "20Gi"      # must be string
+            volumeType: "gp3"     # must be string
+            encrypted: true
+            # kmsKeyId: "alias/aws/ebs"   # optional
   YAML
 
   depends_on = [
     helm_release.karpenter
   ]
 }
+

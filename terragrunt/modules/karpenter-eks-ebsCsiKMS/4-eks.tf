@@ -3,18 +3,26 @@
 ###############################################################################
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.24.0"
+  version = "21.15.1"
 
-  cluster_name    = var.cluster_name
-  cluster_version = "1.30"
+  name    = var.cluster_name
+  kubernetes_version = "1.30"
 
-  cluster_endpoint_public_access  = true
+  endpoint_public_access  = true
 
-  cluster_addons = {
+  compute_config = {
+   enabled = false
+  }
+
+  addons = {
     coredns                = {}
-    eks-pod-identity-agent = {}
+    eks-pod-identity-agent = {
+      before_compute = true
+    }
     kube-proxy             = {}
-    vpc-cni                = {}
+    vpc-cni                = {
+      before_compute = true
+    }
   }
 
   vpc_id                   = module.vpc.vpc_id
@@ -64,7 +72,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
   create_kms_key = false
-  cluster_encryption_config = {
+  encryption_config = {
     resources        = ["secrets"]
     provider_key_arn = "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alias/aws/eks"
   }
