@@ -18,11 +18,6 @@ spec:
           headers:
             x-canary:
               exact: "true"
-        - uri:
-            exact: "/orders"
-          headers:
-            x-canary:
-              exact: "true"
       route:
         - destination:
             host: orders-canary

@@ -32,6 +32,11 @@ variable "k8s_namespace" {
   type    = string
   default = "cert-manager"
 }
+variable "release-name" {
+  type    = string
+  default = "cert-manager"
+}
+
 
 variable "service_account_name" {
   type    = string
@@ -43,13 +48,3 @@ variable "oidc_provider_arn" {
   description = "IAM Role ARN for cert-manager service account"
 }
 
-variable "argocd_admin_password_hash" {
-  description = "bcrypt hash for ArgoCD admin password"
-  type        = string
-}
-
-variable "argocd_host" {
-  description = "Hostname for ArgoCD under the domain (e.g. argocd.travelersources.com)"
-  type        = string
-  default     = "argocd.travelersources.com"
-}

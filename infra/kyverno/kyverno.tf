@@ -1,3 +1,8 @@
+# helm install kyverno kyverno/kyverno \
+#   -n kyverno \
+#   --create-namespace \
+#   --set enableWebhook=true
+
 resource "helm_release" "kyverno" {
   name       = "kyverno"
   namespace  = "kyverno"
