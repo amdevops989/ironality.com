@@ -79,3 +79,13 @@ CMD ["nginx", "-g", "daemon off;"]
 #   .
 
 #
+
+
+# docker build -t devopsflow999/frontend:910 \
+#   --build-arg VITE_API_AUTH=https://api.travelersources.com/auth \
+#   --build-arg VITE_API_CATALOG=https://api.travelersources.com/catalog \
+#   --build-arg VITE_API_CART=https://api.travelersources.com/cart \
+#   --build-arg VITE_API_ORDERS=https://api.travelersources.com/orders \
+#   --build-arg VITE_API_PAYMENTS=https://api.travelersources.com/payments \
+#   --build-arg VITE_STRIPE_KEY=stri \
+#   .
