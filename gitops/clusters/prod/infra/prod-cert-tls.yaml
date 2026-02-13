@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ts-multi-domain-tls
+  # namespace: prod-travelersources
+spec:
+  secretName: ts-tls-secret   # shared secret for both gateways
+  dnsNames:
+    - travelersources.com
+    - api.travelersources.com
+  issuerRef:
+    name: production-cluster-issuer  # your DNS-01 issuer
+    kind: ClusterIssuer
