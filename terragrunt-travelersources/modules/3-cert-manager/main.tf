@@ -7,6 +7,54 @@ resource "kubernetes_namespace" "cert_manager" {
   }
 }
 
+resource "aws_iam_role" "cert_manager_route53" {
+  name = "cert-manager-route53"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = var.oidc_provider_arn   # OIDC provider ARN from EKS
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${var.oidc_provider_domain}:sub" = "system:serviceaccount:${var.k8s_namespace}:${var.service_account_name}"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "cert_manager_route53_policy" {
+  name        = "cert-manager-route53-policy"
+  description = "Allow cert-manager to manage Route53 records"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "route53:GetChange",
+          "route53:ChangeResourceRecordSets",
+          "route53:ListHostedZones",
+          "route53:ListResourceRecordSets"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "cert_manager_attach" {
+  role       = aws_iam_role.cert_manager_route53.name
+  policy_arn = aws_iam_policy.cert_manager_route53_policy.arn
+}
+
 # -----------------------------
 # Service Account for cert-manager
 # -----------------------------
@@ -15,10 +63,11 @@ resource "kubernetes_service_account" "cert_manager_sa" {
     name      = var.service_account_name
     namespace = kubernetes_namespace.cert_manager.metadata[0].name
     annotations = {
-      "eks.amazonaws.com/role-arn" = var.oidc_provider_arn
+      "eks.amazonaws.com/role-arn" = aws_iam_role.cert_manager_route53.arn
     }
   }
 }
+
 resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
