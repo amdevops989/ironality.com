@@ -38,17 +38,32 @@ resource "aws_iam_policy" "cert_manager_route53_policy" {
     Statement = [
       {
         Effect   = "Allow"
+        Action   = "route53:GetChange"
+        Resource = "arn:aws:route53:::change/*"
+      },
+      {
+        Effect   = "Allow"
         Action   = [
-          "route53:GetChange",
-          "route53:ChangeResourceRecordSets",
           "route53:ListHostedZones",
-          "route53:ListResourceRecordSets"
+          "route53:ListHostedZonesByName"
         ]
         Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "route53:ListResourceRecordSets"
+        Resource = "arn:aws:route53:::hostedzone/*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "route53:ChangeResourceRecordSets"
+        Resource = "arn:aws:route53:::hostedzone/*"
       }
     ]
   })
 }
+
+
 
 resource "aws_iam_role_policy_attachment" "cert_manager_attach" {
   role       = aws_iam_role.cert_manager_route53.name
@@ -66,6 +81,8 @@ resource "kubernetes_service_account" "cert_manager_sa" {
       "eks.amazonaws.com/role-arn" = aws_iam_role.cert_manager_route53.arn
     }
   }
+
+  automount_service_account_token = true
 }
 
 resource "helm_release" "cert_manager" {
