@@ -8,7 +8,7 @@ metadata:
 spec:
   namespaceSelector:
     matchNames:
-      - demo
+      - prod-travelersources
   selector:
     matchLabels:
       metrics: "true"
