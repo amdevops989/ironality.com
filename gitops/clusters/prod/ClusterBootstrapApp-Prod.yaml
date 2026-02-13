@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: local-cluster-bootstrap
+  name: prod-cluster-bootstrap
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,8 +10,8 @@ spec:
 
   source:
     repoURL: https://github.com/amdevops989/ironality.com.git
-    targetRevision: local
-    path: gitops/clusters/local/infra
+    targetRevision: prod
+    path: gitops/clusters/prod/infra
     directory:
       recurse: false   # 🔴 VERY IMPORTAN
 
