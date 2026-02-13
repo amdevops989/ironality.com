@@ -36,6 +36,7 @@ resource "helm_release" "karpenter" {
 
   values = [
     <<-EOT
+    replicas: 1
     serviceAccount:
       name: ${module.karpenter.service_account}
     settings:

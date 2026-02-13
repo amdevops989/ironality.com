@@ -1,16 +1,6 @@
 # -----------------------------
 # Namespace for cert-manager
 # -----------------------------
-
-# resource "kubectl_manifest" "cert_manager_namespace" {
-#   yaml_body = <<YAML
-# apiVersion: v1
-# kind: Namespace
-# metadata:
-#   name: ${var.k8s_namespace}
-# YAML
-# }
-
 resource "kubernetes_namespace" "cert_manager" {
   metadata {
     name = var.k8s_namespace
@@ -24,38 +14,47 @@ resource "kubernetes_service_account" "cert_manager_sa" {
   metadata {
     name      = var.service_account_name
     namespace = kubernetes_namespace.cert_manager.metadata[0].name
-    labels = {
-      "app.kubernetes.io/managed-by" = "Helm"
-    }
     annotations = {
-      "eks.amazonaws.com/role-arn"        = var.oidc_provider_arn
-      "meta.helm.sh/release-name"         = var.release-name
-      "meta.helm.sh/release-namespace"    = var.k8s_namespace
+      "eks.amazonaws.com/role-arn" = var.oidc_provider_arn
     }
   }
 }
-
-
-
-# -----------------------------
-# Helm Release for cert-manager controller
-# -----------------------------
 resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
   namespace  = kubernetes_namespace.cert_manager.metadata[0].name
-  version    = "v1.19.3"
+  version    = "v1.13.1"
 
   create_namespace = false
 
   values = [
     yamlencode({
+      installCRDs = true
+
       serviceAccount = {
-        create = true
+        create = false
         name   = kubernetes_service_account.cert_manager_sa.metadata[0].name
       }
-      installCRDs = true
+
+      # -----------------------
+      # Force pods to main node group
+      # -----------------------
+      nodeSelector = {
+        role = "main"   # your MNG label
+      }
+
+      webhook = {
+        nodeSelector = {
+          role = "main"
+        }
+      }
+
+      cainjector = {
+        nodeSelector = {
+          role = "main"
+        }
+      }
     })
   ]
 
@@ -63,6 +62,7 @@ resource "helm_release" "cert_manager" {
     kubernetes_service_account.cert_manager_sa
   ]
 }
+
 
 # -----------------------------
 # Production ClusterIssuer (DNS-01)
@@ -80,7 +80,8 @@ spec:
     privateKeySecretRef:
       name: production-cluster-issuer-key
     solvers:
-      - dns01:
+      - selector: {}
+        dns01:
           route53:
             region: ${var.region}
 YAML
@@ -106,7 +107,8 @@ spec:
     privateKeySecretRef:
       name: production-cluster-issuer-http-key
     solvers:
-      - http01:
+      - selector: {}
+        http01:
           ingress:
             class: istio
 YAML
@@ -132,7 +134,8 @@ spec:
     privateKeySecretRef:
       name: staging-cluster-issuer-http-key
     solvers:
-      - http01:
+      - selector: {}
+        http01:
           ingress:
             class: istio
 YAML

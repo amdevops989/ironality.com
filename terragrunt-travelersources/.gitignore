@@ -1,0 +1,237 @@
+####################################
+# 🔐 Environment & Secrets (CRITICAL)
+####################################
+.env
+.env.*
+!.env.example
+*-secrets.yaml
+*-secrets.yml
+*-secret.yaml
+# Temporary sealed secrets
+*.sealed.yaml.tmp
+
+####################################
+# 📦 Node.js
+####################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npmrc
+
+####################################
+# 🧪 Node / Test Coverage
+####################################
+coverage/
+.nyc_output/
+jest-cache/
+
+####################################
+# ⚛️ React / Frontend
+####################################
+build/
+dist/
+.cache/
+.parcel-cache/
+.next/
+out/
+
+####################################
+# 🧰 Framework / Tooling
+####################################
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+####################################
+# 🐳 Docker
+####################################
+*.log
+docker-compose.override.yml
+
+####################################
+# 🏗️ Terraform (IMPORTANT)
+####################################
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+####################################
+# 🔐 Terraform Secrets (Explicit)
+####################################
+terraform.tfvars
+terraform.tfvars.json
+
+####################################
+# ☁️ Cloud / Auth
+####################################
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.keystore
+credentials.json
+
+####################################
+# 📄 Logs
+####################################
+logs/
+*.log
+
+####################################
+# 🧪 CI / Build Artifacts
+####################################
+reports/
+artifacts/
+
+####################################
+# 🧠 OS Noise
+####################################
+.DS_Store
+ehthumbs.db
+Icon?
+
+####################################
+# 🛠️ Terragrunt
+####################################
+.terragrunt-cache/
+*.terragrunt.hcl.tmp
+
+####################################
+# 🥬 Databases / Queues
+####################################
+pgdata/
+redisdata/
+kafka_logs/
+####################################
+# 🔐 Environment & Secrets (CRITICAL)
+####################################
+.env
+.env.*
+!.env.example
+*-secrets.yaml
+*-secrets.yml
+*-secret.yaml
+# Temporary sealed secrets
+*.sealed.yaml.tmp
+
+####################################
+# 📦 Node.js
+####################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npmrc
+
+####################################
+# 🧪 Node / Test Coverage
+####################################
+coverage/
+.nyc_output/
+jest-cache/
+
+####################################
+# ⚛️ React / Frontend
+####################################
+build/
+dist/
+.cache/
+.parcel-cache/
+.next/
+out/
+
+####################################
+# 🧰 Framework / Tooling
+####################################
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+####################################
+# 🐳 Docker
+####################################
+*.log
+docker-compose.override.yml
+
+####################################
+# 🏗️ Terraform (IMPORTANT)
+####################################
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+####################################
+# 🔐 Terraform Secrets (Explicit)
+####################################
+terraform.tfvars
+terraform.tfvars.json
+
+####################################
+# ☁️ Cloud / Auth
+####################################
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.keystore
+credentials.json
+
+####################################
+# 📄 Logs
+####################################
+logs/
+*.log
+
+####################################
+# 🧪 CI / Build Artifacts
+####################################
+reports/
+artifacts/
+
+####################################
+# 🧠 OS Noise
+####################################
+.DS_Store
+ehthumbs.db
+Icon?
+
+####################################
+# 🛠️ Terragrunt
+####################################
+.terragrunt-cache/
+*.terragrunt.hcl.tmp
+
+####################################
+# 🥬 Databases / Queues
+####################################
+pgdata/
+redisdata/
+kafka_logs/
+

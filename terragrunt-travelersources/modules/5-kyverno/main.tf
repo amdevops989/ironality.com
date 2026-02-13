@@ -10,7 +10,6 @@ resource "kubernetes_service_account" "kyverno_sa" {
     namespace = kubernetes_namespace.kyverno.metadata[0].name
   }
 }
-
 resource "helm_release" "kyverno" {
   name       = "kyverno"
   chart      = "kyverno"
@@ -60,9 +59,17 @@ resource "helm_release" "kyverno" {
 
       podSecurityStandard = { enabled = false }
 
-      tolerations = [
-        { key = "CriticalAddonsOnly", operator = "Exists" }
-      ]
+      # -----------------------
+      # Force pods to main node group
+      # -----------------------
+      nodeSelector = {
+        role = "main"   # matches your main node group label
+      }
+
+      # Optional: keep for consistency
+      # tolerations = [
+      #   { key = "CriticalAddonsOnly", operator = "Exists" }
+      # ]
 
       priorityClassName = "system-cluster-critical"
     })

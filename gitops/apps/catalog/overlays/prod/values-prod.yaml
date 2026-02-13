@@ -1,6 +1,6 @@
 
 # Namespace where resources will be deployed
-namespace: demo
+namespace: prod-travelersources
 
 # Database configuration
 database:
@@ -25,7 +25,7 @@ kafka:
 # Application-level settings
 app:
   port: "3001"
-  frontendUrl: "http://frontend.localdev.me"
+  frontendUrl: "https://travelersources.com"
 
 # Logging level
 logLevel: info
@@ -33,7 +33,7 @@ logLevel: info
 
 # Istio configuration (for VirtualService / Gateway)
 istio:
-  host: api.localdev.me
+  host: api.travelersources.com
   tls:
     enabled: false
     secretName: ""  # only required if TLS is enabled
@@ -70,7 +70,7 @@ resources:
 # Environment variables from ConfigMap and Secret
 envFrom:
   configMap: catalog-config
-  secret: demo-secrets
+  secret: travelersources-secrets
 
 # Rollout canary strategy
 strategy:
@@ -117,4 +117,4 @@ monitoringNamespace: monitoring
 
 
 cors:
-  allowOrigin: "http://frontend.localdev.me"
+  allowOrigin: "https://travelersources.com"

@@ -13,12 +13,21 @@ resource "helm_release" "external_dns" {
         create = false
         name   = kubernetes_service_account.external_dns.metadata[0].name
       }
-      timeout = 300  # Timeout in seconds (10 minutes)
+      timeout       = 300
       domainFilters = var.domain_filters
       txtOwnerId    = var.cluster_name
       policy        = "upsert-only"
       zoneType      = var.zone_type
       extraArgs     = ["--zone-id-filter=${var.hosted_zone_id}"]
+
+      # -----------------------
+      # Force to main node group
+      # -----------------------
+      nodeSelector = {
+        role = "main"   # <- matches your MNG label
+      }
+
+      # No tolerations needed since MNG has no taints
     })
   ]
 

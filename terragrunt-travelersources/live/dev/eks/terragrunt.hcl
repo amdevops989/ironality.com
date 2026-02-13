@@ -40,7 +40,7 @@ inputs = {
   private_subnets      = dependency.vpc.outputs.private_subnet_ids
   intra_subnets        = dependency.vpc.outputs.intra_subnet_ids
 
-  node_instance_type   = ["t3.medium"]    # spot mode for dev and test
+  node_instance_type   = ["m5.large"]    # spot mode for dev and test
   node_desired_capacity = 1
   node_min_capacity     = 0
   node_max_capacity     = 1

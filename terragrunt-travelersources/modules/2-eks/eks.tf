@@ -34,6 +34,10 @@ module "eks" {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = var.node_instance_type
+      labels = {
+        workload = "addons"
+        role     = "main"
+      }
 
       min_size     = var.node_min_capacity
       max_size     = var.node_max_capacity
@@ -55,15 +59,15 @@ module "eks" {
         }
       }
       
-      taints = {
-        # This Taint aims to keep just EKS Addons and Karpenter running on this MNG
-        # The pods that do not tolerate this taint should run on nodes created by Karpenter
-        addons = {
-          key    = "CriticalAddonsOnly"
-          value  = "true"
-          effect = "NO_SCHEDULE"
-        },
-      }
+      # taints = {
+      #   # This Taint aims to keep just EKS Addons and Karpenter running on this MNG
+      #   # The pods that do not tolerate this taint should run on nodes created by Karpenter
+      #   addons = {
+      #     key    = "CriticalAddonsOnly"
+      #     value  = "true"
+      #     effect = "NO_SCHEDULE"
+      #   },
+      # }
     }
   }
 

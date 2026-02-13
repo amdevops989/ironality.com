@@ -41,3 +41,9 @@ output "region" {
   description = "AWS region"
   value       = data.aws_region.current.name
 }
+
+output "mng_nodegroup_name" {
+  description = "The name of the managed node group (MNG) for critical addons like metrics-server"
+  value       = keys(module.eks.eks_managed_node_groups)[0]  # or ["karpenter"] if fixed
+}
+
