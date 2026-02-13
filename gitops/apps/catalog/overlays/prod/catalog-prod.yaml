@@ -34,7 +34,7 @@ data:
 
   LOG_LEVEL: "info"
   PORT: "3001"
-  FRONTEND_URL: "http://frontend.localdev.me"
+  FRONTEND_URL: "https://travelersources.com"
   OTEL_PROM_PORT: "9464"
 ---
 # Source: catalog/templates/6-dashboard-configmap.yaml
@@ -295,6 +295,15 @@ spec:
         number: 80
         name: http
         protocol: HTTP
+      hosts:
+        - "api.travelersources.com"
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: "ts-tls-secret"
       hosts:
         - "api.travelersources.com"
 ---

@@ -35,8 +35,8 @@ logLevel: info
 istio:
   host: api.travelersources.com
   tls:
-    enabled: false
-    secretName: ""  # only required if TLS is enabled
+    enabled: true
+    secretName: "ts-tls-secret"  # only required if TLS is enabled
 # PrometheusRule configuration
 prometheusRule:
   release: kube-prom-stack  # label for release
