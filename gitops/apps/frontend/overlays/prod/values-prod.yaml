@@ -1,11 +1,10 @@
 # Dev-specific values
-namespace: prod
-monitoringNamespace: monitoring
-
+namespace: prod-travelersources
 replicaCount: 2
+
 image:
   repository: devopsflow999/frontend
-  tag: "dev-v0.1.27"
+  tag: "910"
   pullPolicy: IfNotPresent
 
 service:
@@ -16,16 +15,13 @@ istio:
   gateway: frontend-gateway
   tls:
     enabled: true
-    secretName: api-travelersources-tls-secret
-
-env:
-  VITE_STRIPE_KEY: "" # Will be set from frontend-secrets
+    secretName: ts-dns-tls-secret
 
 hpa:
-  minReplicas: 1
-  maxReplicas: 5
+  minReplicas: 2
+  maxReplicas: 10
   targetCPUUtilization: 60
-  
+
 pdb:
   minAvailable: 1
 
@@ -37,20 +33,28 @@ strategy:
   scaleDownDelaySeconds: 60
   steps:
     - weight: 10
-      pause: {}          # pause indefinitely
+#      pause: {}
     - weight: 20
-      pause: {duration: 20s}
+      pause:
+        duration: 20s
     - weight: 30
-      pause: {duration: 20s}
+      pause:
+        duration: 20s
     - weight: 40
-      pause: {duration: 20s}
+      pause:
+        duration: 20s
     - weight: 50
-      pause: {duration: 20s}
+      pause:
+        duration: 20s
     - weight: 60
-      pause: {duration: 20s}
+      pause:
+        duration: 20s
     - weight: 70
-      pause: {duration: 20s}
+      pause:
+        duration: 20s
     - weight: 80
-      pause: {duration: 20s}
+      pause:
+        duration: 20s
     - weight: 90
-      pause: {duration: 20s}
+      pause:
+        duration: 20s
