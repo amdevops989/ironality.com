@@ -323,7 +323,7 @@ spec:
               memory: 256Mi
           envFrom:
             - secretRef:
-                name: frontend-secrets
+                name: travelersources-secrets
 
   strategy:
     canary:

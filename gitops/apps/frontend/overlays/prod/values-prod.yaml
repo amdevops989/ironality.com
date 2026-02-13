@@ -10,6 +10,8 @@ image:
 service:
   port: 80
 
+envFromSecret: travelersources-secrets
+
 istio:
   host: travelersources.com
   gateway: frontend-gateway
