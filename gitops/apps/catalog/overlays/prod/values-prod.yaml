@@ -36,7 +36,7 @@ istio:
   host: api.travelersources.com
   tls:
     enabled: true
-    secretName: "ts-tls-secret"  # only required if TLS is enabled
+    secretName: "ts-dns-tls-secret"  # only required if TLS is enabled
 # PrometheusRule configuration
 prometheusRule:
   release: kube-prom-stack  # label for release

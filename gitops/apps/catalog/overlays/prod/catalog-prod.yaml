@@ -303,7 +303,7 @@ spec:
         protocol: HTTPS
       tls:
         mode: SIMPLE
-        credentialName: "ts-tls-secret"
+        credentialName: "ts-dns-tls-secret"
       hosts:
         - "api.travelersources.com"
 ---
