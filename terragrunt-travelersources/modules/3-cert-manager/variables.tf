@@ -28,6 +28,11 @@ variable "k8s_token" {
   description = "Kubernetes Bearer token"
 }
 
+variable "oidc_provider_url" {
+  type        = string
+  description = "OIDC provider URL for EKS"
+}
+
 variable "k8s_namespace" {
   type    = string
   default = "cert-manager"

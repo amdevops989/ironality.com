@@ -21,7 +21,7 @@ resource "aws_iam_role" "cert_manager_route53" {
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
           StringEquals = {
-            "${var.oidc_provider_domain}:sub" = "system:serviceaccount:${var.k8s_namespace}:${var.service_account_name}"
+            "${replace(var.oidc_provider_url, "https://", "")}:sub" = "system:serviceaccount:${var.k8s_namespace}:${var.service_account_name}"
           }
         }
       }
