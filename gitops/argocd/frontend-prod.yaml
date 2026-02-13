@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: catalog-prod
+  name: frontend-prod
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -9,11 +9,11 @@ spec:
   project: default
   source:
     repoURL: https://github.com/amdevops989/ironality.com.git
-    targetRevision: prod
-    path: gitops/apps/catalog/overlays/prod
+    targetRevision: prodsss
+    path: gitops/apps/frontend/overlays/prodsss
   destination:
     server: https://kubernetes.default.svc
-    namespace: prod
+    namespace: prod-travelersources
   syncPolicy:
     automated:
       prune: true
