@@ -11,4 +11,4 @@ resources:
   - apps-sealedsecret.yaml
   - mTLs.yaml
   - mTLs-metrics.yaml
-  - prod-cert-tls.yaml
+  # - prod-cert-tls.yaml

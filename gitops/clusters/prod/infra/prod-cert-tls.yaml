@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: ts-dns-cert
-  namespace: prod-travelersources
+  namespace: istio-ingress
 spec:
   secretName: ts-dns-tls-secret
   dnsNames:
