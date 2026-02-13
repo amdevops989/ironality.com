@@ -10,5 +10,5 @@ spec:
     - www.travelersources.com
     - api.travelersources.com
   issuerRef:
-    name: production-cluster-issuer-dns
+    name: production-cluster-issuer
     kind: ClusterIssuer
