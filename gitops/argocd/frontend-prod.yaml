@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/amdevops989/ironality.com.git
-    targetRevision: prodsss
+    targetRevision: prod
     path: gitops/apps/frontend/overlays/prodsss
   destination:
     server: https://kubernetes.default.svc
