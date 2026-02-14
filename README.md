@@ -326,19 +326,3 @@ Observability & reliability engineering
 
 
 
----
-
-If you'd like, I can now:
-
-Make a shorter recruiter-focused version
-
-Add an architecture diagram section
-
-Add a clean badges section
-
-Optimize it even more for job-seeker visibility
-
-Create a “Key Achievements” section to impress recruiters
-
-
-Just tell me 👌
