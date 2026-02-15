@@ -1,23 +1,23 @@
 locals {
-  aws_region   = "us-east-1"
-  aws_profile  = "dev-sso"
-  project_name = "travelersources"
+  # Detect env folder name (dev or DR)
+  env = basename(dirname(get_terragrunt_dir()))
+
+  # Load env-specific config
+  env_config = read_terragrunt_config(find_in_parent_folders("env.hcl"))
+
+  aws_region   = local.env_config.locals.aws_region
+  aws_profile  = local.env_config.locals.aws_profile
+  project_name = local.env_config.locals.project_name
 }
 
-# ===============================
-# Global Inputs
-# ===============================
 inputs = {
   aws_region   = local.aws_region
   aws_profile  = local.aws_profile
   project_name = local.project_name
 }
 
-
-
-
 # ===============================
-# Generate AWS Provider
+# AWS Provider
 # ===============================
 generate "provider" {
   path      = "provider.tf"
@@ -31,7 +31,7 @@ EOF
 }
 
 # ===============================
-# Generate Terraform Backend
+# Remote State (PER ENV)
 # ===============================
 generate "backend" {
   path      = "backend.tf"
@@ -39,14 +39,12 @@ generate "backend" {
   contents  = <<EOF
 terraform {
   backend "s3" {
-    bucket         = "${local.project_name}-tfstate"
-    key            = "eks/${path_relative_to_include()}/terraform.tfstate"
+    bucket         = "${local.project_name}-tfstate-${local.env}"
+    key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = "${local.aws_region}"
-    dynamodb_table = "${local.project_name}-tf-locks"
+    dynamodb_table = "${local.project_name}-tf-locks-${local.env}"
     encrypt        = true
   }
 }
 EOF
 }
-
-

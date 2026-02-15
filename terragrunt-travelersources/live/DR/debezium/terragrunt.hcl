@@ -3,6 +3,7 @@ include "root" {
   expose = true
 }
 
+
 dependency "eks" {
   config_path = "../eks"
 
@@ -19,14 +20,14 @@ dependency "eks" {
 }
 
 terraform {
-  source = "../../../modules/data-infra/redis"
+  source = "../../../modules/data-infra/debezium"
 }
 
 inputs = {
-  cluster_name = dependency.eks.outputs.cluster_name
-  region       = include.root.locals.aws_region
-  k8s_host     = dependency.eks.outputs.cluster_endpoint
-  k8s_ca       = dependency.eks.outputs.cluster_ca_certificate
-  k8s_token    = dependency.eks.outputs.cluster_token
-  profile      = include.root.locals.aws_profile
+  cluster_name         = dependency.eks.outputs.cluster_name
+  region               = include.root.locals.aws_region
+  k8s_host             = dependency.eks.outputs.cluster_endpoint
+  k8s_ca               = dependency.eks.outputs.cluster_ca_certificate
+  k8s_token            = dependency.eks.outputs.cluster_token
+  profile              = include.root.locals.aws_profile  
 }
