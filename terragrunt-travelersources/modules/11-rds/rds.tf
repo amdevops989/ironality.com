@@ -1,18 +1,16 @@
-
-
 #########################
 # Security Group
 #########################
 resource "aws_security_group" "postgres_sg" {
   name        = "postgres-sg"
   description = "Allow PostgreSQL access"
-  vpc_id      = "vpc-xxxxxxxx" # your VPC
+  vpc_id      = var.vpc_id # your VPC
 
   ingress {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"] # restrict to your VPC
+    cidr_blocks = [var.vpc_cidr_block] # restrict to your VPC
   }
 
   egress {
@@ -27,27 +25,30 @@ resource "aws_security_group" "postgres_sg" {
 # Parameter Group for logical replication
 #########################
 resource "aws_db_parameter_group" "postgres_params" {
-  name        = "postgres-costeffective"
+  name        = "postgres-costeffective-v2"
   family      = "postgres15"
   description = "Parameter group for cost effective RDS with logical replication"
 
   parameter {
-    name  = "rds.logical_replication"
-    value = "1"
+    name         = "rds.logical_replication"
+    value        = "1"
+    apply_method = "pending-reboot"
   }
 
   parameter {
-    name  = "max_connections"
-    value = "50"
+    name         = "max_connections"
+    value        = "50"
+    # apply_method = "immediate"
   }
 }
+
 
 #########################
 # RDS PostgreSQL in private subnets
 #########################
 resource "aws_db_subnet_group" "postgres_subnets" {
   name       = "postgres-subnet-group"
-  subnet_ids = ["subnet-aaaa1111", "subnet-bbbb2222"]  # your private subnet IDs
+  subnet_ids = var.private_subnets  # your private subnet IDs
   description = "Subnets for RDS PostgreSQL"
 }
 #########################
@@ -60,10 +61,11 @@ resource "aws_db_instance" "postgres" {
   instance_class         = "db.t4g.micro"
   allocated_storage      = 20
   storage_type           = "gp2"
+  storage_encrypted      = true
   username               = "postgres"
-  password               = "ChangeMe123!" # secure in Secrets Manager for prod
+  password               = "postgres" # secure in Secrets Manager for prod
   db_name                = "mv100db"
-  backup_retention_period = 0
+  backup_retention_period = 0  ## should be 1 else replicas will fail
   skip_final_snapshot    = true
   publicly_accessible    = false
   multi_az               = false
@@ -88,7 +90,7 @@ resource "null_resource" "init_db" {
   provisioner "local-exec" {
     command = <<EOT
 #!/bin/bash
-export PGPASSWORD='ChangeMe123!'
+export PGPASSWORD='postgres'
 HOST="${aws_db_instance.postgres.address}"
 PORT=5432
 USER="postgres"
