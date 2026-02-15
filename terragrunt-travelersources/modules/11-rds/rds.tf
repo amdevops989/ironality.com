@@ -75,7 +75,7 @@ resource "aws_db_instance" "postgres" {
   parameter_group_name   = aws_db_parameter_group.postgres_params.name
 
   tags = {
-    Environment = "dev"
+    Environment = var.env
     Project     = "CostEffectivePostgres"
   }
 }

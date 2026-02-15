@@ -4,6 +4,8 @@ variable vpc_cidr_block {
   default     = ""
 }
 
+variable env {
+}
 
 variable "vpc_id" {
   description = "VPC ID where EKS will be deployed"
